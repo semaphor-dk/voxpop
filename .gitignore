@@ -1,0 +1,7 @@
+venv/
+*.sqlite3
+*.bak
+*.log
+*.pot
+*.pyc
+__pycache__

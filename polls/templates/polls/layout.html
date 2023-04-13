@@ -1,0 +1,12 @@
+<!DOCTYPE html>{% load static %}
+<html lang="{{ lang }}">
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}{% endblock %}</title>
+		<link rel="Stylesheet" href="{% static 'style.css' %}">
+	</head>
+	<body>
+		<main>{% block content %}{% endblock %}
+		</main>
+	</body>
+</html>
