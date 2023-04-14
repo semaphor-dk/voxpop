@@ -15,9 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from .api import api
+
+
+## See here this for Django-Ninja when using applications.
+## https://django-ninja.rest-framework.com/guides/routers/
 
 urlpatterns = [
     path('', include('polls.urls')),
     path('polls/', include('polls.urls')),
     path('admin/', admin.site.urls),
+    path('api/', api.urls)
 ]
