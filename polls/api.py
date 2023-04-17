@@ -6,10 +6,6 @@ import json
 
 router = Router()
 
-@router.get('/')
-def say_hello(request):
-    return f"Hello"
-
 @router.get('/questions')
 def get_all(request, only_approved: bool = "false"):
     approved_question_list = Question.objects.filter(approved=True).values() if only_approved else Question.objects.values()
