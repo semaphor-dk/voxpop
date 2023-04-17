@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('polls', '0002_rename_pub_data_question_pub_date'),
+        ("voxpop", "0002_rename_pub_data_question_pub_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='approved',
-            field=models.BooleanField(default=False, verbose_name='approve'),
+            model_name="question",
+            name="approved",
+            field=models.BooleanField(default=False, verbose_name="approve"),
         ),
     ]

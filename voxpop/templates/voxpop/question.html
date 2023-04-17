@@ -1,5 +1,5 @@
 <h3>Stil et spørgsmål:</h3>
-<form action="/polls/new/" method="POST">
+<form action="{% url "voxpop:new_question" %}" method="POST">
     {% csrf_token %}
     <textarea name="text" rows="3" maxlength="150" autofocus required></textarea>
     <button type="submit">Send</button>

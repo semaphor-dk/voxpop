@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<p>Du har stemt på spørgsmålet <b>"{{ question }}"</b></p>
+<a href="{% url "voxpop:index" %}">TILBAGE</a>
+
+{% endblock %}
