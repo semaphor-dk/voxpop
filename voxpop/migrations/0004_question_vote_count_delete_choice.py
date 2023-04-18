@@ -4,18 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('polls', '0003_question_approved'),
+        ("voxpop", "0003_question_approved"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='vote_count',
+            model_name="question",
+            name="vote_count",
             field=models.PositiveSmallIntegerField(default=0),
         ),
         migrations.DeleteModel(
-            name='Choice',
+            name="Choice",
         ),
     ]

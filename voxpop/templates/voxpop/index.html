@@ -1,13 +1,13 @@
-{% extends 'polls/layout.html' %}
+{% extends 'layout.html' %}
 {% block title %}Spørgsmål{% endblock %}
 {% block content %}
 <h1>Spørgsmål</h1>
 {% if approved_question_list %}
 {% for question in approved_question_list %}
-<p>"{{ question.question_text }}" [{{ question.pub_date.time }}] <a href="/polls/{{ question.id }}">(mere)</a></p>
+<p>"{{ question.question_text }}" [{{ question.pub_date.time }}] <a href="{% url "voxpop:detail" question_id=question.id %}">(mere)</a></p>
 {% endfor %}
 {% else %}
     <p>Der er ikke stillet nogle spørgsmål endnu, vær den første...</p>
 {% endif %}
-{% include 'polls/question.html' %}
+{% include 'voxpop/question.html' %}
 {% endblock %}
