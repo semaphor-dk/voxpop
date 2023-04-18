@@ -11,9 +11,7 @@ from .models import Question
 
 
 def index(request):
-    approved_question_list = Question.objects.filter(approved=True).order_by(
-        "-vote_count",
-    )
+    approved_question_list = Question.objects.filter(approved=True)
     context = {
         "approved_question_list": approved_question_list,
     }
@@ -26,9 +24,9 @@ def detail(request, question_id):
     except Question.DoesNotExist:
         raise Http404("Question does not exist")
     context = {
-        "question": question.question_text,
-        "votes": question.vote_count,
+        "question": question.text,
         "id": question.id,
+        "votes": question.get_votes(),
     }
     return render(request, "voxpop/detail.html", context)
 
@@ -41,12 +39,12 @@ def new_question(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data["text"]
-            newq = Question(question_text=text)
+            newq = Question(text=text)
             newq.save()
         else:
             return HttpResponse("Ukendt fejl, prøv venligst igen.")
 
-        Question.objects.filter(approved=True).order_by("-vote_count")
+        Question.objects.filter(approved=True)
         return redirect("voxpop:index")
 
 
@@ -55,6 +53,6 @@ def vote(request, question_id):
     question.upvote()
     question.save()
     context = {
-        "question": question.question_text,
+        "question": question.text,
     }
     return render(request, "voxpop/vote.html", context)
