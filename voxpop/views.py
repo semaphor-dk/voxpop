@@ -11,7 +11,7 @@ from .models import Question
 
 
 def index(request):
-    approved_question_list = Question.objects.filter(approved=True)
+    approved_question_list = Question.objects.filter(state="approved")
     context = {
         "approved_question_list": approved_question_list,
     }
