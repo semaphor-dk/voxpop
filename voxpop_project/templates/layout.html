@@ -6,7 +6,19 @@
 		<link rel="Stylesheet" href="{% static 'style.css' %}">
 	</head>
 	<body>
-		<main>{% block content %}{% endblock %}
+
+        {% if messages %}
+        <div id="messages">
+            <ul>
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+		<main>
+            {% block content %}{% endblock %}
 		</main>
 	</body>
 </html>

@@ -13,9 +13,21 @@ class CreatedUpdatedMixin(models.Model):
 class Organisation(CreatedUpdatedMixin):
     # Work in progress.
     name = models.CharField(max_length=200)
-    hostname = models.CharField(max_length=200)
-    idp = models.CharField(max_length=200)
-    admin_group = models.CharField(max_length=200)
+    hostname = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    idp = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    admin_group = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return self.name
@@ -67,25 +79,17 @@ class Question(CreatedUpdatedMixin):
     def get_votes(self):
         return Vote.objects.filter(question_id=self.id).count()
 
-    # TODO: As Ninja Schema?
-    def as_dict(self):
-        return {
-            "id": self.id,
-            "topic": self.topic.title,
-            "text": self.text,
-            "created_at": self.created_at,
-            "created_by": self.created_by,
-            "state": self.state,
-            "vote_count": self.get_votes(),
-        }
-
     def __str__(self):
         return f'[{self.created_at.time()}]: "{self.text}" ({self.state})'
 
 
 class Vote(CreatedUpdatedMixin):
     created_by = models.CharField(max_length=200)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="votes",
+    )
 
     def __str__(self):
         return f'{self.created_by} -> "{self.question.text}"'

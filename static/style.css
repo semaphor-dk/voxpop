@@ -275,6 +275,13 @@ main {
   border-radius: 15px;
 }
 
+#messages {
+  padding: 15px;
+  width: 50%;
+  margin: 0 auto 0 auto;
+  border-radius: 15px;
+}
+
 /** Module Rules **/
 
 .btn-toolbar {
