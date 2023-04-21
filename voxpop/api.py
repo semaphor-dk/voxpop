@@ -1,11 +1,24 @@
-from ninja import Router, Schema
+from datetime import datetime
 
-from .models import Question, Vote
-import json
+from ninja import Router
+from ninja import Schema
+
+from .models import Question
+from .selectors import get_questions
 
 router = Router()
 
 
-@router.get("/questions")
-def get_questions(request):
-    return list(q.as_dict() for q in Question.objects.filter(state="approved").all())
+class QuestionSchema(Schema):
+    id: int
+    voxpop_id: int
+    text: str
+    created_at: datetime
+    created_by: str
+    state: str
+    vote_count: int
+
+
+@router.get("/questions", response=list[QuestionSchema])
+def questions(request):
+    return list(get_questions(state=Question.State.APPROVED))

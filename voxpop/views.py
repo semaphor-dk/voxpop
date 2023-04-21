@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.http import HttpRequest
 from django.http import HttpResponse
 from django.shortcuts import Http404
 from django.shortcuts import redirect
@@ -5,6 +7,9 @@ from django.shortcuts import render
 
 from .forms import QuestionForm
 from .models import Question
+from .selectors import get_questions
+from .selectors import get_voxpops
+
 
 # Create your views here.
 # from django.contrib.auth.decorators import login_required
@@ -20,32 +25,33 @@ def index(request):
 
 def detail(request, question_id):
     try:
-        question = Question.objects.get(pk=question_id)
+        question = get_questions(question_id=question_id)
     except Question.DoesNotExist:
         raise Http404("Question does not exist")
     context = {
-        "question": question.text,
+        "question": question,
         "id": question.id,
-        "votes": question.get_votes(),
     }
     return render(request, "voxpop/detail.html", context)
 
 
-def new_question(request):
-    if request.method == "GET":
-        form = QuestionForm
-        return render(request, "voxpop/question.html", {"form": form})
+def new_question(request: HttpRequest, voxpop_id: int) -> HttpResponse:
+    voxpop = get_voxpops(voxpop_id=voxpop_id)
+
+    form = QuestionForm
+
     if request.method == "POST":
         form = QuestionForm(request.POST)
         if form.is_valid():
-            text = form.cleaned_data["text"]
-            newq = Question(text=text)
-            newq.save()
+            question = form.save(commit=False)
+            question.voxpop = voxpop
+            question.save()
+            messages.info(request, "Dit spørgsmål er nu sendt til godkendelse.")
+            return redirect("voxpop:index")
         else:
             return HttpResponse("Ukendt fejl, prøv venligst igen.")
 
-        Question.objects.filter(approved=True)
-        return redirect("voxpop:index")
+    return render(request, "voxpop/question.html", {"form": form})
 
 
 def vote(request, question_id):
