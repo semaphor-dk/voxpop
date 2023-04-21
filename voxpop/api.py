@@ -34,7 +34,6 @@ class VoxpopSchema(Schema):
 def questions(request):
     return list(get_questions(state=Question.State.APPROVED))
 
-
 @router.get("/voxpops", response=list[VoxpopSchema])
 def voxpops(request):
     return(list(get_voxpops()))
