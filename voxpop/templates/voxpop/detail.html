@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <b>Spørgsmål</b>: "{{ question }}"<br>
-    <b>Antal stemmer</b>: {{ votes }}<br><br>
-    <a href="{% url "voxpop:index" %}">TILBAGE</a></li> / <a href="{% url "voxpop:vote" question_id=id %}">STEM</a>
+    <b>Spørgsmål</b>: "{{ question.text }}"<br>
+    <b>Antal stemmer</b>: {{ question.vote_count }}<br><br>
+    <a href="{% url "voxpop:index" %}">TILBAGE</a> / <a href="{% url "voxpop:vote" question_id=id %}">STEM</a>
 {% endblock %}
