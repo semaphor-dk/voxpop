@@ -9,7 +9,8 @@ from voxpop.models import Voxpop
 def get_questions(
     question_id: int | None = None,
     state: Question.State | None = None,
-) -> "QuerySet[Question] | Question":
+    ) -> "QuerySet[Question] | Question":
+
     questions = Question.objects.all().annotate(
         vote_count=Count("votes", distinct=True),
     )
@@ -23,8 +24,14 @@ def get_questions(
     return questions
 
 
-def get_voxpops(voxpop_id: int | None = None) -> "QuerySet[Voxpop] | Voxpop":
-    voxpops = Voxpop.objects.all()
+# TODO: Annotate "is_active" somehow...
+def get_voxpops(
+    voxpop_id: int | None = None,
+    ) -> "QuerySet[Voxpop] | Voxpop":
+
+    voxpops = Voxpop.objects.all().annotate(
+        question_count = Count("question", distinct=True),
+    )
 
     if voxpop_id:
         return voxpops.get(id=voxpop_id)

@@ -43,13 +43,6 @@ class Voxpop(CreatedUpdatedMixin):
     allow_anonymous = models.BooleanField(default=False)
     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
 
-    # Use SQL.
-    # Pseudocode.
-    # def is_active(self) -> bool:
-    #    if self.starts_at < timezone.now and timezone.now < self.expires_at:
-    #        return True
-    #    return False
-
     def __str__(self):
         return f"{self.title}"
 
@@ -75,9 +68,6 @@ class Question(CreatedUpdatedMixin):
     def approve(self):
         self.state = self.State.APPROVED
         self.save()
-
-    def get_votes(self):
-        return Vote.objects.filter(question_id=self.id).count()
 
     def __str__(self):
         return f'[{self.created_at.time()}]: "{self.text}" ({self.state})'
