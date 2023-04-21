@@ -6,6 +6,7 @@ from ninja import Schema
 from .models import Question
 from .selectors import get_questions
 from .selectors import get_voxpops
+from .selectors import get_votes
 
 router = Router()
 
@@ -24,11 +25,17 @@ class VoxpopSchema(Schema):
     organisation_id: int
     title: str
     description: str
+    created_by: str
     starts_at: datetime
     expires_at: datetime
     question_count: int
     is_moderated: bool
     allow_anonymous: bool
+
+class VoteSchema(Schema):
+    id: int
+    question_id: int
+    created_by: str
 
 @router.get("/questions", response=list[QuestionSchema])
 def questions(request):
@@ -37,3 +44,7 @@ def questions(request):
 @router.get("/voxpops", response=list[VoxpopSchema])
 def voxpops(request):
     return(list(get_voxpops()))
+
+@router.get("/votes", response=list[VoteSchema])
+def votes(request):
+    return list(get_votes())

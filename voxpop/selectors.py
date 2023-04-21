@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 
 from voxpop.models import Question
 from voxpop.models import Voxpop
+from voxpop.models import Vote
 
 
 def get_questions(
@@ -25,10 +26,8 @@ def get_questions(
 
 
 # TODO: Annotate "is_active" somehow...
-def get_voxpops(
-    voxpop_id: int | None = None,
-    ) -> "QuerySet[Voxpop] | Voxpop":
-
+def get_voxpops(voxpop_id: int | None = None) -> "QuerySet[Voxpop] | Voxpop":
+    
     voxpops = Voxpop.objects.all().annotate(
         question_count = Count("question", distinct=True),
     )
@@ -37,3 +36,12 @@ def get_voxpops(
         return voxpops.get(id=voxpop_id)
 
     return voxpops
+
+def get_votes(vote_id: int | None = None) -> "QuerySet[Vote] | Vote":
+    
+    votes = Vote.objects.all()
+    
+    if vote_id:
+        return votes.get(id=vote_id)
+    
+    return votes
