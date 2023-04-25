@@ -5,3 +5,4 @@ venv/
 *.pot
 *.pyc
 __pycache__
+.idea/
