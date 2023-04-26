@@ -56,10 +56,6 @@ class VoteSchema(ModelSchema):
         ]
 
 
-class Error(Schema):
-    msg: str
-
-
 @router.get("/", response=list[VoxpopSchema])
 def voxpops(request):
     return list(get_voxpops())
