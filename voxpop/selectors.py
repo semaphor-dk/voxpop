@@ -1,4 +1,5 @@
 from __future__ import annotations  # For Python3.9 users.
+from uuid import UUID
 
 from django.db.models import Count
 from django.db.models import QuerySet
@@ -9,9 +10,9 @@ from voxpop.models import Voxpop
 
 
 def get_questions(
-    question_id: int | None = None,
+    question_id: UUID | None = None,
     state: Question.State | None = None,
-    voxpop_id: int | None = None,
+    voxpop_id: UUID | None = None,
 ) -> QuerySet[Question] | Question | None:
     questions = Question.objects.all().annotate(
         vote_count=Count("votes", distinct=True),
@@ -27,29 +28,28 @@ def get_questions(
     # Then do the get if needed
     if question_id:
         try:
-            return questions.get(id=question_id)
+            return questions.get(uuid=question_id)
         except Question.DoesNotExist:
             return None
 
     return questions
 
 
-# TODO: Annotate "is_active" somehow...
-def get_voxpops(voxpop_id: int | None = None) -> QuerySet[Voxpop] | Voxpop:
+def get_voxpops(voxpop_id: UUID | None = None) -> QuerySet[Voxpop] | Voxpop:
     voxpops = Voxpop.objects.all().annotate(
         question_count=Count("question", distinct=True),
     )
 
     if voxpop_id:
-        return voxpops.get(id=voxpop_id)
+        return voxpops.get(uuid=voxpop_id)
 
     return voxpops
 
 
 def get_votes(
-    vote_id: int | None = None,
-    question_id: int | None = None,
-    voxpop_id: int | None = None,
+    vote_id: UUID | None = None,
+    question_id: UUID | None = None,
+    voxpop_id: UUID | None = None,
 ) -> QuerySet[Vote] | Vote:
     votes = Vote.objects.all()
 
@@ -60,6 +60,6 @@ def get_votes(
         votes = votes.filter(question_id=question_id)
 
     if vote_id:
-        return votes.get(id=vote_id)
+        return votes.get(uuid=vote_id)
 
     return votes

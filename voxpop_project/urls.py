@@ -17,10 +17,10 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
-
 ## See here this for Django-Ninja when using applications.
 ## https://django-ninja.rest-framework.com/guides/routers/
 
+# TODO: /api/docs is gone after .api and path removal :-(
 urlpatterns = [
     path("", include("voxpop.urls")),
     path("admin/", admin.site.urls),
