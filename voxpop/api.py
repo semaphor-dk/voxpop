@@ -68,7 +68,6 @@ def voxpop(request, voxpop_id: int):
 
 @router.get("/{voxpop_id}/questions", response=list[QuestionSchema])
 def questions(request, voxpop_id: int):
-    # TODO: Make sure voxpop exists.
     return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
 
 
@@ -93,7 +92,7 @@ def votes(request, voxpop_id: int, question_id: int):
 
 @router.get(
     "/{voxpop_id}/questions/{question_id}/votes/{vote_id}",
-    response={200: VoteSchema, 500: Error},
+    response={200: VoteSchema},
 )
 def vote(request, voxpop_id: int, question_id: int, vote_id: int):
     if _vote := get_votes(
