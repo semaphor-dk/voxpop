@@ -1,9 +1,11 @@
-from datetime import datetime
-
+from django.http import Http404
+from ninja import ModelSchema
 from ninja import Router
 from ninja import Schema
 
 from .models import Question
+from .models import Vote
+from .models import Voxpop
 from .selectors import get_questions
 from .selectors import get_votes
 from .selectors import get_voxpops
@@ -11,33 +13,48 @@ from .selectors import get_voxpops
 router = Router()
 
 
-class QuestionSchema(Schema):
-    id: int
-    voxpop_id: int
-    text: str
-    created_at: datetime
-    created_by: str
-    state: str
+class QuestionSchema(ModelSchema):
+    class Config:
+        model = Question
+        model_fields = [
+            "id",
+            "voxpop",
+            "text",
+            "created_at",
+            "created_by",
+            "state",
+        ]
+
     vote_count: int
 
 
-class VoxpopSchema(Schema):
-    id: int
-    organisation_id: int
-    title: str
-    description: str
-    created_by: str
-    starts_at: datetime
-    expires_at: datetime
+class VoxpopSchema(ModelSchema):
+    class Config:
+        model = Voxpop
+        model_fields = [
+            "id",
+            "organisation",
+            "title",
+            "description",
+            "created_by",
+            "starts_at",
+            "expires_at",
+            "is_moderated",
+            "allow_anonymous",
+        ]
+
     question_count: int
-    is_moderated: bool
-    allow_anonymous: bool
 
 
-class VoteSchema(Schema):
-    id: int
-    question_id: int
-    created_by: str
+class VoteSchema(ModelSchema):
+    class Config:
+        model = Vote
+        model_fields = [
+            "id",
+            "question",
+            "created_by",
+        ]
+
 
 class Error(Schema):
     msg: str
@@ -56,26 +73,38 @@ def voxpop(request, voxpop_id: int):
 @router.get("/{voxpop_id}/questions", response=list[QuestionSchema])
 def questions(request, voxpop_id: int):
     # TODO: Make sure voxpop exists.
-    return list(get_questions(state=Question.State.APPROVED).filter(voxpop_id=voxpop_id))
+    return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
 
 
-@router.get("/{voxpop_id}/questions/{question_id}", response={200: QuestionSchema, 500: Error})
+@router.get("/{voxpop_id}/questions/{question_id}", response={200: QuestionSchema})
 def question(request, voxpop_id: int, question_id: int):
-    if get_questions(question_id=question_id).voxpop_id == voxpop_id:
-        return 200, get_questions(state=Question.State.APPROVED, question_id=question_id)
-    return 500, {"msg": "Container error"}
+    if _question := get_questions(
+        question_id=question_id,
+        voxpop_id=voxpop_id,
+        state=Question.State.APPROVED,
+    ):
+        return 200, _question
+    raise Http404
 
 
-@router.get("/{voxpop_id}/questions/{question_id}/votes", response={200: list[VoteSchema], 500: Error})
+@router.get(
+    "/{voxpop_id}/questions/{question_id}/votes",
+    response={200: list[VoteSchema]},
+)
 def votes(request, voxpop_id: int, question_id: int):
-    if get_questions(question_id=question_id).voxpop_id == voxpop_id:
-        return list(get_votes().filter(question_id=question_id))
-    return 500, {"msg": "Container error"}
+    return list(get_votes(question_id=question_id, voxpop_id=voxpop_id))
 
 
-@router.get("/{voxpop_id}/questions/{question_id}/votes/{vote_id}", response={200: VoteSchema, 500: Error})
+@router.get(
+    "/{voxpop_id}/questions/{question_id}/votes/{vote_id}",
+    response={200: VoteSchema, 500: Error},
+)
 def vote(request, voxpop_id: int, question_id: int, vote_id: int):
-    if (get_questions(question_id=question_id).voxpop_id == voxpop_id and 
-        get_votes(vote_id=vote_id).question_id == question_id):
-        return get_votes(vote_id=vote_id)
-    return 500, {"msg": "Container error"}
+    if _vote := get_votes(
+        vote_id=vote_id,
+        question_id=question_id,
+        voxpop_id=voxpop_id,
+    ):
+        return 200, _vote
+
+    raise Http404

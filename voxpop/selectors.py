@@ -11,16 +11,25 @@ from voxpop.models import Voxpop
 def get_questions(
     question_id: int | None = None,
     state: Question.State | None = None,
-) -> QuerySet[Question] | Question:
+    voxpop_id: int | None = None,
+) -> QuerySet[Question] | Question | None:
     questions = Question.objects.all().annotate(
         vote_count=Count("votes", distinct=True),
     )
 
-    if question_id:
-        return questions.get(id=question_id)
-
+    # First do all filtering
     if state:
         questions = questions.filter(state=state)
+
+    if voxpop_id:
+        questions = questions.filter(voxpop_id=voxpop_id)
+
+    # Then do the get if needed
+    if question_id:
+        try:
+            return questions.get(id=question_id)
+        except Question.DoesNotExist:
+            return None
 
     return questions
 
@@ -37,8 +46,18 @@ def get_voxpops(voxpop_id: int | None = None) -> QuerySet[Voxpop] | Voxpop:
     return voxpops
 
 
-def get_votes(vote_id: int | None = None) -> QuerySet[Vote] | Vote:
+def get_votes(
+    vote_id: int | None = None,
+    question_id: int | None = None,
+    voxpop_id: int | None = None,
+) -> QuerySet[Vote] | Vote:
     votes = Vote.objects.all()
+
+    if voxpop_id:
+        votes = votes.filter(question__voxpop_id=voxpop_id)
+
+    if question_id:
+        votes = votes.filter(question_id=question_id)
 
     if vote_id:
         return votes.get(id=vote_id)

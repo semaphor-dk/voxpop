@@ -22,6 +22,7 @@ classifiers = [
 ]
 dependencies = [
   "Django>=4.2",
+  "django-ninja==0.21.0",
 ]
 dynamic = ["version"]
 
@@ -39,3 +40,61 @@ include = [
     "README.txt",
     "/voxpop",
 ]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "coverage[toml]==7.2.1",
+    "pytest==7.2.2",
+    "pytest-cov",
+    "pytest-django==4.5.2",
+    "mypy==1.1.1",
+    "django-stubs==1.16.0",
+]
+
+[tool.hatch.envs.default.scripts]
+cov = "pytest -rsx --cov-report=term-missing --cov-config=pyproject.toml --cov=voxpop --cov=tests --cov=append {args}"
+no-cov = "cov --no-cov {args}"
+typecheck = "mypy --config-file=pyproject.toml ."
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE="tests.settings"
+addopts = "--reuse-db"
+norecursedirs = "build dist docs .eggs/* *.egg-info htmlcov voxpop .git"
+python_files = "test*.py"
+testpaths = "tests"
+pythonpath = ". tests"
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+    "voxpop/__about__.py",
+    "tests/manage.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.mypy]
+mypy_path = "voxpop/"
+exclude = [
+    "venv/",
+    "dist/",
+    "docs/",
+]
+namespace_packages = false
+show_error_codes = true
+strict = true
+warn_unreachable = true
+follow_imports = "normal"
+
+[tool.django-stubs]
+#django_settings_module = "tests.settings"
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_untyped_defs = true
