@@ -4,7 +4,7 @@ from ninja import NinjaAPI
 from . import views
 from voxpop.api import router as voxpop_router
 
-api = NinjaAPI()
+api = NinjaAPI(urls_namespace="voxpop:api")
 
 api.add_router("/voxpops/", voxpop_router)
 
