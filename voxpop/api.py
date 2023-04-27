@@ -1,8 +1,8 @@
+from uuid import UUID
+
 from django.http import Http404
 from ninja import ModelSchema
 from ninja import Router
-from ninja import Schema
-from uuid import UUID
 
 from .models import Question
 from .models import Vote
@@ -56,9 +56,11 @@ class VoteSchema(ModelSchema):
             "created_by",
         ]
 
-""" The "/" endpoint is mainly for debug purposes and 
+
+""" The "/" endpoint is mainly for debug purposes and
 shoud not be easily accesible in final version, as
 it reveals the UUID of all Voxpops. """
+
 
 @router.get("/", response=list[VoxpopSchema])
 def voxpops(request):
@@ -71,16 +73,16 @@ def voxpop(request, voxpop_id: UUID):
 
 
 @router.get(
-    "/{voxpop_id}/questions", 
-    response=list[QuestionSchema]
+    "/{voxpop_id}/questions",
+    response=list[QuestionSchema],
 )
 def questions(request, voxpop_id: UUID):
     return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
 
 
 @router.get(
-    "/{voxpop_id}/questions/{question_id}", 
-    response={200: QuestionSchema}
+    "/{voxpop_id}/questions/{question_id}",
+    response={200: QuestionSchema},
 )
 def question(request, voxpop_id: UUID, question_id: UUID):
     if _question := get_questions(

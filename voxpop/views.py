@@ -1,10 +1,11 @@
+from uuid import UUID
+
 from django.contrib import messages
 from django.http import HttpRequest
 from django.http import HttpResponse
 from django.shortcuts import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
-from uuid import UUID
 
 from .forms import QuestionForm
 from .models import Question

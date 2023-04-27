@@ -1,4 +1,5 @@
 from __future__ import annotations  # For Python3.9 users.
+
 from uuid import UUID
 
 from django.db.models import Count
