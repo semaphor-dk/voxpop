@@ -137,7 +137,8 @@ class Migration(migrations.Migration):
             model_name="question",
             name="voxpop",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="voxpop.voxpop"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="voxpop.voxpop",
             ),
         ),
     ]
