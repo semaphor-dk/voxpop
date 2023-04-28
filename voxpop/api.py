@@ -1,8 +1,9 @@
+from uuid import UUID
+
 from django.http import Http404
 from ninja import ModelSchema
-from ninja import Router
 from ninja import Schema
-from uuid import UUID
+from ninja import Router
 
 from .models import Question
 from .models import Vote
