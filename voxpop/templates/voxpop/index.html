@@ -4,7 +4,7 @@
 <h1>Spørgsmål</h1>
 {% if approved_question_list %}
 {% for question in approved_question_list %}
-<p>"{{ question.text }}" [{{ question.created_at.time }}] <a href="{% url "voxpop:detail" question_id=question.uuid %}">(mere)</a></p>
+<p>"{{ question.text }}" [{{ question.created_at.time }}]</p>
 {% endfor %}
 {% else %}
     <p>Der er ikke stillet nogle spørgsmål endnu, vær den første...</p>
