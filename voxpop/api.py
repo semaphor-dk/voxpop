@@ -14,7 +14,7 @@ from .selectors import get_voxpops
 router = Router()
 
 
-class QuestionSchema(ModelSchema):
+class QuestionOut(ModelSchema):
     class Config:
         model = Question
         model_fields = [
@@ -23,18 +23,28 @@ class QuestionSchema(ModelSchema):
             "text",
             "created_at",
             "created_by",
+            "display_name",
             "state",
         ]
 
     vote_count: int
 
 
-class VoxpopSchema(ModelSchema):
+class QuestionIn(ModelSchema):
+    class Config:
+        model = Question
+        model_fields = [
+            "text",
+            "created_by",
+            "display_name",
+        ]
+
+
+class VoxpopOut(ModelSchema):
     class Config:
         model = Voxpop
         model_fields = [
             "uuid",
-            "organisation",
             "title",
             "description",
             "created_by",
@@ -47,7 +57,7 @@ class VoxpopSchema(ModelSchema):
     question_count: int
 
 
-class VoteSchema(ModelSchema):
+class VoteOut(ModelSchema):
     class Config:
         model = Vote
         model_fields = [
@@ -56,23 +66,37 @@ class VoteSchema(ModelSchema):
             "created_by",
         ]
 
-""" The "/" endpoint is mainly for debug purposes and 
-shoud not be easily accesible in final version, as
-it reveals the UUID of all Voxpops. """
+class Message(Schema):
+    msg: str
 
-@router.get("/", response=list[VoxpopSchema])
+
+@router.post("{voxpop_id}/new_question", response=Message)
+def new_question(request, voxpop_id: UUID, payload: QuestionIn):
+    
+    try: voxpop = get_voxpops(voxpop_id=voxpop_id)
+    except Exception as err: return {"msg": "%s" %err}
+
+    question = Question.objects.create(
+        **payload.dict(), 
+        voxpop=voxpop
+    )  
+
+    return {"msg": "Question created with uuid: %s" %question.uuid}
+
+
+@router.get("/", response=list[VoxpopOut])
 def voxpops(request):
     return list(get_voxpops())
 
 
-@router.get("/{voxpop_id}", response=VoxpopSchema)
+@router.get("/{voxpop_id}", response=VoxpopOut)
 def voxpop(request, voxpop_id: UUID):
     return get_voxpops(voxpop_id=voxpop_id)
 
 
 @router.get(
     "/{voxpop_id}/questions", 
-    response=list[QuestionSchema]
+    response=list[QuestionOut]
 )
 def questions(request, voxpop_id: UUID):
     return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
@@ -80,7 +104,7 @@ def questions(request, voxpop_id: UUID):
 
 @router.get(
     "/{voxpop_id}/questions/{question_id}", 
-    response={200: QuestionSchema}
+    response={200: QuestionOut}
 )
 def question(request, voxpop_id: UUID, question_id: UUID):
     if _question := get_questions(
@@ -94,7 +118,7 @@ def question(request, voxpop_id: UUID, question_id: UUID):
 
 @router.get(
     "/{voxpop_id}/questions/{question_id}/votes",
-    response={200: list[VoteSchema]},
+    response={200: list[VoteOut]},
 )
 def votes(request, voxpop_id: UUID, question_id: UUID):
     return list(get_votes(question_id=question_id, voxpop_id=voxpop_id))
@@ -102,7 +126,7 @@ def votes(request, voxpop_id: UUID, question_id: UUID):
 
 @router.get(
     "/{voxpop_id}/questions/{question_id}/votes/{vote_id}",
-    response={200: VoteSchema},
+    response={200: VoteOut},
 )
 def vote(request, voxpop_id: UUID, question_id: UUID, vote_id: UUID):
     if _vote := get_votes(
