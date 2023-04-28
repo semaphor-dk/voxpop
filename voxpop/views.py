@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from django.contrib import messages
 from django.http import HttpRequest
 from django.http import HttpResponse
@@ -16,26 +18,26 @@ from .selectors import get_voxpops
 
 
 def index(request):
-    approved_question_list = Question.objects.filter(state="approved")
+    approved_question_list = get_questions(state=Question.State.APPROVED)
     context = {
         "approved_question_list": approved_question_list,
     }
     return render(request, "voxpop/index.html", context)
 
 
-def detail(request, question_id):
+def detail(request, question_id: UUID):
     try:
         question = get_questions(question_id=question_id)
     except Question.DoesNotExist:
         raise Http404("Question does not exist")
     context = {
         "question": question,
-        "id": question.id,
+        "id": question.uuid,
     }
     return render(request, "voxpop/detail.html", context)
 
 
-def new_question(request: HttpRequest, voxpop_id: int) -> HttpResponse:
+def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
     voxpop = get_voxpops(voxpop_id=voxpop_id)
 
     form = QuestionForm
@@ -54,7 +56,7 @@ def new_question(request: HttpRequest, voxpop_id: int) -> HttpResponse:
     return render(request, "voxpop/question.html", {"form": form})
 
 
-def vote(request, question_id):
+def vote(request, question_id: UUID):
     question = Question.objects.get(pk=question_id)
     question.upvote()
     question.save()

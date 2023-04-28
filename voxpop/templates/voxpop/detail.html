@@ -2,5 +2,5 @@
 {% block content %}
     <b>Spørgsmål</b>: "{{ question.text }}"<br>
     <b>Antal stemmer</b>: {{ question.vote_count }}<br><br>
-    <a href="{% url "voxpop:index" %}">TILBAGE</a> / <a href="{% url "voxpop:vote" question_id=id %}">STEM</a>
+    <a href="{% url "voxpop:index" %}">TILBAGE</a> / <a href="{% url "voxpop:vote" question_id=uuid %}">STEM</a>
 {% endblock %}
