@@ -86,6 +86,33 @@ def new_question(request, voxpop_id: UUID, payload: QuestionIn):
 
     return {"msg": "Question created with uuid: %s" % question.uuid}
 
+@router.post("{voxpop_id}/questions/{question_id}/vote", response=Message)
+def vote(request, voxpop_id: UUID, question_id: UUID):
+    try:
+        voxpop = get_voxpops(voxpop_id=voxpop_id)
+    except Exception as err:
+        return {"msg": "%s" % err}
+
+    try:
+        question = get_questions(
+            question_id=question_id, 
+            voxpop_id=voxpop_id, 
+            state=Question.State.APPROVED
+        )
+
+    except Exception as err:
+        return {"msg": "%s" % err}
+
+    # TODO: Check if vote on question already exists.
+
+    vote = Vote.objects.create(
+        question=question,
+        created_by="Testbruger"
+    )
+
+    return {"msg": "Vote created with uuid: %s" %vote.uuid}
+
+    
 
 @router.get("/", response=list[VoxpopOut])
 def voxpops(request):
