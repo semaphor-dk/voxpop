@@ -20,7 +20,7 @@ from .selectors import get_voxpops
 def index(request):
     approved_question_list = get_questions(state=Question.State.APPROVED)
     context = {
-        "approved_question_list": approved_question_list,
+        "voxpops": get_voxpops()
     }
     return render(request, "voxpop/index.html", context)
 

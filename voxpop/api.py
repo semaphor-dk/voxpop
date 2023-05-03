@@ -95,8 +95,8 @@ def vote(request, voxpop_id: UUID, question_id: UUID):
 
     try:
         question = get_questions(
-            question_id=question_id, 
-            voxpop_id=voxpop_id, 
+            question_id=question_id,
+            voxpop_id=voxpop_id,
             state=Question.State.APPROVED
         )
 
@@ -128,8 +128,11 @@ def voxpop(request, voxpop_id: UUID):
     response=list[QuestionOut],
 )
 def questions(request, voxpop_id: UUID):
+    print("DEBUG: request.session.session_key:", request.session.session_key)
+    if not request.session.session_key:
+        request.session.create()
+        print("DEBUG: Creating ", request.session.session_key)
     return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
-
 
 @router.get(
     "/{voxpop_id}/questions/{question_id}",
