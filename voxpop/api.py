@@ -18,19 +18,12 @@ from .services import create_vote
 
 router = Router()
 
-class VoteIn(ModelSchema):
-    class Config:
-        model = Vote
-        model_fields = [
-            "created_by"
-        ]
 
 class QuestionIn(ModelSchema):
     class Config:
         model = Question
         model_fields = [
             "text",
-            "created_by",
             "display_name",
         ]
 
@@ -74,9 +67,10 @@ class Message(Schema):
 
 @router.post("{voxpop_id}/new_question", response=Message)
 def new_question(request, voxpop_id: UUID, payload: QuestionIn):
-    
+
     question = create_question(
         **payload.dict(),
+        created_by=session_key,
         voxpop_id=voxpop_id,
     )
     
@@ -84,14 +78,10 @@ def new_question(request, voxpop_id: UUID, payload: QuestionIn):
 
 
 @router.post("{voxpop_id}/questions/{question_id}/vote", response=Message)
-def vote(request, voxpop_id: UUID, question_id: UUID, payload: VoteIn):
-    
-    session_key = request.session.session_key
-    if not session_key: 
-        raise BadRequest("Your browser does not support Cookies")
-
+def vote(request, voxpop_id: UUID, question_id: UUID):
+ 
     vote, created = create_vote(
-        created_by=payload.dict().get("created_by", session_key),
+        created_by=session_key,
         question_id=question_id,
         )
 
@@ -108,7 +98,7 @@ def voxpops(request):
 @router.get("/{voxpop_id}/questions", response=list[QuestionOut])
 def questions(request, voxpop_id: UUID):
     
-    if not request.session.session_key:
+    if not request.session.session_key: 
         request.session.create()
-    
+
     return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
