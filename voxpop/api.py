@@ -70,7 +70,7 @@ def new_question(request, voxpop_id: UUID, payload: QuestionIn):
 
     question = create_question(
         **payload.dict(),
-        created_by=session_key,
+        created_by=request.session.session_key,
         voxpop_id=voxpop_id,
     )
     
@@ -81,7 +81,7 @@ def new_question(request, voxpop_id: UUID, payload: QuestionIn):
 def vote(request, voxpop_id: UUID, question_id: UUID):
  
     vote, created = create_vote(
-        created_by=session_key,
+        created_by=request.session.session_key,
         question_id=question_id,
         )
 
