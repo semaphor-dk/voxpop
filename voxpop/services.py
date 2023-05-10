@@ -17,7 +17,7 @@ def create_question(
 
     question = Question.objects.create(
         text=text,
-        created_by="anonymous" if voxpop.allow_anonymous else created_by,
+        created_by="anonymous" if voxpop.allow_anonymous else created_by, # TODO: This should be handled differently.
         display_name=display_name,
         voxpop=voxpop,
         state=Question.State.NEW if voxpop.is_moderated else Question.State.APPROVED,
@@ -29,7 +29,7 @@ def create_question(
 def create_vote(
     created_by: str,
     question_id: UUID,
-    ) -> Vote:
+    ) -> (Vote, bool):
     
     vote, created = Vote.objects.get_or_create(
         created_by=created_by,
