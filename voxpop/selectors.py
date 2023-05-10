@@ -8,13 +8,31 @@ from django.db.models import QuerySet
 from voxpop.models import Question
 from voxpop.models import Vote
 from voxpop.models import Voxpop
+from voxpop.models import Organisation
+
+
+def get_organisations(
+    organisation_id: UUID | None = None,
+    hostname: str | None = None,
+    ) -> QuerySet[Organisation] | Organisation | None:
+    
+    organisations = Organisation.objects.all()
+    
+    if hostname:
+        try:
+            return organisations.get(hostname=hostname)
+        except Organisation.DoesNotExist:
+            return None
+
+    return organisations
 
 
 def get_questions(
     question_id: UUID | None = None,
     state: Question.State | None = None,
     voxpop_id: UUID | None = None,
-) -> QuerySet[Question] | Question | None:
+    ) -> QuerySet[Question] | Question | None:
+    
     questions = Question.objects.all().annotate(
         vote_count=Count("votes", distinct=True),
     )
@@ -36,10 +54,17 @@ def get_questions(
     return questions
 
 
-def get_voxpops(voxpop_id: UUID | None = None) -> QuerySet[Voxpop] | Voxpop:
+def get_voxpops(
+    voxpop_id: UUID | None = None,
+    organisation_id: UUID | None = None,
+    ) -> QuerySet[Voxpop] | Voxpop:
+    
     voxpops = Voxpop.objects.all().annotate(
         question_count=Count("question", distinct=True),
     )
+
+    if organisation_id:
+        voxpops = voxpops.filter(organisation=organisation_id)
 
     if voxpop_id:
         return voxpops.get(uuid=voxpop_id)
@@ -47,11 +72,13 @@ def get_voxpops(voxpop_id: UUID | None = None) -> QuerySet[Voxpop] | Voxpop:
     return voxpops
 
 
+
 def get_votes(
     vote_id: UUID | None = None,
     question_id: UUID | None = None,
     voxpop_id: UUID | None = None,
-) -> QuerySet[Vote] | Vote:
+    ) -> QuerySet[Vote] | Vote:
+    
     votes = Vote.objects.all()
 
     if voxpop_id:

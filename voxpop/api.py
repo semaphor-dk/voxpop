@@ -9,9 +9,13 @@ from ninja import Schema
 from .models import Question
 from .models import Vote
 from .models import Voxpop
+from .models import Organisation
+
 from .selectors import get_questions
 from .selectors import get_votes
 from .selectors import get_voxpops
+from .selectors import get_organisations
+
 from .services import create_question
 from .services import create_vote
 
@@ -79,20 +83,27 @@ def new_question(request, voxpop_id: UUID, payload: QuestionIn):
 
 @router.post("{voxpop_id}/questions/{question_id}/vote", response=Message)
 def vote(request, voxpop_id: UUID, question_id: UUID):
- 
+
     vote, created = create_vote(
         created_by=request.session.session_key,
         question_id=question_id,
         )
 
-    if created:
-        return {"msg": "Vote created with uuid: %s" % vote.uuid}
-    return {"msg": "Vote already exists"}
+    return (
+        {"msg": "Vote created with uuid: %s" % vote.uuid} 
+        if created else 
+        {"msg": "Vote already exists"}
+    )
+    
 
-
-@router.get("/", response=list[VoxpopOut])
+@router.get("/", response={200:list[VoxpopOut], 403: Message})
 def voxpops(request):
-    return list(get_voxpops())
+    
+    organisation = get_organisations(hostname=request.get_host())
+    
+    if organisation == None:
+        return 403, {"msg": "Organisation not registered"}
+    return 200, list(get_voxpops(organisation_id=organisation.uuid))
 
 
 @router.get("/{voxpop_id}/questions", response=list[QuestionOut])
