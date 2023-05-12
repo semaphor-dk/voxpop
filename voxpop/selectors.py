@@ -12,13 +12,20 @@ from voxpop.models import (
 )
 
 
+def current_organisation(request: Request) -> Organisation | None:
+    try:
+        return Organisation.objects.get(hostname=request.get_host())
+    except Organisation.DoesNotExist:
+        return None
+
+
 def get_organisations(
     organisation_id: UUID | None = None,
     hostname: str | None = None,
     ) -> QuerySet[Organisation] | Organisation | None:
-    
+
     organisations = Organisation.objects.all()
-    
+
     if hostname:
         try:
             return organisations.get(hostname=hostname)
@@ -33,7 +40,7 @@ def get_questions(
     state: Question.State | None = None,
     voxpop_id: UUID | None = None,
     ) -> QuerySet[Question] | Question | None:
-    
+
     questions = Question.objects.all().annotate(
         vote_count=Count("votes", distinct=True),
     )
@@ -59,9 +66,7 @@ def get_voxpops(
     voxpop_id: UUID | None = None,
     organisation_id: UUID | None = None,
     ) -> QuerySet[Voxpop] | Voxpop:
-    
-    current_time = timezone.now()
-    voxpops = Voxpop.objects.all().annotate(
+        voxpops = Voxpop.objects.all().annotate(
         question_count=Count("question", distinct=True),
         is_active=Case(
             When(Q(starts_at__lte=current_time) & Q(expires_at__gte=current_time), then=True),
@@ -85,7 +90,7 @@ def get_votes(
     question_id: UUID | None = None,
     voxpop_id: UUID | None = None,
     ) -> QuerySet[Vote] | Vote:
-    
+
     votes = Vote.objects.all()
 
     if voxpop_id:

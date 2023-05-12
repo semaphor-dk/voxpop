@@ -2,7 +2,9 @@
 {% block title %}Spørgsmål{% endblock %}
 {% block content %}
 <h1>Spørgsmål</h1>
-<div data-voxpop-uuid="{{voxpops.first.uuid}}" data-voxpop-host=""></div>
+<div data-voxpop-uuid="{{ voxpop_id }}" data-voxpop-host=""></div>
 <script src="/static/voxpop.js"></script>
-{% include 'voxpop/question.html' %}
+{% if voxpop_id != "" %}
+{% include 'voxpop/question.html' with voxpop_id=voxpop_id %}
+{% endif %}
 {% endblock %}

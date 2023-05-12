@@ -2,7 +2,7 @@
 /* jshint -W100 */
 (function() {
 	'use strict';
-	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid');
+	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
 	voxpopElements.forEach(function (voxpopElm) {
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;

@@ -9,6 +9,7 @@ from django.shortcuts import render
 
 from .forms import QuestionForm
 from .models import Question
+from .selectors import current_organisation
 from .selectors import get_questions
 from .selectors import get_voxpops
 
@@ -18,10 +19,18 @@ from .selectors import get_voxpops
 
 
 def index(request):
-    approved_question_list = get_questions(state=Question.State.APPROVED)
-    context = {
-        "voxpops": get_voxpops()
-    }
+    org = current_organisation(request)
+    context = {}
+    if org:
+        context["current_organisation"] = org
+        voxpop = get_voxpops(organisation_id=org.uuid).last()
+        if voxpop:
+            context["voxpop_id"] = voxpop.uuid
+        else:
+            context["voxpop_id"] = ""
+    else:
+        context["current_organisation"] = None
+        context["voxpop_id"] = ""
     return render(request, "voxpop/index.html", context)
 
 
