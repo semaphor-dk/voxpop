@@ -7,7 +7,7 @@
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 		renderVoxpop(voxpopElm, questionsUrl);
-		const sse = new EventSource(`${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions/events`);
+		const sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`);
 		sse.onmessage = function (evt) {
 			console.log(evt.data);
 			voxpopElm.insertAdjacentHTML("beforeend", evt.data);

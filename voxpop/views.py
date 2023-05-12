@@ -1,8 +1,12 @@
+from collections.abc import AsyncGenerator
 from uuid import UUID
 
+import psycopg
 from django.contrib import messages
+from django.db import connection
 from django.http import HttpRequest
 from django.http import HttpResponse
+from django.http import StreamingHttpResponse
 from django.shortcuts import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -12,6 +16,7 @@ from .models import Question
 from .selectors import current_organisation
 from .selectors import get_questions
 from .selectors import get_voxpops
+from .utils import get_notify_channel_name
 
 
 # Create your views here.
@@ -73,3 +78,31 @@ def vote(request, question_id: UUID):
         "question": question.text,
     }
     return render(request, "voxpop/vote.html", context)
+
+
+async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
+    aconnection = await psycopg.AsyncConnection.connect(
+        **connection.get_connection_params(),
+        autocommit=True,
+    )
+    channel_name = get_notify_channel_name(voxpop_id=voxpop_id)
+    async with aconnection:
+        async with aconnection.cursor() as acursor:
+            await acursor.execute(f"LISTEN {channel_name}")
+            gen = aconnection.notifies()
+            async for notify in gen:
+                yield f"data: {notify.payload}\n\n"
+
+
+async def stream_questions_view(
+    request: HttpRequest,
+    voxpop_id: UUID,
+) -> StreamingHttpResponse:
+    return StreamingHttpResponse(
+        streaming_content=stream_questions(voxpop_id=voxpop_id),
+        content_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Transfer-Encoding": "chunked",
+        },
+    )
