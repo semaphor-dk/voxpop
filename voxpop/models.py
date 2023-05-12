@@ -83,7 +83,7 @@ class Question(CreatedUpdatedMixin):
         self.save()
 
     def __str__(self):
-        return f'[{self.created_at.time()}]: "{self.text}" ({self.state})'
+        return f'[{self.created_at.strftime("%H:%M")}] "{self.text}"'
 
 
 class Vote(CreatedUpdatedMixin):
