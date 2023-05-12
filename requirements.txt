@@ -2,3 +2,4 @@ django==4.2
 psycopg==3.1.9
 django-ninja==0.21.0
 whitenoise==6.4.0
+environs[django]==9.5.0
