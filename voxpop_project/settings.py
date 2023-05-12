@@ -24,7 +24,13 @@ SECRET_KEY = "django-insecure-p&u=b2dtf%i%g)e$&&=lx!ojns0e0f^kd*#v5!!^gcr*vvb+^%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['voxpop.imam.dk', 'voxpop.ltk.dk', 'voxpop.semaphor.dk', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    "voxpop.imam.dk",
+    "voxpop.ltk.dk",
+    "voxpop.semaphor.dk",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -41,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
