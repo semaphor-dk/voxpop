@@ -1,18 +1,22 @@
 from __future__ import annotations  # For Python3.9 users.
 
 from uuid import UUID
+
+from django.db.models import BooleanField
+from django.db.models import Case
+from django.db.models import Count
+from django.db.models import QuerySet
+from django.db.models import When
+from django.http import HttpRequest
 from django.utils import timezone
 
-from django.db.models import (
-    Count, Case, When, BooleanField, Q, QuerySet
-)
-
-from voxpop.models import (
-    Question, Vote, Voxpop, Organisation
-)
+from voxpop.models import Organisation
+from voxpop.models import Question
+from voxpop.models import Vote
+from voxpop.models import Voxpop
 
 
-def current_organisation(request: Request) -> Organisation | None:
+def current_organisation(request: HttpRequest) -> Organisation | None:
     try:
         return Organisation.objects.get(hostname=request.get_host())
     except Organisation.DoesNotExist:
@@ -22,8 +26,7 @@ def current_organisation(request: Request) -> Organisation | None:
 def get_organisations(
     organisation_id: UUID | None = None,
     hostname: str | None = None,
-    ) -> QuerySet[Organisation] | Organisation | None:
-
+) -> QuerySet[Organisation] | Organisation | None:
     organisations = Organisation.objects.all()
 
     if hostname:
@@ -39,8 +42,7 @@ def get_questions(
     question_id: UUID | None = None,
     state: Question.State | None = None,
     voxpop_id: UUID | None = None,
-    ) -> QuerySet[Question] | Question | None:
-
+) -> QuerySet[Question] | Question | None:
     questions = Question.objects.all().annotate(
         vote_count=Count("votes", distinct=True),
     )
@@ -65,14 +67,19 @@ def get_questions(
 def get_voxpops(
     voxpop_id: UUID | None = None,
     organisation_id: UUID | None = None,
-    ) -> QuerySet[Voxpop] | Voxpop:
-        voxpops = Voxpop.objects.all().annotate(
+) -> QuerySet[Voxpop] | Voxpop:
+    now = timezone.now()
+    voxpops = Voxpop.objects.all().annotate(
         question_count=Count("question", distinct=True),
         is_active=Case(
-            When(Q(starts_at__lte=current_time) & Q(expires_at__gte=current_time), then=True),
+            When(
+                starts_at__lte=now,
+                expires_at__gte=now,
+                then=True,
+            ),
             default=False,
             output_field=BooleanField(),
-        )
+        ),
     )
 
     if organisation_id:
@@ -84,13 +91,11 @@ def get_voxpops(
     return voxpops
 
 
-
 def get_votes(
     vote_id: UUID | None = None,
     question_id: UUID | None = None,
     voxpop_id: UUID | None = None,
-    ) -> QuerySet[Vote] | Vote:
-
+) -> QuerySet[Vote] | Vote:
     votes = Vote.objects.all()
 
     if voxpop_id:
