@@ -15,9 +15,7 @@ def create_question(
 
     question = Question.objects.create(
         text=text,
-        created_by="anonymous"
-        if voxpop.allow_anonymous
-        else created_by,  # TODO: This should be handled differently.
+        created_by=created_by,
         display_name=display_name,
         voxpop=voxpop,
         state=Question.State.NEW if voxpop.is_moderated else Question.State.APPROVED,
