@@ -16,6 +16,7 @@ from .models import Question
 from .selectors import current_organisation
 from .selectors import get_questions
 from .selectors import get_voxpops
+from .services import create_question
 from .utils import get_notify_channel_name
 
 
@@ -53,16 +54,19 @@ def detail(request, question_id: UUID):
 
 def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
     voxpop = get_voxpops(voxpop_id=voxpop_id)
-
     form = QuestionForm
-
     if request.method == "POST":
         form = QuestionForm(request.POST)
         if form.is_valid():
-            question = form.save(commit=False)
-            question.voxpop = voxpop
-            question.save()
-            messages.info(request, "Dit spørgsmål er nu sendt til godkendelse.")
+            formdata = form.save(commit=False)
+            create_question(
+                formdata.text,
+                request.session.session_key,
+                "anonymous" if voxpop.allow_anonymous else "shouldBeKnown",
+                voxpop_id
+            )
+            if voxpop.is_moderated:
+                messages.info(request, "Dit spørgsmål er nu sendt til godkendelse.")
             return redirect("voxpop:index")
         else:
             return HttpResponse("Ukendt fejl, prøv venligst igen.")
