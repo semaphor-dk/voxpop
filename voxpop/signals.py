@@ -31,7 +31,7 @@ def notify_question_created(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Vote)
 def notify_vote_created(sender, instance, created, **kwargs):
     if created:
-        channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
+        channel_name = get_notify_channel_name(voxpop_id=instance.question.voxpop_id)
 
         payload = {
             "type": "vote_created",
