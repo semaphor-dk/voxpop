@@ -19,5 +19,10 @@ urlpatterns = [
         views.new_question,
         name="new_question",
     ),
+    path(
+        "stream/questions/<uuid:voxpop_id>/",
+        views.stream_questions_view,
+        name="stream_questions",
+    ),
     path("api/", api.urls),
 ]

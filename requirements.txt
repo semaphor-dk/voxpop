@@ -1,5 +1,6 @@
 django==4.2.1
-psycopg==3.1.9
+psycopg[binary]==3.1.9
 django-ninja==0.21.0
 whitenoise==6.4.0
 environs[django]==9.5.0
+uvicorn==0.22.0

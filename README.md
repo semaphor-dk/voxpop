@@ -23,5 +23,7 @@ docker-compose up -d
 # Run migrations, create a superuser and start the server
 ./manage.py migrate
 ./manage.py createsuperuser
-./manage.py runserver
+
+# Run the application using uvicorn
+uvicorn --log-level debug --reload --timeout-graceful-shutdown 0 voxpop_project.asgi:application
 ```
