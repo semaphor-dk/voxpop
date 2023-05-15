@@ -63,7 +63,7 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
                 formdata.text,
                 request.session.session_key,
                 "anonymous" if voxpop.allow_anonymous else "shouldBeKnown",
-                voxpop_id
+                voxpop_id,
             )
             if voxpop.is_moderated:
                 messages.info(request, "Dit spørgsmål er nu sendt til godkendelse.")
