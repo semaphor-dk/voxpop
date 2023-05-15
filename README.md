@@ -25,5 +25,5 @@ docker-compose up -d
 ./manage.py createsuperuser
 
 # Run the application using uvicorn
-uvicorn --log-level debug --reload voxpop_project.asgi:application
+uvicorn --log-level debug --reload --timeout-graceful-shutdown 0 voxpop_project.asgi:application
 ```
