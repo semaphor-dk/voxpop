@@ -86,12 +86,11 @@ async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
         autocommit=True,
     )
     channel_name = get_notify_channel_name(voxpop_id=voxpop_id)
-    async with aconnection:
-        async with aconnection.cursor() as acursor:
-            await acursor.execute(f"LISTEN {channel_name}")
-            gen = aconnection.notifies()
-            async for notify in gen:
-                yield f"data: {notify.payload}\n\n"
+    async with aconnection.cursor() as acursor:
+        await acursor.execute(f"LISTEN {channel_name}")
+        gen = aconnection.notifies()
+        async for notify in gen:
+            yield f"data: {notify.payload}\n\n"
 
 
 async def stream_questions_view(
@@ -101,8 +100,4 @@ async def stream_questions_view(
     return StreamingHttpResponse(
         streaming_content=stream_questions(voxpop_id=voxpop_id),
         content_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Transfer-Encoding": "chunked",
-        },
     )
