@@ -15,16 +15,13 @@ def notify_question_created(sender, instance, created, **kwargs):
         channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
 
         payload = {
-            "type": "question_created",
-            "question": {
-                "id": str(instance.uuid),
-                "text": str(instance.text),
-            },
+            "uuid": str(instance.uuid),
+            "text": str(instance.text),
         }
 
         notify(
             channel_name=channel_name,
-            payload=json.dumps(payload),
+            payload=f"event: new_question\ndata: {json.dumps(payload)}",
         )
 
 
@@ -34,14 +31,11 @@ def notify_vote_created(sender, instance, created, **kwargs):
         channel_name = get_notify_channel_name(voxpop_id=instance.question.voxpop_id)
 
         payload = {
-            "type": "vote_created",
-            "vote": {
-                "id": str(instance.uuid),
-                "question_id": str(instance.question_id),
-            },
+            "question_id": str(instance.question_id),
+            "vote_count": instance.question.votes.count()
         }
 
         notify(
             channel_name=channel_name,
-            payload=json.dumps(payload),
+            payload=f"event: new_vote\ndata: {json.dumps(payload)}",
         )

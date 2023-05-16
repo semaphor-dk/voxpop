@@ -94,7 +94,7 @@ async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
         await acursor.execute(f"LISTEN {channel_name}")
         gen = aconnection.notifies()
         async for notify in gen:
-            yield f"data: {notify.payload}\n\n"
+            yield f"{notify.payload}\n\n"
 
 
 async def stream_questions_view(

@@ -8,11 +8,33 @@
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 		renderVoxpop(voxpopElm, questionsUrl);
 		const sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`);
-		sse.onmessage = function (evt) {
+		sse.addEventListener("new_question", function (evt) {
+			let data = JSON.parse(evt.data);
+			console.log(data);
+			voxpopElm.insertAdjacentHTML("afterbegin", createHTMLforQuestion(data));
+		});
+		sse.addEventListener("new_vote", function (evt) {
+			let data = JSON.parse(evt.data);
+			console.log(data);
+			let voteDisplayElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"] .votes span`);
+			if (voteDisplayElm) {
+				voteDisplayElm.innerText = data.vote_count;
+			}
+		});
+		sse.addEventListener("message", function (evt) {
 			console.log(evt.data);
 			voxpopElm.insertAdjacentHTML("beforeend", evt.data);
-		};
+		});
 	});
+
+	function createHTMLforQuestion(q) {
+		return `<div data-voxpop-question-uuid="${ q.uuid }">
+	<blockquote>${ q.text }</blockquote>
+	<div class="DisplayName">- ${ q.display_name }</div>
+	<div class="votes"><span>${q.vote_count || 0 }</span> votes</div>
+	<button type="button" class="vote">Vote</button>
+</div>\n`;
+	}
 
 	function renderVoxpop(voxpopElm, questionsUrl) {
 		let xhr = new XMLHttpRequest();
@@ -22,21 +44,16 @@
 				let questions = JSON.parse(xhr.response);
 				let fragment = "\n";
 				questions.forEach(function (q) {
-					fragment += `<div data-voxpop-question-uuid="${ q.uuid }">
-	<blockquote>${ q.text }</blockquote>
-	<div class="DisplayName">- ${ q.display_name }</div>
-	<div class="votes"><span>${q.vote_count }</span> votes</div>
-	<button type="button" class="vote">Vote</button>
-</div>\n`;
+					fragment += createHTMLforQuestion(q);
 				});
 				voxpopElm.innerHTML = fragment;
-				document.querySelectorAll('button.vote').forEach(function (voteButton) {
-					voteButton.addEventListener('click', function (evt) {
+				voxpopElm.addEventListener('click', function (evt) {
+					if (evt.target.classList.contains('vote')) {
 						let questionUuid = evt.target.closest('div[data-voxpop-question-uuid]').dataset.voxpopQuestionUuid;
 						let voxpopData = evt.target.closest('*[data-voxpop-uuid').dataset;
 						let hostPort = (voxpopData.voxpopHost) ? `//${ voxpopData.voxpopHost }` : '';
 						vote(`${hostPort}/api/voxpops/${voxpopData.voxpopUuid}/questions/${questionUuid}/vote`);
-					});
+					}
 				});
 			}
 		};
