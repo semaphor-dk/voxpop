@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+    <title>Voxpop Admin Interface</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 100px;
+            background: lightgray;
+        }
+        #question_options {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <hr><h1>Voxpop Admin Site &rarr; {{ voxpop.title }} &#128227</h1><p>{{ voxpop.description }} </p><hr>
+    <h2>Questions</h2>
+    {% for key, values in questions.items %}
+    <ul>
+        <h4>{{ key | upper }}</h4>
+        {% for question in values %}
+        <li>
+            "{{ question.text }}" [Votes: {{ question.vote_count }}]
+            <div id="question_options">
+                (<a href="">{% if key == "new" %}Approve{% else %}Disapprove{% endif %}</a> /
+                <a href="">{% if key == "answered" %}Mark as unanswered{% else %}Mark as answered{% endif %}</a> /
+                <a href="">{% if key == "discarded" %}Restore{% else %}Discard{% endif %}</a>)
+                [Asked {{ question.created_at.time }} by {{ question.display_name }}]
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+    <a href="/admin">Back</a>
+</body>

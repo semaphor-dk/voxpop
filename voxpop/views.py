@@ -24,6 +24,28 @@ from .utils import get_notify_channel_name
 # from django.contrib.auth.decorators import login_required
 
 
+def admin(request, voxpop_id: UUID = None):
+    if request.session.get("admin") == True:
+        if voxpop_id:
+            context = {
+                "voxpop": get_voxpops(voxpop_id=voxpop_id),
+                "questions": {
+                    "approved": get_questions(voxpop_id=voxpop_id, state=Question.State.APPROVED),
+                    "new": get_questions(voxpop_id=voxpop_id, state=Question.State.NEW),
+                    "answered": get_questions(voxpop_id=voxpop_id, state=Question.State.ANSWERED),
+                    "discarded": get_questions(voxpop_id=voxpop_id, state=Question.State.DISCARDED),
+                },
+            }
+
+            return render(request, "voxpop/admin/voxpop.html", context)
+        
+        context = {
+            "voxpops": get_voxpops(),
+        }
+
+        return render(request, "voxpop/admin/index.html", context)
+    return render(request, "voxpop/admin/auth_error.html")
+
 def index(request):
     org = current_organisation(request)
     context = {}

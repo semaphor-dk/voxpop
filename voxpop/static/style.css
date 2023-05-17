@@ -282,6 +282,12 @@ main {
   border-radius: 15px;
 }
 
+#errormessage {
+  font-size: 15px;
+  text-align: center;
+  color: red;
+}
+
 /** Module Rules **/
 
 .btn-toolbar {
