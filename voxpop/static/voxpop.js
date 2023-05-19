@@ -7,7 +7,7 @@
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 		renderVoxpop(voxpopElm, questionsUrl);
-		const sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`);
+		const sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`, {withCredentials: true});
 		sse.addEventListener("new_question", function (evt) {
 			let data = JSON.parse(evt.data);
 			console.log(data);
