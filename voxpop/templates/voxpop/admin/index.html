@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-<head>
-    <title>Voxpop Admin Interface</title>
-    <style>
-        body {
-            margin: 100px;
-            background: lightgray;
-        }
-        #question_options {
-            font-size: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-    <hr>
-    <h1>Voxpop Admin Site &#128227 </h1>
-    <hr>
-    <h2>__Voxpops__</h2>
-    <ul>
-        {% for voxpop in voxpops %}
-        <li>
-            <a href="/admin/{{ voxpop.uuid }}">{{ voxpop.title }}</a> - 
-            {{ voxpop.description }} 
-            {% if voxpop.is_active %} &#128994 {% endif %} 
-        </li>
-        {% endfor %}
-    </ul>
-</body>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <title>Voxpop Admin Interface</title>
+        <style>
+            body {
+                margin: 100px;
+                background: lightgray;
+            }
+            #question_options {
+                font-size: 10px;
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Voxpop Admin Site &#128227;</h1>
+        <h2>__Voxpops__</h2>
+        <ul>
+            {% for voxpop in voxpops %}
+            <li>
+                <a href="/admin/{{ voxpop.uuid }}">{{ voxpop.title }}</a> -
+                {{ voxpop.description }}
+                {% if voxpop.is_active %} &#128994; {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
