@@ -365,7 +365,22 @@ button.open {
 }
 
 /** State Rules **/
-
+div[data-voxpop-uuid]::before {
+  content: '';
+  display: inline-block;
+  float: right;
+  background-color: lightgray;
+  border: 1px solid grey;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+}
+div[data-voxpop-uuid].live::before {
+  background-color: #0f0;
+}
+div[data-voxpop-uuid].disconnected::before {
+  background-color: #f00;
+}
 
 /** Theme Rules **/
 body {

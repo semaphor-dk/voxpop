@@ -7,7 +7,13 @@
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 		renderVoxpop(voxpopElm, questionsUrl);
-		const sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`, {withCredentials: true});
+		var sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`, {withCredentials: true});
+		sse.onopen = function (evt) {
+			updateConnectionStatus(voxpopElm, evt.target.readyState);
+		};
+		sse.onerror = function (evt) {
+			updateConnectionStatus(voxpopElm, evt.target.readyState);
+		};
 		sse.addEventListener("new_question", function (evt) {
 			let data = JSON.parse(evt.data);
 			console.log(data);
@@ -15,17 +21,17 @@
 		});
 		sse.addEventListener("new_vote", function (evt) {
 			let data = JSON.parse(evt.data);
-			console.log(data);
 			let voteDisplayElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"] .votes span`);
 			if (voteDisplayElm) {
 				voteDisplayElm.innerText = data.vote_count;
 			}
 		});
-		sse.addEventListener("message", function (evt) {
-			console.log(evt.data);
-			voxpopElm.insertAdjacentHTML("beforeend", evt.data);
-		});
+		updateConnectionStatus(voxpopElm, sse.readyState);
 	});
+
+	function updateConnectionStatus(voxpopElm, state) {
+		voxpopElm.className = ["connecting", "live", "disconnected"][state];
+	}
 
 	function createHTMLforQuestion(q) {
 		return `<div data-voxpop-question-uuid="${ q.uuid }">
