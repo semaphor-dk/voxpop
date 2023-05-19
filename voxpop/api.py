@@ -77,8 +77,8 @@ def login(request, token: str = None):
     if token:
         try:
             payload = jwt.decode(
-                token, 
-                settings.SHARED_SECRET_JWT, 
+                token,
+                settings.SHARED_SECRET_JWT,
                 algorithms=["HS256"]
             )
         except jwt.exceptions.InvalidSignatureError:
@@ -120,10 +120,10 @@ def new_question(request, voxpop_id: UUID, text: str):
 
 @router.post("{voxpop_id}/questions/{question_id}/vote", response=Message)
 def vote(request, voxpop_id: UUID, question_id: UUID):
-    
+
     if not request.session.session_key:
         return {"msg": "No session found."}
-    
+
     vote, created = create_vote(
         created_by=request.session.session_key,
         question_id=question_id,
@@ -142,13 +142,13 @@ def voxpops(request):
 
     if organisation is None:
         return 403, {"msg": "Organisation not registered"}
-    
+
     return 200, list(get_voxpops(organisation_id=organisation.uuid))
 
 
 @router.get("/{voxpop_id}/questions", response=list[QuestionOut])
 def questions(request, voxpop_id: UUID):
-    
+
     # TODO: More Errorhandling here? Is this safe?
 
     if not request.session.session_key:
@@ -156,7 +156,7 @@ def questions(request, voxpop_id: UUID):
         request.session["display_name"] = "Anonymous"
         request.session["unique_name"] = request.session.session_key
         request.session["admin"] = False
-    
+
     return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
 
 
@@ -169,8 +169,5 @@ def tell_me_who_I_am(request):
         "display_name": request.session["display_name"],
         "unique_name": request.session["unique_name"],
         "admin": request.session["admin"],
-        "anonymous": True if (
-            request.session["unique_name"] == request.session.session_key
-            ) 
-            else False,
+        "anonymous": request.session["unique_name"] == request.session.session_key,
     })
