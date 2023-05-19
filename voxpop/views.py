@@ -127,5 +127,8 @@ async def stream_questions_view(
     return StreamingHttpResponse(
         streaming_content=stream_questions(voxpop_id=voxpop_id),
         content_type="text/event-stream",
-        headers={"X-Accel-Buffering": 'no'},
+        headers={
+            "X-Accel-Buffering": "no",
+            "Access-Control-Allow-Credentials": "true"
+        },
     )
