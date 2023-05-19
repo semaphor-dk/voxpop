@@ -107,6 +107,7 @@ def vote(request, question_id: UUID):
 
 
 async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
+    yield "data: Ping\n\n"
     aconnection = await psycopg.AsyncConnection.connect(
         **connection.get_connection_params(),
         autocommit=True,
