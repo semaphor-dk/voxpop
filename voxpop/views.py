@@ -38,7 +38,7 @@ def admin(request, voxpop_id: UUID = None):
             }
 
             return render(request, "voxpop/admin/voxpop.html", context)
-        
+
         context = {
             "voxpops": get_voxpops(),
         }
@@ -126,4 +126,5 @@ async def stream_questions_view(
     return StreamingHttpResponse(
         streaming_content=stream_questions(voxpop_id=voxpop_id),
         content_type="text/event-stream",
+        headers={"X-Accel-Buffering":  'no'}
     )
