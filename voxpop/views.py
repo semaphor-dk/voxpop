@@ -129,6 +129,7 @@ async def stream_questions_view(
         content_type="text/event-stream",
         headers={
             "X-Accel-Buffering": "no",
-            "Access-Control-Allow-Credentials": "true"
+            "Access-Control-Allow-Credentials": "true",
+            "Cache-Control": "No-Cache"
         },
     )
