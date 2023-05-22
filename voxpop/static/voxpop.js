@@ -73,6 +73,7 @@
 	function vote(endpoint) {
 		console.log(endpoint);
 		let xhr = new XMLHttpRequest();
+		xhr.withCredentials = true;
 		xhr.open("post", endpoint, true);
 		xhr.onload = function () {
 			if (this.status >= 200 && this.status < 300) {
