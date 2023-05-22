@@ -45,6 +45,7 @@
 	function renderVoxpop(voxpopElm, questionsUrl) {
 		let xhr = new XMLHttpRequest();
 		xhr.open("get", questionsUrl, true);
+		xhr.withCredentials = true;
 		xhr.onload = function () {
 			if (this.status >= 200 && this.status < 300) {
 				let questions = JSON.parse(xhr.response);
