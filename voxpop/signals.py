@@ -32,7 +32,7 @@ def notify_vote_created(sender, instance, created, **kwargs):
 
         payload = {
             "question_id": str(instance.question_id),
-            "vote_count": instance.question.votes.count()
+            "vote_count": instance.question.votes.count(),
         }
 
         notify(
