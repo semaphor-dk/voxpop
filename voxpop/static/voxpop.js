@@ -2,12 +2,14 @@
 /* jshint -W100 */
 (function() {
 	'use strict';
+	var allSse = [];
 	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
 	voxpopElements.forEach(function (voxpopElm) {
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 		renderVoxpop(voxpopElm, questionsUrl);
 		var sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`, {withCredentials: true});
+		allSse.push(sse);
 		sse.onopen = function (evt) {
 			updateConnectionStatus(voxpopElm, evt.target.readyState);
 		};
@@ -87,4 +89,10 @@
 		};
 		xhr.send();
 	}
+
+	window.addEventListener('beforeunload', function() {
+		allSse.forEach(function (sse) {
+			sse.close();
+		});
+	});
 }());
