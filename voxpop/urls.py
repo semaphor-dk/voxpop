@@ -27,6 +27,11 @@ urlpatterns = [
     path("api/", api.urls),
     path("admin/", views.admin, name="admin"),
     path(
+        "admin/new_voxpop", 
+        views.new_voxpop, 
+        name ="new_voxpop"
+    ),
+    path(
         "admin/<uuid:voxpop_id>/", 
         views.admin, 
         name="adminvoxpop"

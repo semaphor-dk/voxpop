@@ -2,6 +2,8 @@ from uuid import UUID
 
 from voxpop.models import Question
 from voxpop.models import Vote
+from voxpop.models import Voxpop
+
 from voxpop.selectors import get_voxpops
 
 
@@ -34,3 +36,27 @@ def create_vote(
     )
 
     return vote, created
+
+
+def create_voxpop(
+    title: str,
+    description: str,
+    created_by: str,
+    starts_at,
+    expires_at,
+    is_moderated: bool,
+    allow_anonymous: bool,
+    organisation: str,
+) -> Voxpop:
+    voxpop = Voxpop.objects.create(
+        title=title,
+        description=description,
+        created_by=created_by,
+        starts_at=starts_at,
+        expires_at=expires_at,
+        is_moderated=is_moderated,
+        allow_anonymous=allow_anonymous,
+        organisation=organisation,
+    )
+
+    return voxpop

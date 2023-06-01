@@ -12,11 +12,13 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 
 from .forms import QuestionForm
+from .forms import VoxpopForm
 from .models import Question
 from .selectors import current_organisation
 from .selectors import get_questions
 from .selectors import get_voxpops
 from .services import create_question
+from .services import create_voxpop
 from .utils import get_notify_channel_name
 
 
@@ -45,6 +47,37 @@ def admin(request, voxpop_id: UUID = None):
 
         return render(request, "voxpop/admin/index.html", context)
     return render(request, "voxpop/admin/auth_error.html")
+
+def new_voxpop(request):
+    if request.session.get("admin") == True:
+        if request.method == "GET":
+            return render(
+                request, 
+                "voxpop/admin/new_voxpop.html",
+            )
+
+        if request.method == "POST":
+            form = VoxpopForm(request.POST)
+            if form.is_valid():
+                formdata = form.save(commit=False)
+
+                voxpop = create_voxpop(
+                    formdata.title,
+                    formdata.description,
+                    request.session["unique_name"],
+                    formdata.starts_at,
+                    formdata.expires_at,
+                    formdata.is_moderated,
+                    formdata.allow_anonymous,
+                    current_organisation(request),
+                )
+
+                return redirect("/admin")
+            else:
+                print("Form invalid")
+            return redirect("/admin/new_voxpop")
+    return render(request, "voxpop/admin/auth_error.html")
+
 
 def index(request):
     org = current_organisation(request)

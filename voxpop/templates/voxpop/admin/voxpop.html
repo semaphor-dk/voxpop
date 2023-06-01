@@ -12,12 +12,25 @@
                 font-size: 15px;
                 margin-bottom: 10px;
             }
+
+            #description {
+                background-color: white;
+                color: black;
+                border-radius: 15px;
+                padding: 20px;
+                margin: 20px;
+            }
+
         </style>
     </head>
     <body>
-        <h1>Voxpop Admin Site &rarr; {{ voxpop.title }} &#128227;</h1>
-        <p>{{ voxpop.description }} </p>
-        <h2>Questions</h2>
+        <h1>Voxpop Admin Site &rarr; <strong>{{ voxpop.title }}</strong> &#128227;</h1>
+        <div id="description">
+            <p>{{ voxpop.description }} </p>
+            <p> {{ voxpop.starts_at }} - {{ voxpop.expires_at.time }}</p>
+            <p> UUID: {{ voxpop.uuid }}</p>
+        </div>
+            <h2>Questions</h2> <!-- DETTE SKAL KLARES MED JAVASCRIPT -->
         {% for key, values in questions.items %}
         <ul>
             <h4>{{ key | upper }}</h4>
