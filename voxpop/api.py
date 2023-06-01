@@ -43,6 +43,18 @@ class QuestionOut(ModelSchema):
     vote_count: int
 
 
+class QuestionsOut(Schema):
+    approved: list[QuestionOut]
+    answered: list[QuestionOut]
+
+
+class QuestionsOutAdmin(Schema):
+    new: list[QuestionOut]
+    approved: list[QuestionOut]
+    answered: list[QuestionOut]
+    discarded: list[QuestionOut]
+
+
 class VoxpopOut(ModelSchema):
     class Config:
         model = Voxpop
@@ -146,7 +158,10 @@ def voxpops(request):
     return 200, list(get_voxpops(organisation_id=organisation.uuid))
 
 
-@router.get("/{voxpop_id}/questions", response=list[QuestionOut])
+@router.get(
+    "/{voxpop_id}/questions", 
+    response=QuestionsOut,
+)
 def questions(request, voxpop_id: UUID):
     
     # TODO: More Errorhandling here? Is this safe?
@@ -157,10 +172,35 @@ def questions(request, voxpop_id: UUID):
         request.session["unique_name"] = request.session.session_key
         request.session["admin"] = False
     
-    return list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
+    approved = list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
+    answered = list(get_questions(state=Question.State.ANSWERED, voxpop_id=voxpop_id))
+    return {"approved": approved, "answered": answered}
 
 
-### Testing.
+@router.get(
+    "/{voxpop_id}/all_questions", 
+    response={
+        200: QuestionsOutAdmin,
+        401: Message,
+    }
+)
+def questions(request, voxpop_id: UUID):
+    if request.session["admin"]:
+        new = list(get_questions(state=Question.State.NEW, voxpop_id=voxpop_id))
+        approved = list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
+        answered = list(get_questions(state=Question.State.ANSWERED, voxpop_id=voxpop_id))
+        discarded = list(get_questions(state=Question.State.DISCARDED, voxpop_id=voxpop_id))
+
+        return {
+            "new": new,
+            "approved": approved, 
+            "answered": answered,
+            "discarded": discarded,
+        }
+
+    return 401, {"msg": "Unauthorized"}
+
+
 @router.get("/whoami")
 def tell_me_who_I_am(request):
     if not request.session.session_key:
