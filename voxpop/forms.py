@@ -3,10 +3,12 @@ from django import forms
 from .models import Question
 from .models import Voxpop
 
+
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = ["text"]
+
 
 class VoxpopForm(forms.ModelForm):
     class Meta:

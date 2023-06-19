@@ -27,15 +27,21 @@ from .utils import get_notify_channel_name
 
 
 def admin(request, voxpop_id: UUID = None):
-    if request.session.get("admin") == True:
+    if request.session.get("admin") is True:
         if voxpop_id:
             context = {
                 "voxpop": get_voxpops(voxpop_id=voxpop_id),
                 "questions": {
-                    "approved": get_questions(voxpop_id=voxpop_id, state=Question.State.APPROVED),
+                    "approved": get_questions(
+                        voxpop_id=voxpop_id, state=Question.State.APPROVED
+                    ),
                     "new": get_questions(voxpop_id=voxpop_id, state=Question.State.NEW),
-                    "answered": get_questions(voxpop_id=voxpop_id, state=Question.State.ANSWERED),
-                    "discarded": get_questions(voxpop_id=voxpop_id, state=Question.State.DISCARDED),
+                    "answered": get_questions(
+                        voxpop_id=voxpop_id, state=Question.State.ANSWERED
+                    ),
+                    "discarded": get_questions(
+                        voxpop_id=voxpop_id, state=Question.State.DISCARDED
+                    ),
                 },
             }
 
@@ -48,11 +54,12 @@ def admin(request, voxpop_id: UUID = None):
         return render(request, "voxpop/admin/index.html", context)
     return render(request, "voxpop/admin/auth_error.html")
 
+
 def new_voxpop(request):
-    if request.session.get("admin") == True:
+    if request.session.get("admin") is True:
         if request.method == "GET":
             return render(
-                request, 
+                request,
                 "voxpop/admin/new_voxpop.html",
             )
 
@@ -61,7 +68,7 @@ def new_voxpop(request):
             if form.is_valid():
                 formdata = form.save(commit=False)
 
-                voxpop = create_voxpop(
+                create_voxpop(
                     formdata.title,
                     formdata.description,
                     request.session["unique_name"],
@@ -163,6 +170,6 @@ async def stream_questions_view(
         headers={
             "X-Accel-Buffering": "no",
             "Access-Control-Allow-Credentials": "true",
-            "Cache-Control": "No-Cache"
+            "Cache-Control": "No-Cache",
         },
     )
