@@ -3,7 +3,6 @@ from uuid import UUID
 from voxpop.models import Question
 from voxpop.models import Vote
 from voxpop.models import Voxpop
-
 from voxpop.selectors import get_voxpops
 
 

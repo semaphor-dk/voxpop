@@ -22,7 +22,7 @@
         </style>
     </head>
     <body>
-        <h1>Voxpop Admin Site &rarr; Opret nyt Voxpop &#128227;</h1>     
+        <h1>Voxpop Admin Site &rarr; Opret nyt Voxpop &#128227;</h1>
         <form action="{% url "voxpop:new_voxpop" %}" method="POST">
             {% csrf_token %}
             <div class="formWrapper">
@@ -36,7 +36,7 @@
                 <th><label for="id_description">Beskrivelse:</label></th><br>
                 <td>
                   <textarea name="description" cols="40" rows="10" id="id_description">
-            </textarea>  
+            </textarea>
                 </td>
               </tr><br>
               <tr>
@@ -54,7 +54,7 @@
               <tr>
                 <th><label for="id_is_moderated">Moderet chat:</label></th>
                 <td>
-                  <input type="checkbox" name="is_moderated" id="id_is_moderated" checked> 
+                  <input type="checkbox" name="is_moderated" id="id_is_moderated" checked>
                 </td>
               </tr><br>
               <tr>
@@ -65,8 +65,8 @@
               </tr>
               <button type="submit">Opret</button> <br> <br>
               <a href="/admin">Tilbage</a>
-            </div> 
+            </div>
         </form>
-        
+
     </body>
 </html>
