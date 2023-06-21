@@ -288,6 +288,19 @@ main {
   color: red;
 }
 
+div[data-voxpop-uuid] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+}
+
+div[data-voxpop-uuid]::before {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  justify-self: end;
+}
+
+
 /** Module Rules **/
 
 .btn-toolbar {
@@ -388,7 +401,7 @@ body {
 }
 
 main {
-  background-color: #FFFFFF;
+  background-color: #EEE;
 }
 
 button.primary,
@@ -420,6 +433,16 @@ button.danger,
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
+}
+
+div[data-voxpop-uuid] [data-voxpop-question-uuid] {
+  background-color: #FFF;
+  border-radius: 4px;
+  padding: 0.5em;
+}
+
+div[data-voxpop-uuid] [data-voxpop-question-uuid] blockquote {
+  margin: 0;
 }
 
 /** Print Rules **/
