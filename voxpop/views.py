@@ -52,7 +52,7 @@ def new_voxpop(request):
     if request.session.get("admin") == True:
         if request.method == "GET":
             return render(
-                request, 
+                request,
                 "voxpop/admin/new_voxpop.html",
             )
 
@@ -153,7 +153,7 @@ async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
             async for notify in gen:
                 yield f"{notify.payload}\n\n"
     except Exception as e:
-        print e.message
+        print(e.message)
     finally:
         aconnection.close()
 
