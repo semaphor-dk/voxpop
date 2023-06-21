@@ -146,12 +146,16 @@ async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
         autocommit=True,
     )
     channel_name = get_notify_channel_name(voxpop_id=voxpop_id)
-    async with aconnection.cursor() as acursor:
-        await acursor.execute(f"LISTEN {channel_name}")
-        gen = aconnection.notifies()
-        async for notify in gen:
-            yield f"{notify.payload}\n\n"
-    aconnection.close()
+    try:
+        async with aconnection.cursor() as acursor:
+            await acursor.execute(f"LISTEN {channel_name}")
+            gen = aconnection.notifies()
+            async for notify in gen:
+                yield f"{notify.payload}\n\n"
+    except Exception as e:
+        print e.message
+    finally:
+        aconnection.close()
 
 
 async def stream_questions_view(
