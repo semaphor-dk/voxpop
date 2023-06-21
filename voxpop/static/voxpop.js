@@ -52,7 +52,7 @@
 			if (this.status >= 200 && this.status < 300) {
 				let questions = JSON.parse(xhr.response);
 				let fragment = "\n";
-				questions.forEach(function (q) {
+				questions.approved.forEach(function (q) {
 					fragment += createHTMLforQuestion(q);
 				});
 				voxpopElm.innerHTML = fragment;
