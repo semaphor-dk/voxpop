@@ -299,6 +299,25 @@ div[data-voxpop-uuid]::before {
   justify-self: end;
 }
 
+div[data-voxpop-question-uuid] {
+  box-shadow: inset 3px 3px 4px rgba(0,0,0,.175);
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: 0.7em 0.7em 0.7em 1em;
+}
+
+div[data-voxpop-question-uuid] blockquote {
+  grid-column-start: 1;
+  grid-column-end: -1;
+}
+
+div[data-voxpop-question-uuid] .DisplayName {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  justify-self: end;
+  margin-bottom: 1em;
+}
 
 /** Module Rules **/
 
@@ -436,8 +455,6 @@ button.danger,
 
 div[data-voxpop-uuid] [data-voxpop-question-uuid] {
   background-color: #FFF;
-  border-radius: 4px;
-  padding: 0.5em;
 }
 
 div[data-voxpop-uuid] [data-voxpop-question-uuid] blockquote {
