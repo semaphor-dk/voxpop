@@ -270,8 +270,7 @@ abbr {
 /** Layout Rules **/
 main {
   padding: 15px;
-  width: 50%;
-  margin: 2em auto;
+  margin: 2em;
   border-radius: 15px;
 }
 
@@ -290,8 +289,8 @@ main {
 
 div[data-voxpop-uuid] {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2em;
+  grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+  gap: 1.5em;
 }
 
 div[data-voxpop-uuid]::before {
