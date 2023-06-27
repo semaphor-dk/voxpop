@@ -1,72 +1,21 @@
-<!DOCTYPE html>
-<html lang="">
-    <head>
-        <meta charset="utf-8">
-        <title>Voxpop Admin Interface</title>
-        <style>
-            body {
-                margin: 100px;
-                background: grey;
-            }
-            #question_options {
-                font-size: 10px;
-                margin-bottom: 10px;
-            }
-
-            .formWrapper {
-                text-align: left;
-                padding: 15px;
-                border-radius: 15px;
-                background-color: lightgrey;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Voxpop Admin Site &rarr; Opret nyt Voxpop &#128227;</h1>     
-        <form action="{% url "voxpop:new_voxpop" %}" method="POST">
-            {% csrf_token %}
-            <div class="formWrapper">
-            <tr>
-                <th><label for="id_title">Titel:</label></th>
-                <td>
-                  <input type="text" name="title" maxlength="50" required id="id_title">
-                </td>
-              </tr><br>
-              <tr>
-                <th><label for="id_description">Beskrivelse:</label></th><br>
-                <td>
-                  <textarea name="description" cols="40" rows="10" id="id_description">
-            </textarea>  
-                </td>
-              </tr><br>
-              <tr>
-                <th><label for="id_starts_at">Tidspunkt for start:</label></th>
-                <td>
-                  <input type="datetime-local" name="starts_at" required id="id_starts_at">
-                </td>
-              </tr><br>
-              <tr>
-                <th><label for="id_expires_at">Tidspunkt for slut:</label></th>
-                <td>
-                  <input type="datetime-local" name="expires_at" required id="id_expires_at">
-                </td>
-              </tr><br>
-              <tr>
-                <th><label for="id_is_moderated">Moderet chat:</label></th>
-                <td>
-                  <input type="checkbox" name="is_moderated" id="id_is_moderated" checked> 
-                </td>
-              </tr><br>
-              <tr>
-                <th><label for="id_allow_anonymous">Tillad anonyme:</label></th>
-                <td>
-                  <input type="checkbox" name="allow_anonymous" id="id_allow_anonymous">
-                </td>
-              </tr>
-              <button type="submit">Opret</button> <br> <br>
-              <a href="/admin">Tilbage</a>
-            </div> 
-        </form>
-        
-    </body>
-</html>
+{% extends 'admin-layout.html' %}
+{% block title %}Opret voxpop - Voxpop Admin Interface{% endblock %}
+{% block content %}
+          <h1>Opret nyt Voxpop</h1>
+          <form action="{% url 'voxpop:new_voxpop' %}" method="POST">{% csrf_token %}
+            <label for="title">Titel:</label>
+            <input type="text" name="title" maxlength="50" required id="title">
+            <label for="description">Beskrivelse:</label>
+            <textarea name="description" cols="40" rows="10" id="description"></textarea>
+            <label for="starts_at">Tidspunkt for start:</label>
+            <input type="datetime-local" name="starts_at" required id="starts_at">
+            <label for="expires_at">Tidspunkt for slut:</label>
+            <input type="datetime-local" name="expires_at" required id="expires_at">
+            <label for="is_moderated">Moderet chat:</label>
+            <input type="checkbox" name="is_moderated" id="is_moderated" checked>
+            <label for="allow_anonymous">Tillad anonyme:</label>
+            <input type="checkbox" name="allow_anonymous" id="allow_anonymous">
+            <p><button type="submit">Opret</button></p>
+            <p><a href="{% url 'voxpop:admin' %}">Tilbage</a></p>
+          </form>
+{% endblock %}

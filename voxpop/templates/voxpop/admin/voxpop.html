@@ -1,52 +1,29 @@
-<!DOCTYPE html>
-<html lang="">
-    <head>
-        <meta charset="utf-8">
-        <title>Voxpop Admin Interface</title>
-        <style>
-            body {
-                margin: 100px;
-                background: lightgray;
-            }
-            #question_options {
-                font-size: 15px;
-                margin-bottom: 10px;
-            }
-
-            #description {
-                background-color: white;
-                color: black;
-                border-radius: 15px;
-                padding: 20px;
-                margin: 20px;
-            }
-
-        </style>
-    </head>
-    <body>
-        <h1>Voxpop Admin Site &rarr; <strong>{{ voxpop.title }}</strong> &#128227;</h1>
-        <div id="description">
-            <p>{{ voxpop.description }} </p>
-            <p> {{ voxpop.starts_at }} - {{ voxpop.expires_at.time }}</p>
-            <p> UUID: {{ voxpop.uuid }}</p>
-        </div>
-            <h2>Questions</h2> <!-- DETTE SKAL KLARES MED JAVASCRIPT -->
-        {% for key, values in questions.items %}
-        <ul>
-            <h4>{{ key | upper }}</h4>
-            {% for question in values %}
-            <li>
-                "{{ question.text }}" [Votes: {{ question.vote_count }}]
-                <div id="question_options">
-                    (<a href="">{% if key == "new" %}Approve{% else %}Disapprove{% endif %}</a> /
-                    <a href="">{% if key == "answered" %}Mark as unanswered{% else %}Mark as answered{% endif %}</a> /
-                    <a href="">{% if key == "discarded" %}Restore{% else %}Discard{% endif %}</a>)
-                    [Asked {{ question.created_at.time }} by {{ question.display_name }}]
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endfor %}
-        <p><a href="/admin">Back</a></p>
-    </body>
-</html>
+{% extends 'admin-layout.html' %}
+{% block title %}{{ voxpop.title }} - Voxpop Admin Interface{% endblock %}
+{% block content %}
+            <h1>Voxpop: {{ voxpop.title }}</h1>
+            <div id="description">
+                <p>{{ voxpop.description }} </p>
+                <p> {{ voxpop.starts_at }} - {{ voxpop.expires_at.time }}</p>
+            </div>
+            <div id="questionLists">
+                {% for key, values in questions.items %}
+                <details>
+                    <summary>{{ key }}</summary>
+                    <div>
+                        <ul>{% for question in values %}
+                            <li>"{{ question.text }}" [Votes: {{ question.vote_count }}]
+                                <div id="question_options">
+                                    (<a href="">{% if key == "new" %}Approve{% else %}Disapprove{% endif %}</a> /
+                                    <a href="">{% if key == "answered" %}Mark as unanswered{% else %}Mark as answered{% endif %}</a> /
+                                    <a href="">{% if key == "discarded" %}Restore{% else %}Discard{% endif %}</a>)
+                                    [Asked {{ question.created_at.time }} by {{ question.display_name }}]
+                                </div>
+                            </li>
+                        {% endfor %}</ul>
+                    </div>
+                </details>
+                {% endfor %}
+            </div>
+            <p><a href="{% url 'voxpop:admin' %}">Back</a></p>
+{% endblock %}

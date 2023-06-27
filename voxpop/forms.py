@@ -6,7 +6,10 @@ from .models import Voxpop
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ["text"]
+        fields = [
+            "text",
+            "display_name"
+        ]
 
 class VoxpopForm(forms.ModelForm):
     class Meta:

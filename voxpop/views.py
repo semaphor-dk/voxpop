@@ -25,31 +25,36 @@ from .utils import get_notify_channel_name
 # Create your views here.
 # from django.contrib.auth.decorators import login_required
 
+def is_admin(request):
+    # return request.session.get("admin") == True:
+    return True
 
-def admin(request, voxpop_id: UUID = None):
-    if request.session.get("admin") == True:
+
+def admin_index(request):
+    if is_admin(request):
+        context = {
+            "voxpops": get_voxpops(),
+        }
+        return render(request, "voxpop/admin/index.html", context)
+    return render(request, "voxpop/admin/auth_error.html")
+
+def admin_voxpop(request, voxpop_id: UUID = None):
+    if is_admin(request):
         if voxpop_id:
             context = {
                 "voxpop": get_voxpops(voxpop_id=voxpop_id),
                 "questions": {
-                    "approved": get_questions(voxpop_id=voxpop_id, state=Question.State.APPROVED),
                     "new": get_questions(voxpop_id=voxpop_id, state=Question.State.NEW),
-                    "answered": get_questions(voxpop_id=voxpop_id, state=Question.State.ANSWERED),
+                    "approved": get_questions(voxpop_id=voxpop_id, state=Question.State.APPROVED),
                     "discarded": get_questions(voxpop_id=voxpop_id, state=Question.State.DISCARDED),
+                    "answered": get_questions(voxpop_id=voxpop_id, state=Question.State.ANSWERED),
                 },
             }
-
             return render(request, "voxpop/admin/voxpop.html", context)
-
-        context = {
-            "voxpops": get_voxpops(),
-        }
-
-        return render(request, "voxpop/admin/index.html", context)
     return render(request, "voxpop/admin/auth_error.html")
 
 def new_voxpop(request):
-    if request.session.get("admin") == True:
+    if is_admin(request):
         if request.method == "GET":
             return render(
                 request,
@@ -117,7 +122,8 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
             create_question(
                 formdata.text,
                 request.session.session_key,
-                "anonymous" if voxpop.allow_anonymous else "shouldBeKnown",
+#                "anonymous" if voxpop.allow_anonymous else "shouldBeKnown",
+                formdata.display_name,
                 voxpop_id,
             )
             if voxpop.is_moderated:

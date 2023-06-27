@@ -1,0 +1,507 @@
+@charset "utf-8";
+/* This stylesheet is divided into sections as defined by SMACSS. http://smacss.com/ */
+
+/** Load WebFonts **/
+
+
+/** Base Rules **/
+html {
+  line-height: 1.15;
+  scroll-behavior: smooth;
+}
+
+* {
+  -ms-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+body, td, th, input, select, textarea, button {
+  font-family: Ubuntu, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, Geneva, Arial, sans-serif;
+  font-size: 10.5pt;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  display: block;
+}
+
+form {
+  margin: 0 0 1em 0;
+}
+
+template {
+  display: none;
+}
+
+summary {
+  cursor: pointer;
+  text-decoration: dotted underline;
+}
+
+iframe {
+  border: 0;
+}
+
+h1 {
+  font-size: 140%;
+}
+
+h2 {
+  font-size: 120%;
+}
+
+h3 {
+  font-size: 100%;
+}
+
+p {
+  margin: 0 0 1em 0;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  -o-hyphens: auto;
+  hyphens: auto;
+}
+
+dt::after {
+  content: ":";
+}
+
+dd {
+  margin: 0 0 0 2em;
+}
+
+ol {
+  margin: 1em 0; padding: 0 0 0 2em
+}
+
+ul {
+  margin: 1em 0; padding: 0 0 0 1.2em
+}
+
+li {
+  margin: 0.2em 0
+}
+
+hr {
+  height: 1px;
+  color: #ccc;
+  background-color: #ccc;
+  border: 0;
+  margin: 2em 1em;
+}
+
+a:link,
+a:visited,
+a:active {
+  color: currentColor;
+}
+
+a img {
+  border: 0;
+}
+
+img[onclick] {
+  cursor: pointer;
+}
+
+button,
+[role="button"] {
+  position: relative;
+  color: #333;
+  background-color: #fff;
+  display: inline-block;
+  padding: 4px 12px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-decoration: none;
+  -webkit-box-shadow: 3px 3px 4px rgba(0,0,0,.175);
+  box-shadow: 3px 3px 4px rgba(0,0,0,.175);
+  margin: 0;
+  line-height: 1;
+}
+
+button:hover,
+[role="button"]:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+input:not([type]),
+input[type="text"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+select {
+  background-color: #fff;
+  border:1px solid #A0A0A0;
+  border-radius: 3px;
+  padding: 3px;
+  margin: 2px 0;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: #efefef;
+  border: none;
+}
+
+select {
+  cursor: pointer;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spinner-button,
+input[type="number"]::-webkit-inner-spinner-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="checkbox"] {
+  margin: 0 2px 0 0;
+  vertical-align: middle;
+}
+
+input[type="radio"] {
+  margin: 0 2px 3px 0;
+  vertical-align: middle;
+}
+
+input[type="file"] {
+  cursor: pointer;
+}
+
+input[type="text"]::-ms-clear {
+  display: none;
+}
+
+input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+input[type="text"]::-ms-reveal {
+  display: none;
+}
+
+input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+textarea {
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  transition: height 0.2s;
+  background-color: #fff;
+  border:1px solid #A0A0A0;
+  border-radius: 3px;
+  padding: 3px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1em;
+}
+
+/* Use button tags instead */
+input[type="button"],
+input[type="submit"] {
+  background-color: orange;
+}
+
+input[required],
+select[required] {
+  border-color: #33f;
+}
+
+input[required]:invalid,
+select[required]:invalid {
+  border-color: #f33;
+}
+
+progress {
+  width: 200px;
+}
+
+output {
+  margin-left: 1em;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0 0 1em 0;
+  width: 100%;
+}
+
+th {
+  font-weight: bold;
+  text-align: left;
+  background: white;
+  white-space: nowrap;
+}
+
+td {
+  padding: 0;
+}
+
+abbr {
+  text-decoration-style: dotted;
+}
+
+/** Layout Rules **/
+main {
+  padding: 15px;
+  margin: 2em;
+  border-radius: 15px;
+}
+
+#messages {
+  padding: 15px;
+  width: 50%;
+  margin: 0 auto 0 auto;
+  border-radius: 15px;
+}
+
+#errormessage {
+  font-size: 15px;
+  text-align: center;
+  color: red;
+}
+
+div[data-voxpop-uuid] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+  gap: 1.5em;
+}
+
+div[data-voxpop-uuid]::before {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  justify-self: end;
+}
+
+div[data-voxpop-question-uuid] {
+  box-shadow: inset 3px 3px 4px rgba(0,0,0,.175);
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: 0.7em 0.7em 0.7em 1em;
+}
+
+div[data-voxpop-question-uuid] blockquote {
+  grid-column-start: 1;
+  grid-column-end: -1;
+}
+
+div[data-voxpop-question-uuid] .DisplayName {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  justify-self: end;
+  margin-bottom: 1em;
+}
+
+#questionLists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+}
+
+/** Module Rules **/
+
+.btn-toolbar {
+  margin: 1em 0;
+}
+.btn-toolbar > * + * {
+  margin-left: 1em;
+}
+.btn-group {
+  display: inline-block;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
+.btn-group input[type="radio"] {
+  display: none;
+}
+
+.btn-group input[type="radio"]:checked + label,
+.btn-group [role="button"].selected {
+  background-color: #ccc;
+  -webkit-box-shadow: inset 2px 2px 2px;
+  box-shadow: inset 2px 2px 2px;
+  padding: 6px 10px 2px 14px;
+}
+
+.btn-group [role="button"]:not(:first-child):not(:last-child),
+.btn-group button:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+  border-radius: 0;
+}
+
+.btn-group [role="button"]:first-child:not(:last-child),
+.btn-group button:first-child:not(:last-child):not(.dropdown-toggle) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-group [role="button"]:last-child:not(:first-child),
+.btn-group button:last-child:not(:first-child),
+.btn-group button.dropdown-toggle:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.btn-group [role="button"] + [role="button"],
+.btn-group button + button {
+  margin-left: -1px;
+}
+
+.btn-group [role="button"]:active,
+.btn-group [role="button"]:focus,
+.btn-group button:active,
+.btn-group button:focus {
+  outline: 0;
+}
+
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: middle;
+  border-top: 4px dashed;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+}
+
+button.open .caret {
+  border-top: 0;
+  border-bottom: 4px dashed;
+}
+
+button.open {
+  background-color: #ccc;
+}
+
+/** State Rules **/
+div[data-voxpop-uuid]::before {
+  content: '';
+  display: inline-block;
+  float: right;
+  background-color: lightgray;
+  border: 1px solid grey;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+}
+div[data-voxpop-uuid].live::before {
+  background-color: #0f0;
+}
+div[data-voxpop-uuid].disconnected::before {
+  background-color: #f00;
+}
+
+/** Theme Rules **/
+body {
+  background-color: #6495ED;
+}
+
+main {
+  background-color: #EEE;
+}
+
+button.primary,
+[role="button"].primary {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+button.success,
+[role="button"].success {
+  color: #fff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+button.info,
+[role="button"].info {
+  color: #fff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+button.warning,
+[role="button"].warning {
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+button.danger,
+[role="button"].danger {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+div[data-voxpop-uuid] [data-voxpop-question-uuid] {
+  background-color: #FFF;
+}
+
+div[data-voxpop-uuid] [data-voxpop-question-uuid] blockquote {
+  margin: 0;
+}
+
+/** Print Rules **/
+@media print {
+  aside,
+  nav,
+  button,
+  [role="button"],
+  .btn-group {
+    display: none;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+
+  img, p {
+    page-break-inside: avoid;
+  }
+
+  a:link,
+  a:visited {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  input:not(:invalid), textarea:not(:invalid), select:not(:invalid) {
+    border: 0;
+    padding: 0;
+  }
+
+  textarea {
+    height: auto;
+  }
+
+  section {
+    border: 0 none;
+    page-break-inside: avoid;
+  }
+}
