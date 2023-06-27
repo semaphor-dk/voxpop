@@ -10,6 +10,7 @@ from .models import Question
 from .models import Voxpop
 from .selectors import get_questions
 from .selectors import get_voxpops
+from .selectors import get_voxpop
 from .services import create_question
 from .services import create_vote
 
@@ -170,9 +171,9 @@ def questions(request, voxpop_id: UUID):
         request.session["display_name"] = "Anonymous"
         request.session["unique_name"] = request.session.session_key
         request.session["admin"] = False
-
-    approved = list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
-    answered = list(get_questions(state=Question.State.ANSWERED, voxpop_id=voxpop_id))
+    voxpop = get_voxpop(voxpop_id)
+    approved = list(get_questions(voxpop=voxpop, state=Question.State.APPROVED))
+    answered = list(get_questions(voxpop=voxpop, state=Question.State.ANSWERED))
     return {"approved": approved, "answered": answered}
 
 

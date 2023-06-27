@@ -85,7 +85,7 @@ def index(request):
     context = {}
     if org:
         context["current_organisation"] = org
-        voxpop = get_voxpops(organisation_id=org.uuid).last()
+        voxpop = get_voxpops(org).last()
         if voxpop:
             context["voxpop_id"] = voxpop.uuid
         else:
