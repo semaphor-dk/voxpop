@@ -268,10 +268,21 @@ abbr {
 }
 
 /** Layout Rules **/
+body > header {
+  margin-block: 1rem 0.7rem;
+  text-align: center;
+}
+
 main {
   padding: 15px;
-  margin: 2em;
+  margin: 0.5em;
   border-radius: 15px;
+}
+
+@media (min-width: 500px) {
+  main {
+    margin: 2em;
+  }
 }
 
 #messages {
@@ -323,6 +334,13 @@ div[data-voxpop-question-uuid] .DisplayName {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2em;
+}
+
+form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5em 1em;
+  justify-items: start;
 }
 
 /** Module Rules **/
@@ -422,6 +440,16 @@ div[data-voxpop-uuid].disconnected::before {
 /** Theme Rules **/
 body {
   background-color: #6495ED;
+}
+
+body > header {
+  color: #fff;
+  font-size: 2rem;
+}
+@media (min-width: 500px) {
+  body > header {
+    font-size: 3rem;
+  }
 }
 
 main {

@@ -8,7 +8,7 @@
 		<link rel="Stylesheet" href="{% static 'admin.css' %}">
 	</head>
 	<body>
-        <header>Voxpop Admin Site</header>
+        <header><div>Voxpop Admin Site</div></header>
         {% if messages %}
         <div id="messages">
             <ul>
@@ -17,8 +17,8 @@
             </ul>
         </div>
         {% endif %}
-		<main>
+		<main><div>
             {% block content %}{% endblock %}
-		</main>
+		</div></main>
 	</body>
 </html>
