@@ -12,5 +12,5 @@ rm $ZIP_FILE
 ssh $DEPLOYMENT_HOST 'sudo unzip -o' $ZIP_FILE ' -d' $DEPLOYMENT_FOLDER
 ssh $DEPLOYMENT_HOST 'rm' $ZIP_FILE
 
-ssh $DEPLOYMENT_HOST 'cd' $DEPLOYMENT_FOLDER '&& venv/bin/python3 manage.py collectstatic -l --no-input'
+ssh $DEPLOYMENT_HOST 'cd' $DEPLOYMENT_FOLDER '&& sudo venv/bin/python3 manage.py collectstatic -l --no-input'
 ssh $DEPLOYMENT_HOST 'sudo systemctl restart' $SERVICE_NAME
