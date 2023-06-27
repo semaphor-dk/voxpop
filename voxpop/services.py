@@ -4,7 +4,7 @@ from voxpop.models import Question
 from voxpop.models import Vote
 from voxpop.models import Voxpop
 
-from voxpop.selectors import get_voxpops
+from voxpop.selectors import get_voxpop
 
 
 def create_question(
@@ -13,7 +13,7 @@ def create_question(
     display_name: str,
     voxpop_id: UUID,
 ) -> Question:
-    voxpop = get_voxpops(voxpop_id=voxpop_id)
+    voxpop = get_voxpop(voxpop_id=voxpop_id)
 
     question = Question.objects.create(
         text=text,

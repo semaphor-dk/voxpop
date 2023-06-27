@@ -109,7 +109,7 @@ def detail(request, question_id: UUID):
 
 
 def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
-    voxpop = get_voxpops(voxpop_id=voxpop_id)
+    voxpop = get_voxpop(voxpop_id=voxpop_id)
     form = QuestionForm
     if request.method == "POST":
         form = QuestionForm(request.POST)
