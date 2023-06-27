@@ -4,9 +4,9 @@
         <h2>Voxpops</h2>
         <ul>{% for voxpop in voxpops %}
             <li>
-                <a href="{% url 'voxpop:admin_voxpop' voxpop.uuid %}">{{ voxpop.title }}</a> -
-                {{ voxpop.description }}
+                <a href="{% url 'voxpop:admin_voxpop' voxpop.uuid %}">{{ voxpop.title }}</a> - {{ voxpop.question_count }} spørgsmål.
                 {% if voxpop.is_active %} &#128994; {% endif %}
+                <p>{{ voxpop.description }}</p>
             </li>
         {% endfor %}</ul>
         <p><a href="{% url 'voxpop:new_voxpop' %}">OPRET NY</a></p>

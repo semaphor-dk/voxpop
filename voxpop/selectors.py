@@ -23,54 +23,10 @@ def current_organisation(request: HttpRequest) -> Organisation | None:
         return None
 
 
-def get_organisations(
-    organisation_id: UUID | None = None,
-    hostname: str | None = None,
-) -> QuerySet[Organisation] | Organisation | None:
-    organisations = Organisation.objects.all()
-
-    if hostname:
-        try:
-            return organisations.get(hostname=hostname)
-        except Organisation.DoesNotExist:
-            return None
-
-    return organisations
-
-
-def get_questions(
-    question_id: UUID | None = None,
-    state: Question.State | None = None,
-    voxpop_id: UUID | None = None,
-) -> QuerySet[Question] | Question | None:
-    questions = Question.objects.all().annotate(
-        vote_count=Count("votes", distinct=True),
-    )
-
-    # First do all filtering
-    if state:
-        questions = questions.filter(state=state)
-
-    if voxpop_id:
-        questions = questions.filter(voxpop_id=voxpop_id)
-
-    # Then do the get if needed
-    if question_id:
-        try:
-            return questions.get(uuid=question_id)
-        except Question.DoesNotExist:
-            return None
-
-    return questions
-
-
-def get_voxpops(
-    voxpop_id: UUID | None = None,
-    organisation_id: UUID | None = None,
-) -> QuerySet[Voxpop] | Voxpop:
+def get_voxpops(organisation) -> QuerySet[Voxpop]:
     now = timezone.now()
-    voxpops = Voxpop.objects.all().annotate(
-        question_count=Count("question", distinct=True),
+    voxpops = organisation.voxpops.all().annotate(
+        question_count=Count("questions", distinct=True),
         is_active=Case(
             When(
                 starts_at__lte=now,
@@ -81,14 +37,37 @@ def get_voxpops(
             output_field=BooleanField(),
         ),
     )
-
-    if organisation_id:
-        voxpops = voxpops.filter(organisation=organisation_id)
-
-    if voxpop_id:
-        return voxpops.get(uuid=voxpop_id)
-
     return voxpops
+
+
+def get_voxpop(voxpop_id) -> Voxpop:
+    now = timezone.now()
+    voxpop = Voxpop.objects.filter(uuid=voxpop_id).annotate(
+        question_count=Count("questions", distinct=True),
+        is_active=Case(
+            When(
+                starts_at__lte=now,
+                expires_at__gte=now,
+                then=True,
+            ),
+            default=False,
+            output_field=BooleanField(),
+        ),
+    ).first()
+    return voxpop
+
+
+def get_questions(
+    voxpop: Voxpop,
+    state: Question.State | None = None,
+) -> QuerySet[Question] | None:
+    questions = voxpop.questions.all().annotate(
+        vote_count=Count("votes", distinct=True),
+    )
+    # First do all filtering
+    if state:
+        questions = questions.filter(state=state)
+    return questions
 
 
 def get_votes(

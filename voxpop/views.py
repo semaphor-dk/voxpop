@@ -17,6 +17,7 @@ from .models import Question
 from .selectors import current_organisation
 from .selectors import get_questions
 from .selectors import get_voxpops
+from .selectors import get_voxpop
 from .services import create_question
 from .services import create_voxpop
 from .utils import get_notify_channel_name
@@ -33,7 +34,7 @@ def is_admin(request):
 def admin_index(request):
     if is_admin(request):
         context = {
-            "voxpops": get_voxpops(),
+            "voxpops": get_voxpops(current_organisation(request)),
         }
         return render(request, "voxpop/admin/index.html", context)
     return render(request, "voxpop/admin/auth_error.html")
@@ -41,13 +42,14 @@ def admin_index(request):
 def admin_voxpop(request, voxpop_id: UUID = None):
     if is_admin(request):
         if voxpop_id:
+            voxpop = get_voxpop(voxpop_id=voxpop_id)
             context = {
-                "voxpop": get_voxpops(voxpop_id=voxpop_id),
+                "voxpop": voxpop,
                 "questions": {
-                    "new": get_questions(voxpop_id=voxpop_id, state=Question.State.NEW),
-                    "approved": get_questions(voxpop_id=voxpop_id, state=Question.State.APPROVED),
-                    "discarded": get_questions(voxpop_id=voxpop_id, state=Question.State.DISCARDED),
-                    "answered": get_questions(voxpop_id=voxpop_id, state=Question.State.ANSWERED),
+                    "new": get_questions(voxpop=voxpop, state=Question.State.NEW),
+                    "approved": get_questions(voxpop=voxpop, state=Question.State.APPROVED),
+                    "discarded": get_questions(voxpop=voxpop, state=Question.State.DISCARDED),
+                    "answered": get_questions(voxpop=voxpop, state=Question.State.ANSWERED),
                 },
             }
             return render(request, "voxpop/admin/voxpop.html", context)
@@ -56,16 +58,12 @@ def admin_voxpop(request, voxpop_id: UUID = None):
 def new_voxpop(request):
     if is_admin(request):
         if request.method == "GET":
-            return render(
-                request,
-                "voxpop/admin/new_voxpop.html",
-            )
+            return render(request, "voxpop/admin/new_voxpop.html")
 
         if request.method == "POST":
             form = VoxpopForm(request.POST)
             if form.is_valid():
                 formdata = form.save(commit=False)
-
                 voxpop = create_voxpop(
                     formdata.title,
                     formdata.description,
@@ -76,13 +74,11 @@ def new_voxpop(request):
                     formdata.allow_anonymous,
                     current_organisation(request),
                 )
-
                 return redirect("/admin")
             else:
                 print("Form invalid")
-            return redirect("/admin/new_voxpop")
+            return redirect("/admin/voxpops/new")
     return render(request, "voxpop/admin/auth_error.html")
-
 
 def index(request):
     org = current_organisation(request)
