@@ -55,6 +55,18 @@ def admin_voxpop(request, voxpop_id: UUID = None):
             return render(request, "voxpop/admin/voxpop.html", context)
     return render(request, "voxpop/admin/auth_error.html")
 
+def admin_question_set_state(request, voxpop_id, question_id):
+    if is_admin(request):
+        new_state = request.GET.get('state', None)
+        if new_state:
+            print(question_id)
+            print(new_state)
+        question = Question.objects.get(uuid=question_id)
+        question.state = new_state
+        question.save()
+        return HttpResponse(status=204)
+
+
 def new_voxpop(request):
     if is_admin(request):
         if request.method == "GET":

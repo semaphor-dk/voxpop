@@ -6,24 +6,29 @@
                 <p>{{ voxpop.description }} </p>
                 <p> {{ voxpop.starts_at }} - {{ voxpop.expires_at.time }}</p>
             </div>
-            <div id="questionLists">
+            <div id="adminQuestionLists" data-voxpop-uuid="{{ voxpop.uuid }}">
+                {% csrf_token %}
                 {% for key, values in questions.items %}
-                <details>
+                <details{% if key == "new" or key == "approved" %} open{% endif %}>
                     <summary>{{ key }}</summary>
-                    <div>
-                        <ul>{% for question in values %}
-                            <li>"{{ question.text }}" [Votes: {{ question.vote_count }}]
-                                <div id="question_options">
-                                    (<a href="">{% if key == "new" %}Approve{% else %}Disapprove{% endif %}</a> /
-                                    <a href="">{% if key == "answered" %}Mark as unanswered{% else %}Mark as answered{% endif %}</a> /
-                                    <a href="">{% if key == "discarded" %}Restore{% else %}Discard{% endif %}</a>)
-                                    [Asked {{ question.created_at.time }} by {{ question.display_name }}]
-                                </div>
-                            </li>
-                        {% endfor %}</ul>
+                    <div id="{{ key }}Questions">{% for question in values %}
+                        <div data-voxpop-question-uuid="{{ question.uuid }}">
+                            <blockquote>{{ question.text }}</blockquote>
+                            <div class="displayName">{{ question.display_name }}</div>
+                            <div class="votes"><span>{{ question.vote_count }}</span> votes</div>
+                            <div class="createdAt">{{ question.created_at.time }}</div>
+                            <div class="questionActions">
+                                {% if key == "new" %}<button type="button" data-state="approved">Approve</button>{% endif %}
+                                {% if key == "approved" %}<button type="button" data-state="new">Disapprove</button>{% endif %}
+                                {% if key != "answered" %}<button type="button" data-state="answered">Mark as answered</button>{% endif %}
+                                {% if key == "answered" %}<button type="button" data-state="approved">Mark as unanswered</button>{% endif %}
+                                {% if key == "discarded" %}<button type="button" data-state="new">Restore</button>{% endif %}
+                                {% if key != "discarded" %}<button type="button" data-state="discarded">Discard</button>{% endif %}
+                            </div>
+                        </div>{% endfor %}
                     </div>
-                </details>
-                {% endfor %}
+                </details>{% endfor %}
             </div>
             <p><a href="{% url 'voxpop:admin' %}">Back</a></p>
+            <script src="/static/admin.js"></script>
 {% endblock %}

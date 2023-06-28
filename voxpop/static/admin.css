@@ -67,6 +67,13 @@ p {
   hyphens: auto;
 }
 
+blockquote::before {
+  content: open-quote;
+}
+blockquote::after {
+  content: close-quote;
+}
+
 dt::after {
   content: ":";
 }
@@ -323,17 +330,29 @@ div[data-voxpop-question-uuid] blockquote {
   grid-column-end: -1;
 }
 
-div[data-voxpop-question-uuid] .DisplayName {
+div[data-voxpop-question-uuid] .displayName {
   grid-column-start: 1;
   grid-column-end: -1;
   justify-self: end;
   margin-bottom: 1em;
 }
+div[data-voxpop-question-uuid] .displayName::before {
+  content: "- ";
+}
 
-#questionLists {
-  display: grid;
+div[data-voxpop-question-uuid] .questionActions {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  margin-top: 1em;
+}
+
+#adminQuestionLists {
   grid-template-columns: 1fr 1fr;
   gap: 2em;
+}
+
+#adminQuestionLists div[data-voxpop-question-uuid] {
+  margin-bottom: 1em;
 }
 
 form {

@@ -17,7 +17,8 @@ def notify_question_created(sender, instance, created, **kwargs):
         payload = {
             "uuid": str(instance.uuid),
             "text": str(instance.text),
-            "display_name": str(instance.display_name)
+            "display_name": str(instance.display_name),
+            "created_at": "tid ..."
         }
 
         notify(

@@ -312,7 +312,7 @@ div[data-voxpop-question-uuid] blockquote {
   grid-column-end: -1;
 }
 
-div[data-voxpop-question-uuid] .DisplayName {
+div[data-voxpop-question-uuid] .displayName {
   grid-column-start: 1;
   grid-column-end: -1;
   justify-self: end;

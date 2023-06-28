@@ -4,10 +4,11 @@
 	'use strict';
 	var allSse = [];
 	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
+	let newQuestionsElement = document.getElementById('newQuestions');
 	voxpopElements.forEach(function (voxpopElm) {
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
-		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
-		renderVoxpop(voxpopElm, questionsUrl);
+//		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
+//		renderVoxpop(voxpopElm, questionsUrl);
 		var sse = new EventSource(`${ hostPort }/stream/questions/${ voxpopElm.dataset.voxpopUuid }/`, {withCredentials: true});
 		allSse.push(sse);
 		sse.onopen = function (evt) {
@@ -19,14 +20,7 @@
 		sse.addEventListener("new_question", function (evt) {
 			let data = JSON.parse(evt.data);
 			console.log(data);
-			voxpopElm.insertAdjacentHTML("afterbegin", createHTMLforQuestion(data));
-		});
-		sse.addEventListener("new_vote", function (evt) {
-			let data = JSON.parse(evt.data);
-			let voteDisplayElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"] .votes span`);
-			if (voteDisplayElm) {
-				voteDisplayElm.innerText = data.vote_count;
-			}
+			newQuestionsElement.insertAdjacentHTML("beforeend", createHTMLforQuestion(data));
 		});
 		updateConnectionStatus(voxpopElm, sse.readyState);
 	});
@@ -35,15 +29,43 @@
 		voxpopElm.className = ["connecting", "live", "disconnected"][state];
 	}
 
+	let questionLists = document.getElementById('adminQuestionLists');
+	questionLists.addEventListener('click', function (evt) {
+		if (evt.target.tagName !== 'BUTTON') return;
+		let csrfmiddlewaretoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+		let state = evt.target.dataset.state;
+		let questionId = evt.target.closest('[data-voxpop-question-uuid]').dataset.voxpopQuestionUuid;
+		let xhr = new XMLHttpRequest();
+		xhr.withCredentials = true;
+		xhr.open("PATCH", `${questionId}?state=${state}`, true);
+		xhr.setRequestHeader('X-CSRFToken', csrfmiddlewaretoken);
+		xhr.onload = function () {
+			if (this.status >= 200 && this.status < 300) {
+				location.reload();
+			}
+		};
+		xhr.onerror = function (evt) {
+			console.log('XHR error:');
+			console.dir(evt.target);
+		};
+		xhr.send();
+	});
+
 	function createHTMLforQuestion(q) {
 		return `<div data-voxpop-question-uuid="${ q.uuid }">
 	<blockquote>${ q.text }</blockquote>
 	<div class="displayName">- ${ q.display_name }</div>
 	<div class="votes"><span>${q.vote_count || 0 }</span> votes</div>
-	<button type="button" class="vote">Vote</button>
+	<div class="createdAt">${ q.created_at }</div>
+    <div class="questionActions">
+        <button type="button" data-state="approved">Approve</button>
+        <button type="button" data-state="answered">Mark as answered</button>
+        <button type="button" data-state="discarded">Discard</button>
+    </div>
 </div>\n`;
 	}
 
+/*
 	function renderVoxpop(voxpopElm, questionsUrl) {
 		let xhr = new XMLHttpRequest();
 		xhr.open("get", questionsUrl, true);
@@ -89,7 +111,7 @@
 		};
 		xhr.send();
 	}
-
+*/
 	window.addEventListener('beforeunload', function() {
 		allSse.forEach(function (sse) {
 			sse.close();

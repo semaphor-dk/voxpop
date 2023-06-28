@@ -2,6 +2,7 @@
 {% block title %}Voxpop Admin Interface{% endblock %}
 {% block content %}
         <h2>Voxpops</h2>
+        <p><a href="{% url 'voxpop:new_voxpop' %}" role="button">Opret ny</a></p>
         <ul>{% for voxpop in voxpops %}
             <li>
                 <a href="{% url 'voxpop:admin_voxpop' voxpop.uuid %}">{{ voxpop.title }}</a> - {{ voxpop.question_count }} spørgsmål.
@@ -9,5 +10,4 @@
                 <p>{{ voxpop.description }}</p>
             </li>
         {% endfor %}</ul>
-        <p><a href="{% url 'voxpop:new_voxpop' %}">OPRET NY</a></p>
 {% endblock %}

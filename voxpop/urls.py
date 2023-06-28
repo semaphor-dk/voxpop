@@ -20,4 +20,5 @@ urlpatterns = [
     path("admin/", views.admin_index, name="admin"),
     path("admin/voxpops/new", views.new_voxpop, name="new_voxpop"),
     path("admin/voxpops/<uuid:voxpop_id>/", views.admin_voxpop, name="admin_voxpop"),
+    path("admin/voxpops/<uuid:voxpop_id>/<uuid:question_id>", views.admin_question_set_state, name="admin_question_set_state"),
 ]
