@@ -2,6 +2,6 @@
 <form action="{% url 'voxpop:new_question' voxpop_id=voxpop_id %}" method="POST">
     {% csrf_token %}
     <textarea name="text" rows="3" maxlength="150" autofocus required></textarea>
-    - <input name="display_name" type="text" maxlength="50" placeholder="Dit navn">
+    - <input name="display_name" type="text" maxlength="50" placeholder="Dit navn"{% if not allow_anonymous %} required{% endif %}>
     <button type="submit" class="primary">Send</button>
 </form>

@@ -5,6 +5,6 @@
 <div data-voxpop-uuid="{{ voxpop_id }}" data-voxpop-host=""></div>
 <script src="/static/voxpop.js"></script>
 {% if voxpop_id != "" %}
-{% include 'voxpop/question.html' with voxpop_id=voxpop_id %}
+{% include 'voxpop/question.html' with voxpop_id=voxpop_id allow_anonymous=allow_anonymous %}
 {% endif %}
 {% endblock %}

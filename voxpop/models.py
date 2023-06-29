@@ -74,7 +74,7 @@ class Question(CreatedUpdatedMixin):
         default=State.NEW,
     )
     created_by = models.CharField(max_length=200)
-    display_name = models.CharField(max_length=50)
+    display_name = models.CharField(blank=True, max_length=50)
     voxpop = models.ForeignKey(Voxpop, on_delete=models.CASCADE, related_name='questions')
 
     def approve(self):
@@ -87,11 +87,7 @@ class Question(CreatedUpdatedMixin):
 
 class Vote(CreatedUpdatedMixin):
     created_by = models.CharField(max_length=200)
-    question = models.ForeignKey(
-        Question,
-        on_delete=models.CASCADE,
-        related_name="votes",
-    )
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="votes")
 
     def __str__(self):
         return f'{self.created_by} -> "{self.question.text}"'

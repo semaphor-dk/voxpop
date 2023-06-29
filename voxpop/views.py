@@ -95,16 +95,14 @@ def new_voxpop(request):
 def index(request):
     org = current_organisation(request)
     context = {}
+    context["current_organisation"] = org
+    context["voxpop_id"] = ""
+    context["allow_anonymous"] = False
     if org:
-        context["current_organisation"] = org
-        voxpop = get_voxpops(org).last()
+        voxpop = get_voxpops(org).filter(is_active=True).order_by("starts_at").last()
         if voxpop:
             context["voxpop_id"] = voxpop.uuid
-        else:
-            context["voxpop_id"] = ""
-    else:
-        context["current_organisation"] = None
-        context["voxpop_id"] = ""
+            context["allow_anonymous"] = voxpop.allow_anonymous
     return render(request, "voxpop/index.html", context)
 
 
@@ -130,7 +128,6 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
             create_question(
                 formdata.text,
                 request.session.session_key,
-#                "anonymous" if voxpop.allow_anonymous else "shouldBeKnown",
                 formdata.display_name,
                 voxpop_id,
             )
@@ -140,7 +137,7 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
         else:
             return HttpResponse("Ukendt fejl, prøv venligst igen.")
 
-    return render(request, "voxpop/question.html", {"form": form})
+    return render(request, "voxpop/question.html", {"form": form, "allow_anonymous": voxpop.allow_anonymous})
 
 
 def vote(request, question_id: UUID):
