@@ -15,7 +15,7 @@ urlpatterns = [
     path("<int:question_id>/", views.detail, name="detail"),
     path("<int:question_id>/vote/", views.vote, name="vote"),
     path("voxpops/<uuid:voxpop_id>/questions/new/", views.new_question, name="new_question",),
-    path("stream/questions/<uuid:voxpop_id>/", views.stream_questions_view, name="stream_questions",),
+    path("stream/<uuid:voxpop_id>/questions/", views.stream_questions_view, name="stream_questions",),
     path("api/", api.urls),
     path("admin/", views.admin_index, name="admin"),
     path("admin/voxpops/new", views.new_voxpop, name="new_voxpop"),
