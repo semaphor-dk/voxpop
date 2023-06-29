@@ -6,7 +6,7 @@
                 <p>{{ voxpop.description }} </p>
                 <p> {{ voxpop.starts_at }} - {{ voxpop.expires_at.time }}</p>
             </div>
-            <div id="adminQuestionLists" data-voxpop-uuid="{{ voxpop.uuid }}">
+            <div id="adminQuestionLists" data-voxpop-uuid="{{ voxpop.uuid }}"{% if voxpop.is_moderated %} data-voxpop-is-moderated{% endif %}>
                 {% csrf_token %}
                 {% for key, values in questions.items %}
                 <details{% if key == "new" or key == "approved" %} open{% endif %}>

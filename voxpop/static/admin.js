@@ -5,9 +5,11 @@
 	var allSse = [];
 	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
 	let newQuestionsElement = document.getElementById('newQuestions');
+	let approvedQuestionsElement = document.getElementById('approvedQuestions');
 	voxpopElements.forEach(function (voxpopElm) {
 //		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 //		renderVoxpop(voxpopElm, questionsUrl);
+		let isModerated = voxpopElm.dataset.hasOwnProperty('voxpopIsModerated');
 		var sse = new EventSource(`/stream/${ voxpopElm.dataset.voxpopUuid }/questions/`, {withCredentials: true});
 		allSse.push(sse);
 		sse.onopen = function (evt) {
@@ -18,8 +20,7 @@
 		};
 		sse.addEventListener("new_question", function (evt) {
 			let data = JSON.parse(evt.data);
-			console.log(data);
-			newQuestionsElement.insertAdjacentHTML("beforeend", createHTMLforQuestion(data));
+			((isModerated) ? newQuestionsElement : approvedQuestionsElement).insertAdjacentHTML("beforeend", createHTMLforQuestion(data));
 		});
 		sse.addEventListener("new_vote", function (evt) {
 			let data = JSON.parse(evt.data);
