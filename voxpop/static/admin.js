@@ -54,7 +54,7 @@
 	function createHTMLforQuestion(q) {
 		return `<div data-voxpop-question-uuid="${ q.uuid }">
 	<blockquote>${ q.text }</blockquote>
-	<div class="displayName">- ${ q.display_name }</div>
+	<div class="displayName">${ q.display_name }</div>
 	<div class="votes"><span>${q.vote_count || 0 }</span> votes</div>
 	<div class="createdAt">${ q.created_at }</div>
     <div class="questionActions">
