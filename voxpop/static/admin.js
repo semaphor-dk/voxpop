@@ -6,10 +6,9 @@
 	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
 	let newQuestionsElement = document.getElementById('newQuestions');
 	voxpopElements.forEach(function (voxpopElm) {
-		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 //		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 //		renderVoxpop(voxpopElm, questionsUrl);
-		var sse = new EventSource(`${ hostPort }/stream/${ voxpopElm.dataset.voxpopUuid }/questions/`, {withCredentials: true});
+		var sse = new EventSource(`/stream/${ voxpopElm.dataset.voxpopUuid }/questions/`, {withCredentials: true});
 		allSse.push(sse);
 		sse.onopen = function (evt) {
 			updateConnectionStatus(voxpopElm, evt.target.readyState);
@@ -21,6 +20,13 @@
 			let data = JSON.parse(evt.data);
 			console.log(data);
 			newQuestionsElement.insertAdjacentHTML("beforeend", createHTMLforQuestion(data));
+		});
+		sse.addEventListener("new_vote", function (evt) {
+			let data = JSON.parse(evt.data);
+			let voteDisplayElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"] .votes span`);
+			if (voteDisplayElm) {
+				voteDisplayElm.innerText = data.vote_count;
+			}
 		});
 		updateConnectionStatus(voxpopElm, sse.readyState);
 	});
