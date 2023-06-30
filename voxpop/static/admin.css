@@ -37,9 +37,20 @@ template {
   display: none;
 }
 
+details {
+  border: 1px solid #6800ff;
+}
+
 summary {
+  background-color: #6800ff;
+  color: #fff;
   cursor: pointer;
-  text-decoration: dotted underline;
+  padding: 0.2rem;
+  text-transform: capitalize;
+}
+
+details > div {
+  min-height: 1em;
 }
 
 iframe {
@@ -349,6 +360,8 @@ div[data-voxpop-question-uuid] .questionActions {
 #adminQuestionLists {
   grid-template-columns: 1fr 1fr;
   gap: 2em;
+  align-items: start;
+  margin-bottom: 2em;
 }
 
 #adminQuestionLists div[data-voxpop-question-uuid] {
