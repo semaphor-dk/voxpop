@@ -101,23 +101,6 @@
 		};
 		xhr.send();
 	}
-
-	function vote(endpoint) {
-		console.log(endpoint);
-		let xhr = new XMLHttpRequest();
-		xhr.withCredentials = true;
-		xhr.open("post", endpoint, true);
-		xhr.onload = function () {
-			if (this.status >= 200 && this.status < 300) {
-				// Success
-			}
-		};
-		xhr.onerror = function (evt) {
-			console.log('XHR error:');
-			console.dir(evt.target);
-		};
-		xhr.send();
-	}
 */
 	window.addEventListener('beforeunload', function() {
 		allSse.forEach(function (sse) {
