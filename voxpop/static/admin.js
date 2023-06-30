@@ -124,4 +124,10 @@
 			sse.close();
 		});
 	});
+
+	document.querySelectorAll('button.copyToClipboard').forEach(function (copyButtonElm) {
+		copyButtonElm.addEventListener('click', function (evt) {
+			navigator.clipboard.writeText(evt.target.nextElementSibling.innerText);
+		});
+	});
 }());

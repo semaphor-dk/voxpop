@@ -29,6 +29,13 @@
                     </div>
                 </details>{% endfor %}
             </div>
+            <p>For at indsætte denne Voxpop på en web-side, kan du blot indsætte nedenstående:</p>
+            <details id="embedCode">
+                <summary>Embed code</summary>
+                <button type="button" class="copyToClipboard">Copy</button>
+                <pre><code class="html">&lt;div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host="{{ request.META.HTTP_HOST }}"&gt;&lt;/div&gt;
+&lt;script src="//{{ request.META.HTTP_HOST }}/static/voxpop.js"&gt;&lt;/script&gt;</code></pre>
+            </details>
             <p><a href="{% url 'voxpop:admin' %}">Back</a></p>
             <script src="/static/admin.js"></script>
 {% endblock %}

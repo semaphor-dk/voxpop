@@ -451,6 +451,16 @@ button.open {
   background-color: #ccc;
 }
 
+button.copyToClipboard {
+  background-image: url(/static/copy.svg);
+  background-size: 20px;
+  background-position: 0.3em center;
+  background-repeat: no-repeat;
+  float: right;
+  margin: 0.5em;
+  padding: 0.5em 0.5em 0.5em 30px;
+}
+
 /** State Rules **/
 div[data-voxpop-uuid]::before {
   content: '';
@@ -486,6 +496,18 @@ body > header {
 
 main {
   background-color: #EEE;
+}
+
+#embedCode {
+  background-color: #000;
+  margin-bottom: 2rem;
+}
+#embedCode pre {
+  background-color: #000;
+  color: lightgreen;
+  margin: 0;
+  overflow-x: hidden;
+  padding: 0.5em;
 }
 
 button.primary,
