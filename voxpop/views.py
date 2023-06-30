@@ -101,8 +101,7 @@ def index(request):
     if org:
         voxpop = get_voxpops(org).filter(is_active=True).order_by("starts_at").last()
         if voxpop:
-            context["voxpop_id"] = voxpop.uuid
-            context["allow_anonymous"] = voxpop.allow_anonymous
+            context["voxpop"] = voxpop
     return render(request, "voxpop/index.html", context)
 
 

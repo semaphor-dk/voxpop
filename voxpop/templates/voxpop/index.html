@@ -1,10 +1,14 @@
 {% extends 'layout.html' %}
-{% block title %}Spørgsmål{% endblock %}
+{% block title %}{% if voxpop == None %}Voxpop{% else %}{{ voxpop.title }}{% endif %}{% endblock %}
 {% block content %}
-<h1>Spørgsmål</h1>
-<div data-voxpop-uuid="{{ voxpop_id }}" data-voxpop-host=""></div>
+{% if voxpop == None %}
+<h1>Voxpop</h1>
+<p>Der er ingen aktive voxpops for denne organisation.</p>
+{% else %}
+<h1>{{ voxpop.title }}</h1>
+<p>{{ voxpop.description }}</p>
+<div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host=""></div>
 <script src="/static/voxpop.js"></script>
-{% if voxpop_id != "" %}
-{% include 'voxpop/question.html' with voxpop_id=voxpop_id allow_anonymous=allow_anonymous %}
+{% include 'voxpop/question.html' with voxpop=voxpop %}
 {% endif %}
 {% endblock %}
