@@ -287,7 +287,7 @@ abbr {
 
 /** Layout Rules **/
 body > header {
-  margin-block: 1rem 0.7rem;
+  margin-block: 1rem;
   text-align: center;
 }
 
@@ -299,7 +299,7 @@ main {
 
 @media (min-width: 500px) {
   main {
-    margin: 2em;
+    margin: 1em 2em;
   }
 }
 
