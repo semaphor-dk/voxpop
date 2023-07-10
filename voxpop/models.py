@@ -54,7 +54,9 @@ class Voxpop(CreatedUpdatedMixin):
     expires_at = models.DateTimeField("Endtime")
     is_moderated = models.BooleanField(default=True)
     allow_anonymous = models.BooleanField(default=False)
-    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, related_name='voxpops')
+    organisation = models.ForeignKey(
+        Organisation, on_delete=models.CASCADE, related_name="voxpops"
+    )
 
     def __str__(self):
         return f"{self.title}"
@@ -75,7 +77,9 @@ class Question(CreatedUpdatedMixin):
     )
     created_by = models.CharField(max_length=200)
     display_name = models.CharField(blank=True, max_length=50)
-    voxpop = models.ForeignKey(Voxpop, on_delete=models.CASCADE, related_name='questions')
+    voxpop = models.ForeignKey(
+        Voxpop, on_delete=models.CASCADE, related_name="questions"
+    )
 
     def approve(self):
         self.state = self.State.APPROVED
@@ -87,7 +91,9 @@ class Question(CreatedUpdatedMixin):
 
 class Vote(CreatedUpdatedMixin):
     created_by = models.CharField(max_length=200)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="votes")
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="votes"
+    )
 
     def __str__(self):
         return f'{self.created_by} -> "{self.question.text}"'
