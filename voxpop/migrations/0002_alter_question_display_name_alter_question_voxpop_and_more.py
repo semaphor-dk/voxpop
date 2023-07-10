@@ -5,25 +5,32 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voxpop', '0001_initial'),
+        ("voxpop", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='display_name',
+            model_name="question",
+            name="display_name",
             field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='voxpop',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='questions', to='voxpop.voxpop'),
+            model_name="question",
+            name="voxpop",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="questions",
+                to="voxpop.voxpop",
+            ),
         ),
         migrations.AlterField(
-            model_name='voxpop',
-            name='organisation',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='voxpops', to='voxpop.organisation'),
+            model_name="voxpop",
+            name="organisation",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="voxpops",
+                to="voxpop.organisation",
+            ),
         ),
     ]

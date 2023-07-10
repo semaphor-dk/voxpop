@@ -18,7 +18,7 @@ def notify_question_created(sender, instance, created, **kwargs):
             "uuid": str(instance.uuid),
             "text": str(instance.text),
             "display_name": str(instance.display_name),
-            "created_at": "tid ..."
+            "created_at": "tid ...",
         }
 
         notify(
@@ -34,7 +34,7 @@ def notify_vote_created(sender, instance, created, **kwargs):
 
         payload = {
             "question_id": str(instance.question_id),
-            "vote_count": instance.question.votes.count()
+            "vote_count": instance.question.votes.count(),
         }
 
         notify(

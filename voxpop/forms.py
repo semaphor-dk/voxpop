@@ -3,13 +3,15 @@ from django import forms
 from .models import Question
 from .models import Voxpop
 
+
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = [
             "text",
-            "display_name"
+            "display_name",
         ]
+
 
 class VoxpopForm(forms.ModelForm):
     class Meta:
