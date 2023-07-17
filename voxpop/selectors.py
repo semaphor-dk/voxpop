@@ -42,18 +42,22 @@ def get_voxpops(organisation) -> QuerySet[Voxpop]:
 
 def get_voxpop(voxpop_id) -> Voxpop:
     now = timezone.now()
-    voxpop = Voxpop.objects.filter(uuid=voxpop_id).annotate(
-        question_count=Count("questions", distinct=True),
-        is_active=Case(
-            When(
-                starts_at__lte=now,
-                expires_at__gte=now,
-                then=True,
+    voxpop = (
+        Voxpop.objects.filter(uuid=voxpop_id)
+        .annotate(
+            question_count=Count("questions", distinct=True),
+            is_active=Case(
+                When(
+                    starts_at__lte=now,
+                    expires_at__gte=now,
+                    then=True,
+                ),
+                default=False,
+                output_field=BooleanField(),
             ),
-            default=False,
-            output_field=BooleanField(),
-        ),
-    ).first()
+        )
+        .first()
+    )
     return voxpop
 
 
