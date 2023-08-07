@@ -16,8 +16,8 @@ from .forms import VoxpopForm
 from .models import Question
 from .selectors import current_organisation
 from .selectors import get_questions
-from .selectors import get_voxpops
 from .selectors import get_voxpop
+from .selectors import get_voxpops
 from .services import create_question
 from .services import create_voxpop
 from .utils import get_notify_channel_name
@@ -25,6 +25,7 @@ from .utils import get_notify_channel_name
 
 # Create your views here.
 # from django.contrib.auth.decorators import login_required
+
 
 def is_admin(request):
     # return request.session.get("admin") == True:
@@ -39,6 +40,7 @@ def admin_index(request):
         return render(request, "voxpop/admin/index.html", context)
     return render(request, "voxpop/admin/auth_error.html")
 
+
 def admin_voxpop(request, voxpop_id: UUID = None):
     if is_admin(request):
         if voxpop_id:
@@ -47,17 +49,24 @@ def admin_voxpop(request, voxpop_id: UUID = None):
                 "voxpop": voxpop,
                 "questions": {
                     "new": get_questions(voxpop=voxpop, state=Question.State.NEW),
-                    "approved": get_questions(voxpop=voxpop, state=Question.State.APPROVED),
-                    "discarded": get_questions(voxpop=voxpop, state=Question.State.DISCARDED),
-                    "answered": get_questions(voxpop=voxpop, state=Question.State.ANSWERED),
+                    "approved": get_questions(
+                        voxpop=voxpop, state=Question.State.APPROVED
+                    ),
+                    "discarded": get_questions(
+                        voxpop=voxpop, state=Question.State.DISCARDED
+                    ),
+                    "answered": get_questions(
+                        voxpop=voxpop, state=Question.State.ANSWERED
+                    ),
                 },
             }
             return render(request, "voxpop/admin/voxpop.html", context)
     return render(request, "voxpop/admin/auth_error.html")
 
+
 def admin_question_set_state(request, voxpop_id, question_id):
     if is_admin(request):
-        new_state = request.GET.get('state', None)
+        new_state = request.GET.get("state", None)
         if new_state:
             print(question_id)
             print(new_state)
@@ -76,7 +85,7 @@ def new_voxpop(request):
             form = VoxpopForm(request.POST)
             if form.is_valid():
                 formdata = form.save(commit=False)
-                voxpop = create_voxpop(
+                create_voxpop(
                     formdata.title,
                     formdata.description,
                     request.session["unique_name"],
@@ -91,6 +100,7 @@ def new_voxpop(request):
                 print("Form invalid")
             return redirect("/admin/voxpops/new")
     return render(request, "voxpop/admin/auth_error.html")
+
 
 def index(request):
     org = current_organisation(request)
@@ -136,7 +146,11 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
         else:
             return HttpResponse("Ukendt fejl, prøv venligst igen.")
 
-    return render(request, "voxpop/question.html", {"form": form, "allow_anonymous": voxpop.allow_anonymous})
+    return render(
+        request,
+        "voxpop/question.html",
+        {"form": form, "allow_anonymous": voxpop.allow_anonymous},
+    )
 
 
 def vote(request, question_id: UUID):
@@ -178,6 +192,6 @@ async def stream_questions_view(
         headers={
             "X-Accel-Buffering": "no",
             "Access-Control-Allow-Credentials": "true",
-            "Cache-Control": "No-Cache"
+            "Cache-Control": "No-Cache",
         },
     )
