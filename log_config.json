@@ -1,0 +1,27 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
+        }
+    },
+    "handlers": {
+        "uvicorn": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "verbose",
+            "when": "D",
+            "backupCount": 0,
+            "filename": "uvicorn.log"
+        }
+    },
+    "loggers": {
+        "uvicorn": {
+            "level": "DEBUG",
+            "handlers": ["uvicorn"],
+            "propagate": true,
+            "qualname": "uvicorn"
+        }
+    }
+}

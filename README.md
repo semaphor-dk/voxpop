@@ -26,4 +26,8 @@ docker-compose up -d
 
 # Run the application using uvicorn
 uvicorn --log-level debug --reload --timeout-graceful-shutdown 0 voxpop_project.asgi:application
+
+# Run the application using uvicorn with logfile.
+uvicorn --log-config=log_config.json --reload --timeout-graceful-shutdown 0 voxpop_project.asgi:application
+
 ```
