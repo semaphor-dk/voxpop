@@ -1,21 +1,13 @@
 {% extends 'admin-layout.html' %}
 {% block title %}Opret voxpop - Voxpop Admin Interface{% endblock %}
 {% block content %}
-          <h1>Opret nyt Voxpop</h1>
-          <form action="{% url 'voxpop:new_voxpop' %}" method="POST">{% csrf_token %}
-            <label for="title">Titel:</label>
-            <input type="text" name="title" maxlength="50" required id="title">
-            <label for="description">Beskrivelse:</label>
-            <textarea name="description" cols="40" rows="10" id="description"></textarea>
-            <label for="starts_at">Tidspunkt for start:</label>
-            <input type="datetime-local" name="starts_at" required id="starts_at">
-            <label for="expires_at">Tidspunkt for slut:</label>
-            <input type="datetime-local" name="expires_at" required id="expires_at">
-            <label for="is_moderated">Moderet chat:</label>
-            <input type="checkbox" name="is_moderated" id="is_moderated" checked>
-            <label for="allow_anonymous">Tillad anonyme:</label>
-            <input type="checkbox" name="allow_anonymous" id="allow_anonymous">
-            <p><button type="submit">Opret</button></p>
-          </form>
-          <p><a href="{% url 'voxpop:admin' %}">Tilbage</a></p>
+  <h1>Opret nyt Voxpop</h1>
+  <form action="{% url 'voxpop:new_voxpop' %}" method="POST">
+	{% csrf_token %}
+	{% for field in form %}
+	{{ field.name }}:{{ field }}<br>
+	{% endfor %}
+    <p><button type="submit">Opret</button></p>
+  </form>
+  <p><a href="{% url 'voxpop:admin' %}">Tilbage</a></p>
 {% endblock %}

@@ -22,3 +22,9 @@ class VoxpopForm(forms.ModelForm):
             "is_moderated",
             "allow_anonymous",
         ]
+
+        widgets={
+            'description':forms.Textarea(attrs={'rows':5 }),
+            'starts_at':forms.DateInput(attrs={'type':'datetime-local'}, format='%Y-%m-%d %H:%M'),
+            'expires_at':forms.DateInput(attrs={'type':'datetime-local'}, format='%Y-%m-%d %H:%M'),
+        }

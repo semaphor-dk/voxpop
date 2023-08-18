@@ -1,0 +1,13 @@
+{% extends 'admin-layout.html' %}
+{% block title %}{{ voxpop }}{% endblock %}
+{% block content %}
+<h1>Redigere nu Voxpop: "{{ voxpop }}"</h1>
+<form action="{% url 'voxpop:edit_voxpop' voxpop_id=voxpop.uuid %}" method="POST">
+	{% csrf_token %}
+	{% for field in form %}
+	{{ field.name }}: {{ field }} {{ field.type }} <br>
+	{% endfor %}
+	<button type="submit">Færdig</button>
+</form>
+<p><a href="{% url 'voxpop:admin' %}">Tilbage</a></p>
+{% endblock %}

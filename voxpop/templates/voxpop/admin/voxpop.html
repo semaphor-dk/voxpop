@@ -1,10 +1,11 @@
 {% extends 'admin-layout.html' %}
 {% block title %}{{ voxpop.title }} - Voxpop Admin Interface{% endblock %}
 {% block content %}
-            <h1>{{ voxpop.title }}</h1>
+<h1>{{ voxpop.title }}</h1>
             <div id="description">
                 <p>{{ voxpop.description }} </p>
-                <p>{{ voxpop.starts_at }} - {{ voxpop.expires_at.time }}</p>
+				<p>{{ voxpop.starts_at }} - {{ voxpop.expires_at }} </p>
+				<p><a href="{% url 'voxpop:edit_voxpop' voxpop_id=voxpop.uuid %}" role="button">Rediger</a></p>
             </div>
             <div id="adminQuestionLists" data-voxpop-uuid="{{ voxpop.uuid }}"{% if voxpop.is_moderated %} data-voxpop-is-moderated{% endif %}>
                 {% csrf_token %}
