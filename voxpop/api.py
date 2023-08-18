@@ -11,6 +11,7 @@ from .models import Voxpop
 from .selectors import get_questions
 from .selectors import get_voxpops
 from .selectors import get_voxpop
+from .selectors import current_organisation
 from .services import create_question
 from .services import create_vote
 
@@ -76,7 +77,122 @@ class Message(Schema):
     msg: str
 
 
-@router.get("/login", response=Message)
+@router.post(
+        "{voxpop_id}/new_question", 
+        response=Message
+        )
+def new_question(request, voxpop_id: UUID, text: str):
+
+    if not request.session.session_key:
+        return {"msg": "No session found."}
+    
+    voxpop = get_voxpop(voxpop_id) 
+    if voxpop.allow_anonymous:
+        question = create_question(
+            text=text,
+            display_name=request.session.get("nickname", "anon"),
+            created_by=request.session.get(
+                "unique_name",
+                request.session.session_key
+                ),
+            voxpop_id=voxpop_id,
+        )
+    else:
+        if not request.session.get("display_name", False):
+            return {"msg": "Please sign in first."}
+        question = create_question(
+            text=text,
+            display_name=request.session["display_name"],
+            created_by=request.session["unique_name"],
+            voxpop_id=voxpop_id,
+        )
+    return {"msg": "Question creaed with uuid: %s % question.uuid"}
+
+
+@router.post(
+        "{voxpop_id}/questions/{question_id}/vote", 
+        response=Message
+        )
+def vote(request, voxpop_id: UUID, question_id: UUID):
+    if not request.session.session_key:
+        return {"msg": "No session found."}
+    vote, created = create_vote(
+        created_by=request.session.session_key,
+        question_id=question_id
+        )
+    return (
+        {"msg": "Vote created with uuid: %s" % vote.uuid}
+        if created
+        else {"msg": "Vote already exists"}
+        )
+
+
+@router.get(
+        "/", 
+        response= {
+            200: list[VoxpopOut], 
+            403: Message
+        })
+def voxpops(request):
+    organisation = current_organisation(request)
+    if organisation is None:
+        return 403, {"msg": "Organisation not registered"}
+    return 200, list(get_voxpops(organisation))
+
+
+@router.get(
+        "/{voxpop_id}/questions", 
+        response=QuestionsOut
+        )
+def questions(request, voxpop_id: UUID):
+    if not request.session.session_key:
+        request.session.create()
+    voxpop = get_voxpop(voxpop_id)
+    approved = list(get_questions(
+        state=Question.State.APPROVED,
+        voxpop=voxpop))
+    answered = list(get_questions(
+        state=Question.State.ANSWERED,
+        voxpop=voxpop)) 
+    
+    return {"approved": approved, "answered": answered}
+
+
+@router.get(
+        "/{voxpop_id}/all_questions",
+        response={
+            200: QuestionsOutAdmin,
+            401: Message,
+        })
+def all_questions(request, voxpop_id: UUID):
+    if request.session.get("admin", False):
+        voxpop = get_voxpop(voxpop_id)
+        new = list(get_questions(
+            state=Question.State.NEW,
+            voxpop=voxpop))
+        approved = list(get_questions(
+            state=Question.State.APPROVED,
+            voxpop=voxpop))
+        answered = list(get_questions(
+            state=Question.State.ANSWERED,
+            voxpop=voxpop))
+        discarded = list(get_questions(
+            state=Question.State.DISCARDED,
+            voxpop=voxpop))
+        return {
+            "new": new,
+            "approved": approved,
+            "answered": answered,
+            "discarded": discarded
+        }
+    return 401, {"msg": "Unauthorized"}
+
+###################
+## AUTHENTICAION ##
+###################
+
+
+@router.post("/login", response=Message)
 def login(request, token: str = None):
 
     """ This endpoint will accept a JWT and
@@ -107,110 +223,41 @@ def login(request, token: str = None):
     return {"msg": "ERROR: Please provide a token."}
 
 
-@router.post("{voxpop_id}/new_question", response=Message)
-def new_question(request, voxpop_id: UUID, text: str):
-
-    if not request.session.session_key:
-        return {"msg": "No session found."}
-
-    voxpop=get_voxpops(voxpop_id=voxpop_id)
-
-    if (not voxpop.allow_anonymous) and (
-        request.session.session_key == request.session["unique_name"]
-    ):
-        return {"msg": "Please sign in first."}
-
-    question = create_question(
-        text=text,
-        display_name=request.session["display_name"],
-        created_by=request.session["unique_name"],
-        voxpop_id=voxpop_id,
-    )
-
-    return {"msg": "Question created with uuid: %s" % question.uuid}
-
-
-@router.post("{voxpop_id}/questions/{question_id}/vote", response=Message)
-def vote(request, voxpop_id: UUID, question_id: UUID):
-
-    if not request.session.session_key:
-        return {"msg": "No session found."}
-
-    vote, created = create_vote(
-        created_by=request.session.session_key,
-        question_id=question_id,
-    )
-
-    return (
-        {"msg": "Vote created with uuid: %s" % vote.uuid}
-        if created
-        else {"msg": "Vote already exists"}
-    )
-
-
-@router.get("/", response={200: list[VoxpopOut], 403: Message})
-def voxpops(request):
-    organisation = get_organisations(hostname=request.get_host())
-
-    if organisation is None:
-        return 403, {"msg": "Organisation not registered"}
-
-    return 200, list(get_voxpops(organisation_id=organisation.uuid))
-
-
-@router.get(
-    "/{voxpop_id}/questions",
-    response=QuestionsOut,
-)
-def questions(request, voxpop_id: UUID):
-
-    # TODO: More Errorhandling here? Is this safe?
-
+@router.post("/nickname", response=Message)
+def set_nickname(request, nickname: str):
+    request.session["nickname"] = nickname
+    return {"msg": f"Hello {nickname}!"}
+@router.get("/whoami")
+def tell_me_who_I_am(request):
+    
     if not request.session.session_key:
         request.session.create()
-        request.session["display_name"] = "Anonymous"
-        request.session["unique_name"] = request.session.session_key
-        request.session["admin"] = False
-    voxpop = get_voxpop(voxpop_id)
-    approved = list(get_questions(voxpop=voxpop, state=Question.State.APPROVED))
-    answered = list(get_questions(voxpop=voxpop, state=Question.State.ANSWERED))
-    return {"approved": approved, "answered": answered}
+
+    info = { k:v for k,v in request.session.items()}
+    info["sessionid"] = request.session.session_key
+    return info
 
 
-@router.get(
-    "/{voxpop_id}/all_questions",
-    response={
-        200: QuestionsOutAdmin,
-        401: Message,
-    }
-)
-def questions(request, voxpop_id: UUID):
-    if request.session["admin"]:
-        new = list(get_questions(state=Question.State.NEW, voxpop_id=voxpop_id))
-        approved = list(get_questions(state=Question.State.APPROVED, voxpop_id=voxpop_id))
-        answered = list(get_questions(state=Question.State.ANSWERED, voxpop_id=voxpop_id))
-        discarded = list(get_questions(state=Question.State.DISCARDED, voxpop_id=voxpop_id))
-
-        return {
-            "new": new,
-            "approved": approved,
-            "answered": answered,
-            "discarded": discarded,
-        }
-
-    return 401, {"msg": "Unauthorized"}
+@router.get("/logout")
+def logout(request):
+    request.session.clear()
+    return {"msg": "Logged out"}
 
 
 @router.get("/whoami")
 def tell_me_who_I_am(request):
+    
     if not request.session.session_key:
-        return {"msg": "No session found."}
-    return ({
-        "display_name": request.session["display_name"],
-        "unique_name": request.session["unique_name"],
-        "admin": request.session["admin"],
-        "anonymous": True if (
-            request.session["unique_name"] == request.session.session_key
-            )
-            else False,
-    })
+        request.session.create()
+
+    info = { k:v for k,v in request.session.items()}
+    info["sessionid"] = request.session.session_key
+    return info
+
+
+@router.get("/logout")
+def logout(request):
+    request.session.clear()
+    return {"msg": "Logged out"}
+
+
