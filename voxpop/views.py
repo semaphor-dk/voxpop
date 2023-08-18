@@ -27,8 +27,8 @@ from .utils import get_notify_channel_name
 # from django.contrib.auth.decorators import login_required
 
 def is_admin(request):
-    # return request.session.get("admin") == True:
     return True
+    return request.session.get("admin")
 
 
 def admin_index(request):
@@ -39,6 +39,7 @@ def admin_index(request):
         return render(request, "voxpop/admin/index.html", context)
     return render(request, "voxpop/admin/auth_error.html")
 
+
 def admin_voxpop(request, voxpop_id: UUID = None):
     if is_admin(request):
         if voxpop_id:
@@ -46,14 +47,23 @@ def admin_voxpop(request, voxpop_id: UUID = None):
             context = {
                 "voxpop": voxpop,
                 "questions": {
-                    "new": get_questions(voxpop=voxpop, state=Question.State.NEW),
-                    "approved": get_questions(voxpop=voxpop, state=Question.State.APPROVED),
-                    "discarded": get_questions(voxpop=voxpop, state=Question.State.DISCARDED),
-                    "answered": get_questions(voxpop=voxpop, state=Question.State.ANSWERED),
+                    "new": get_questions(
+                        voxpop=voxpop,
+                        state=Question.State.NEW),
+                    "approved": get_questions(
+                        voxpop=voxpop,
+                        state=Question.State.APPROVED),
+                    "discarded": get_questions(
+                        voxpop=voxpop,
+                        state=Question.State.DISCARDED),
+                    "answered": get_questions(
+                        voxpop=voxpop,
+                        state=Question.State.ANSWERED),
                 },
             }
             return render(request, "voxpop/admin/voxpop.html", context)
     return render(request, "voxpop/admin/auth_error.html")
+
 
 def admin_question_set_state(request, voxpop_id, question_id):
     if is_admin(request):
@@ -69,9 +79,13 @@ def admin_question_set_state(request, voxpop_id, question_id):
 
 def new_voxpop(request):
     if is_admin(request):
-        if request.method == "GET":
-            return render(request, "voxpop/admin/new_voxpop.html")
 
+        if request.method == "GET":
+            context = {
+                "form": VoxpopForm()
+            }
+            return render(request, "voxpop/admin/new_voxpop.html", context)
+        
         if request.method == "POST":
             form = VoxpopForm(request.POST)
             if form.is_valid():
@@ -92,6 +106,21 @@ def new_voxpop(request):
             return redirect("/admin/voxpops/new")
     return render(request, "voxpop/admin/auth_error.html")
 
+def edit_voxpop(request, voxpop_id: UUID = None):
+    if is_admin(request): 
+        voxpop = get_voxpop(voxpop_id)
+        if request.method == "GET":
+            context = { 
+                       "voxpop": voxpop,
+                       "form": VoxpopForm(instance=voxpop)
+                       }
+            return render(request, "voxpop/admin/edit_voxpop.html", context)
+        
+        if request.method == "POST":
+            form = VoxpopForm(request.POST, instance=voxpop)
+            form.save(commit=True)
+            return redirect("/admin")
+           
 def index(request):
     org = current_organisation(request)
     context = {}

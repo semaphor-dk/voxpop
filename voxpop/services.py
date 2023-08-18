@@ -14,13 +14,16 @@ def create_question(
     voxpop_id: UUID,
 ) -> Question:
     voxpop = get_voxpop(voxpop_id=voxpop_id)
-
     question = Question.objects.create(
         text=text,
         created_by=created_by,
         display_name=display_name,
         voxpop=voxpop,
-        state=Question.State.NEW if voxpop.is_moderated else Question.State.APPROVED,
+        state=(
+            Question.State.NEW
+            if voxpop.is_moderated
+            else Question.State.APPROVED
+        ),
     )
 
     return question

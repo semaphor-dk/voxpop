@@ -60,9 +60,10 @@ def get_voxpop(voxpop_id) -> Voxpop:
 def get_questions(
     voxpop: Voxpop,
     state: Question.State | None = None,
-) -> QuerySet[Question] | None:
+    ) -> QuerySet[Question] | None:
+   
     questions = voxpop.questions.all().annotate(
-        vote_count=Count("votes", distinct=True),
+        vote_count=Count("votes", distinct=True)
     )
     # First do all filtering
     if state:
