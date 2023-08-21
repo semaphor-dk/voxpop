@@ -1,4 +1,5 @@
 venv/
+uvicorn.log*
 *.sqlite3
 *.bak
 *.log
