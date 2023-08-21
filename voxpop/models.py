@@ -47,14 +47,18 @@ class Organisation(CreatedUpdatedMixin):
 
 
 class Voxpop(CreatedUpdatedMixin):
-    title = models.CharField(max_length=50)  # evt. topic
-    description = models.TextField(blank=True)
-    created_by = models.CharField(max_length=50)
-    starts_at = models.DateTimeField("Starttime")
-    expires_at = models.DateTimeField("Endtime")
-    is_moderated = models.BooleanField(default=True)
-    allow_anonymous = models.BooleanField(default=False)
-    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, related_name='voxpops')
+    title = models.CharField(_("voxpop title"), max_length=50)
+    description = models.TextField(_("description"), blank=True)
+    created_by = models.CharField(_("created by"), max_length=50,)
+    starts_at = models.DateTimeField(_("start time"))
+    expires_at = models.DateTimeField(_("end time"))
+    is_moderated = models.BooleanField(_("is moderated"), default=True)
+    allow_anonymous = models.BooleanField(_("allow anonymous"), default=False)
+    organisation = models.ForeignKey(
+            Organisation,
+            on_delete=models.CASCADE,
+            related_name='voxpops',
+            )
 
     def __str__(self):
         return f"{self.title}"
