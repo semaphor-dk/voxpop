@@ -25,6 +25,7 @@ class QuestionIn(ModelSchema):
         model = Question
         model_fields = [
             "text",
+            "display_name",
         ]
 
 
@@ -81,7 +82,7 @@ class Message(Schema):
         "{voxpop_id}/new_question", 
         response=Message
         )
-def new_question(request, voxpop_id: UUID, text: str):
+def new_question(request, voxpop_id: UUID, text: str, display_name: str = None):
 
     if not request.session.session_key:
         return {"msg": "No session found."}
@@ -89,8 +90,11 @@ def new_question(request, voxpop_id: UUID, text: str):
     voxpop = get_voxpop(voxpop_id) 
     if voxpop.allow_anonymous:
         question = create_question(
-            text=text,
-            display_name=request.session.get("nickname", "anon"),
+            text=text, 
+            display_name=request.session.get(
+                "display_name",
+                display_name if display_name else ""
+                ),
             created_by=request.session.get(
                 "unique_name",
                 request.session.session_key
@@ -187,11 +191,10 @@ def all_questions(request, voxpop_id: UUID):
         }
     return 401, {"msg": "Unauthorized"}
 
+
 ###################
 ## AUTHENTICAION ##
 ###################
-
-
 @router.post("/login", response=Message)
 def login(request, token: str = None):
 
@@ -223,10 +226,12 @@ def login(request, token: str = None):
     return {"msg": "ERROR: Please provide a token."}
 
 
-@router.post("/nickname", response=Message)
+"""@router.post("/nickname", response=Message)
 def set_nickname(request, nickname: str):
     request.session["nickname"] = nickname
-    return {"msg": f"Hello {nickname}!"}
+    return {"msg": f"Hello {nickname}!"}"""
+
+
 @router.get("/whoami")
 def tell_me_who_I_am(request):
     
