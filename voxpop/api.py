@@ -79,18 +79,18 @@ class Message(Schema):
 
 
 @router.post(
-        "{voxpop_id}/new_question", 
+        "{voxpop_id}/new_question",
         response=Message
         )
 def new_question(request, voxpop_id: UUID, text: str, display_name: str = None):
 
     if not request.session.session_key:
         return {"msg": "No session found."}
-    
-    voxpop = get_voxpop(voxpop_id) 
+
+    voxpop = get_voxpop(voxpop_id)
     if voxpop.allow_anonymous:
         question = create_question(
-            text=text, 
+            text=text,
             display_name=request.session.get(
                 "display_name",
                 display_name if display_name else ""
@@ -114,7 +114,7 @@ def new_question(request, voxpop_id: UUID, text: str, display_name: str = None):
 
 
 @router.post(
-        "{voxpop_id}/questions/{question_id}/vote", 
+        "{voxpop_id}/questions/{question_id}/vote",
         response=Message
         )
 def vote(request, voxpop_id: UUID, question_id: UUID):
@@ -132,9 +132,9 @@ def vote(request, voxpop_id: UUID, question_id: UUID):
 
 
 @router.get(
-        "/", 
+        "/",
         response= {
-            200: list[VoxpopOut], 
+            200: list[VoxpopOut],
             403: Message
         })
 def voxpops(request):
@@ -145,7 +145,7 @@ def voxpops(request):
 
 
 @router.get(
-        "/{voxpop_id}/questions", 
+        "/{voxpop_id}/questions",
         response=QuestionsOut
         )
 def questions(request, voxpop_id: UUID):
@@ -157,8 +157,8 @@ def questions(request, voxpop_id: UUID):
         voxpop=voxpop))
     answered = list(get_questions(
         state=Question.State.ANSWERED,
-        voxpop=voxpop)) 
-    
+        voxpop=voxpop))
+
     return {"approved": approved, "answered": answered}
 
 
@@ -195,7 +195,7 @@ def all_questions(request, voxpop_id: UUID):
 ###################
 ## AUTHENTICAION ##
 ###################
-@router.post("/login", response=Message)
+@router.get("/login", response=Message)
 def login(request, token: str = None):
 
     """ This endpoint will accept a JWT and
@@ -226,15 +226,9 @@ def login(request, token: str = None):
     return {"msg": "ERROR: Please provide a token."}
 
 
-"""@router.post("/nickname", response=Message)
-def set_nickname(request, nickname: str):
-    request.session["nickname"] = nickname
-    return {"msg": f"Hello {nickname}!"}"""
-
-
 @router.get("/whoami")
 def tell_me_who_I_am(request):
-    
+
     if not request.session.session_key:
         request.session.create()
 
@@ -251,7 +245,7 @@ def logout(request):
 
 @router.get("/whoami")
 def tell_me_who_I_am(request):
-    
+
     if not request.session.session_key:
         request.session.create()
 
