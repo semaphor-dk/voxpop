@@ -16,13 +16,15 @@ html {
   text-size-adjust: none;
 }
 
-body, td, th, input, select, textarea, button {
+body {
   font-family: Ubuntu, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, Geneva, Arial, sans-serif;
   font-size: 10.5pt;
+  margin: 0;
 }
 
-body {
-  margin: 0;
+td, th, input, select, textarea, button {
+  font-family: inherit;
+  font-size: inherit;
 }
 
 main {
