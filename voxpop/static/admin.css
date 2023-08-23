@@ -311,6 +311,10 @@ main {
   margin: 0 auto 0 auto;
   border-radius: 15px;
 }
+#messages li {
+  list-style-position: inside;
+  padding: 0.5em 1em;
+}
 
 #errormessage {
   font-size: 15px;
@@ -479,6 +483,10 @@ div[data-voxpop-uuid].live::before {
 }
 div[data-voxpop-uuid].disconnected::before {
   background-color: #f00;
+}
+
+.warning {
+  background-color: yellow;
 }
 
 /** Theme Rules **/

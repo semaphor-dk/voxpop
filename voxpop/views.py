@@ -33,9 +33,15 @@ def is_admin(request):
 
 def admin_index(request):
     if is_admin(request):
-        context = {
-            "voxpops": get_voxpops(current_organisation(request)),
-        }
+        organisation = current_organisation(request)
+        if organisation:
+            context = {
+                "voxpops": get_voxpops(organisation),
+                "organisation": organisation
+            }
+        else:
+            messages.warning(request, "Der findes ingen organisation til dette hostnavn!")
+            context = {"organisation": organisation}
         return render(request, "voxpop/admin/index.html", context)
     return render(request, "voxpop/admin/auth_error.html")
 
@@ -85,7 +91,7 @@ def new_voxpop(request):
                 "form": VoxpopForm()
             }
             return render(request, "voxpop/admin/new_voxpop.html", context)
-        
+
         if request.method == "POST":
             form = VoxpopForm(request.POST)
             if form.is_valid():
@@ -107,20 +113,20 @@ def new_voxpop(request):
     return render(request, "voxpop/admin/auth_error.html")
 
 def edit_voxpop(request, voxpop_id: UUID = None):
-    if is_admin(request): 
+    if is_admin(request):
         voxpop = get_voxpop(voxpop_id)
         if request.method == "GET":
-            context = { 
+            context = {
                        "voxpop": voxpop,
                        "form": VoxpopForm(instance=voxpop)
                        }
             return render(request, "voxpop/admin/edit_voxpop.html", context)
-        
+
         if request.method == "POST":
             form = VoxpopForm(request.POST, instance=voxpop)
             form.save(commit=True)
             return redirect("/admin")
-           
+
 def index(request):
     org = current_organisation(request)
     context = {}

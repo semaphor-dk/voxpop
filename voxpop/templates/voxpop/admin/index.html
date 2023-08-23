@@ -2,6 +2,7 @@
 {% block title %}Voxpop Admin Interface{% endblock %}
 {% block content %}
 	<h2>Voxpops</h2>
+	{% if organisation != None %}
 	<p><a href="{% url 'voxpop:new_voxpop' %}" role="button">Opret ny</a></p>
 	<ul>{% for voxpop in voxpops %}
 	    <li>
@@ -10,4 +11,5 @@
 		<p>{{ voxpop.description }}</p>
 	    </li>
 	{% endfor %}</ul>
+	{% endif %}
 {% endblock %}

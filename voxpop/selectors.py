@@ -61,7 +61,7 @@ def get_questions(
     voxpop: Voxpop,
     state: Question.State | None = None,
     ) -> QuerySet[Question] | None:
-   
+
     questions = voxpop.questions.all().annotate(
         vote_count=Count("votes", distinct=True)
     )
