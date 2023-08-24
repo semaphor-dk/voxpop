@@ -76,7 +76,9 @@ class VoxpopOut(ModelSchema):
 
 class Message(Schema):
     msg: str
-
+    
+class LoginSchema(Schema):
+    token: str
 
 @router.post(
         "{voxpop_id}/new_question",
@@ -195,8 +197,8 @@ def all_questions(request, voxpop_id: UUID):
 ###################
 ## AUTHENTICAION ##
 ###################
-@router.get("/login", response=Message)
-def login(request, token: str = None):
+@router.post("/login", response=Message)
+def login(request, data: LoginSchema):
 
     """ This endpoint will accept a JWT and
     overwrite the display_name, unique_name and
@@ -205,10 +207,10 @@ def login(request, token: str = None):
     session, which is required to participate in voxpops
     that do not allow anonymous participation. """
 
-    if token:
+    if data.token:
         try:
             payload = jwt.decode(
-                token,
+                data.token,
                 settings.SHARED_SECRET_JWT,
                 algorithms=["HS256"]
             )
