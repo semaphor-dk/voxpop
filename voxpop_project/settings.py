@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "voxpop",
 ]
 
@@ -38,6 +39,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "voxpop_project.urls"
@@ -76,3 +78,11 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CORS_ALLOWED_ORIGINS = env.list("ALLOWED_CORS_HOSTS")
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_METHODS = [
+    "GET",
+    "POST",
+    "OPTIONS",
+]
