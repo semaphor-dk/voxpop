@@ -22,12 +22,10 @@ from .services import create_question
 from .services import create_voxpop
 from .utils import get_notify_channel_name
 
+from django.utils.translation import gettext_lazy as _
 
-# Create your views here.
-# from django.contrib.auth.decorators import login_required
 
 def is_admin(request):
-    return True
     return request.session.get("admin")
 
 
@@ -85,13 +83,11 @@ def admin_question_set_state(request, voxpop_id, question_id):
 
 def new_voxpop(request):
     if is_admin(request):
-
         if request.method == "GET":
             context = {
                 "form": VoxpopForm()
             }
             return render(request, "voxpop/admin/new_voxpop.html", context)
-
         if request.method == "POST":
             form = VoxpopForm(request.POST)
             if form.is_valid():

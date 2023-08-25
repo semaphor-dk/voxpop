@@ -1,14 +1,15 @@
 {% extends 'admin-layout.html' %}
+{% load i18n %}
 {% block title %}Opret voxpop - Voxpop Admin Interface{% endblock %}
 {% block content %}
-  <h1>Opret nyt Voxpop</h1>
+<h1>{% trans "create new Voxpop"|capfirst %}</h1>
   <form action="{% url 'voxpop:new_voxpop' %}" method="POST">
 	{% csrf_token %}
 	{% for field in form %}
 	{{ field.label_tag }}
 	{{ field }}
 	{% endfor %}
-    <p><button type="submit">Opret</button></p>
+	<p><button type="submit">{% trans "create"|capfirst %}</button></p>
   </form>
-  <p><a href="{% url 'voxpop:admin' %}">Tilbage</a></p>
+  <p><a href="{% url 'voxpop:admin' %}">{% trans "return"|capfirst %}</a></p>
 {% endblock %}

@@ -1,12 +1,13 @@
 {% extends 'admin-layout.html' %}
-{% block title %}Voxpop Admin Interface{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "voxpop admin interface"|capfirst %}{% endblock %}
 {% block content %}
 	<h2>Voxpops</h2>
 	{% if organisation != None %}
 	<p><a href="{% url 'voxpop:new_voxpop' %}" role="button">Opret ny</a></p>
 	<ul>{% for voxpop in voxpops %}
 	    <li>
-		<a href="{% url 'voxpop:admin_voxpop' voxpop.uuid %}">{{ voxpop.title }}</a> - {{ voxpop.question_count }} spørgsmål.
+			<a href="{% url 'voxpop:admin_voxpop' voxpop.uuid %}">{{ voxpop.title }}</a> - {{ voxpop.question_count }} {% trans "question(s)" %}.
 		{% if voxpop.is_active %} &#128994; {% endif %}
 		<p>{{ voxpop.description }}</p>
 	    </li>

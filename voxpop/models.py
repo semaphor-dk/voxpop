@@ -41,13 +41,12 @@ class Organisation(CreatedUpdatedMixin):
         null=True,
         blank=True,
     )
-
     def __str__(self):
         return self.name
 
 
 class Voxpop(CreatedUpdatedMixin):
-    title = models.CharField(_("voxpop title"), max_length=50)
+    title = models.CharField(_("title"), max_length=50)
     description = models.TextField(_("description"), blank=True)
     created_by = models.CharField(_("created by"), max_length=50,)
     starts_at = models.DateTimeField(_("start time"))

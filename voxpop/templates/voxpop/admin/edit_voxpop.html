@@ -1,14 +1,15 @@
 {% extends 'admin-layout.html' %}
+{% load i18n %}
 {% block title %}{{ voxpop }}{% endblock %}
 {% block content %}
-<h1>Redigere nu Voxpop: "{{ voxpop }}"</h1>
+<h1>{% trans "now editing Voxpop"|capfirst %}: "{{ voxpop }}"</h1>
 <form action="{% url 'voxpop:edit_voxpop' voxpop_id=voxpop.uuid %}" method="POST">
 	{% csrf_token %}
 	{% for field in form %}
-	{{ field.label_tag}} 
+	{{ field.label }} 
 	{{ field }}
 	{% endfor %}
-	<button type="submit">Færdig</button>
+	<button type="submit">{% trans "done"|capfirst %}</button>
 </form>
-<p><a href="{% url 'voxpop:admin' %}">Tilbage</a></p>
+<p><a href="{% url 'voxpop:admin' %}">{% trans "return"|capfirst %}</a></p>
 {% endblock %}

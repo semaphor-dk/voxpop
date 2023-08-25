@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
-{% block title %}Fejl{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "error"|capfirst %}{% endblock %}
 {% block content %}
 <div id="errormessage">
-    <h2> 401 - Du har ikke lov til at tilgå denne side.</h2>
+	<h2>{% trans "401 Unauthorized" %}</h2>
 </div>
 {% endblock %}

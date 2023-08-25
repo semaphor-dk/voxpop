@@ -19,6 +19,8 @@ import jwt
 
 router = Router()
 
+class LoginSchema(Schema):
+    token: str
 
 class QuestionIn(ModelSchema):
     class Config:
@@ -247,10 +249,8 @@ def logout(request):
 
 @router.get("/whoami")
 def tell_me_who_I_am(request):
-
     if not request.session.session_key:
         request.session.create()
-
     info = { k:v for k,v in request.session.items()}
     info["sessionid"] = request.session.session_key
     return info
