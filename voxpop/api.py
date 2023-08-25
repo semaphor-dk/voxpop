@@ -19,8 +19,6 @@ import jwt
 
 router = Router()
 
-class LoginSchema(Schema):
-    token: str
 
 class QuestionIn(ModelSchema):
     class Config:
@@ -78,9 +76,11 @@ class VoxpopOut(ModelSchema):
 
 class Message(Schema):
     msg: str
-    
+
+
 class LoginSchema(Schema):
     token: str
+
 
 @router.post(
         "{voxpop_id}/new_question",
