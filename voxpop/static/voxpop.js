@@ -39,9 +39,18 @@
 		return `<div data-voxpop-question-uuid="${ q.uuid }">
 	<blockquote>${ q.text }</blockquote>
 	<div class="displayName">${ q.display_name }</div>
-	<div class="votes"><span>${q.vote_count || 0 }</span> votes</div>
+	<div class="votes"><span>${ q.vote_count || 0 }</span> votes</div>
 	<button type="button" class="vote">Vote</button>
 </div>\n`;
+	}
+
+	function createNewQuestionForm(hostname, voxpopUuid) {
+		return `<form action="//${ hostname }/api/voxpops/${ voxpopUuid }/new_question" method="POST">
+    <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
+    <textarea name="text" rows="3" maxlength="150" autofocus required></textarea>
+    - <input name="display_name" type="text" maxlength="50" placeholder="Dit navn">
+    <button type="submit" class="primary">Send</button>
+</form>`;
 	}
 
 	function renderVoxpop(voxpopElm, questionsUrl) {
@@ -52,17 +61,29 @@
 			if (this.status >= 200 && this.status < 300) {
 				let questions = JSON.parse(xhr.response);
 				let fragment = "\n";
-				questions.approved.forEach(function (q) {
-					fragment += createHTMLforQuestion(q);
+				questions.approved.forEach(function (question) {
+					fragment += createHTMLforQuestion(question);
 				});
+				fragment += createNewQuestionForm(voxpopElm.dataset.voxpopHost, voxpopElm.dataset.voxpopUuid);
 				voxpopElm.innerHTML = fragment;
 				voxpopElm.addEventListener('click', function (evt) {
 					if (evt.target.classList.contains('vote')) {
 						let questionUuid = evt.target.closest('div[data-voxpop-question-uuid]').dataset.voxpopQuestionUuid;
 						let voxpopData = evt.target.closest('*[data-voxpop-uuid').dataset;
 						let hostPort = (voxpopData.voxpopHost) ? `//${ voxpopData.voxpopHost }` : '';
-						vote(`${hostPort}/api/voxpops/${voxpopData.voxpopUuid}/questions/${questionUuid}/vote`);
+						vote(`${ hostPort }/api/voxpops/${ voxpopData.voxpopUuid }/questions/${ questionUuid }/vote`);
 					}
+				});
+				voxpopElm.querySelector('form').addEventListener('submit', function (evt) {
+					evt.preventDefault();
+					let formData = new FormData(evt.target);
+					const xhr = new XMLHttpRequest();
+					xhr.withCredentials = true;
+					xhr.addEventListener('load', function () {
+						console.dir(xhr.response);
+					});
+					xhr.open(evt.target.method, evt.target.action);
+					xhr.send(formData);
 				});
 			}
 		};
@@ -76,7 +97,7 @@
 	function vote(endpoint) {
 		let xhr = new XMLHttpRequest();
 		xhr.withCredentials = true;
-		xhr.open("post", endpoint, true);
+		xhr.open('post', endpoint, true);
 		xhr.onload = function () {
 			if (this.status >= 200 && this.status < 300) {
 				// Success
