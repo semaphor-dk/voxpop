@@ -318,6 +318,9 @@ div[data-voxpop-question-uuid] .displayName {
   justify-self: end;
   margin-bottom: 1em;
 }
+div[data-voxpop-question-uuid] .displayName:not(:empty)::before {
+  content: "- ";
+}
 
 /** Module Rules **/
 
