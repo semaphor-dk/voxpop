@@ -16,6 +16,7 @@ SHARED_SECRET_JWT=env.str("SHARED_SECRET_JWT")
 SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = CORS_ORIGIN_WHITELIST = env.list("CSRF_TRUSTED_ORIGINS")
 
 # Application definition
 
