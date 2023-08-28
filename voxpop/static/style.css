@@ -299,6 +299,10 @@ div[data-voxpop-uuid]::before {
   justify-self: end;
 }
 
+div[data-voxpop-uuid] form {
+  grid-column-start: 1;
+}
+
 div[data-voxpop-question-uuid] {
   box-shadow: inset 3px 3px 4px rgba(0,0,0,.175);
   border-radius: 4px;
