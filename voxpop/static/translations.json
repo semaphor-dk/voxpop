@@ -1,0 +1,18 @@
+{
+	"da": {
+		"NamePlaceholder": "Dit navn",
+		"QuestionFormHeadline": "Dit spørgsmål",
+		"SubmitQuestionButton": "Send",
+		"VoteCounterLabel": "stemmer",
+		"VoteCounterLabelOne": "stemme",
+		"VoteButton": "Stem"
+	},
+	"en": {
+		"NamePlaceholder": "Your name",
+		"QuestionFormHeadline": "Your Question",
+		"SubmitQuestionButton": "Send",
+		"VoteCounterLabel": "votes",
+		"VoteCounterLabelOne": "vote",
+		"VoteButton": "Vote"
+	}
+}
