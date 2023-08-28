@@ -45,7 +45,7 @@
 	}
 
 	function createNewQuestionForm(hostname, voxpopUuid) {
-		return `<form action="//${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
+		return `<form action="${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
     <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
     <textarea name="text" rows="3" maxlength="150" autofocus required></textarea>
     - <input name="display_name" type="text" maxlength="50" placeholder="Dit navn">
@@ -64,7 +64,7 @@
 				questions.approved.forEach(function (question) {
 					fragment += createHTMLforQuestion(question);
 				});
-				fragment += createNewQuestionForm(voxpopElm.dataset.voxpopHost, voxpopElm.dataset.voxpopUuid);
+				fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid);
 				voxpopElm.innerHTML = fragment;
 				voxpopElm.addEventListener('click', function (evt) {
 					if (evt.target.classList.contains('vote')) {
