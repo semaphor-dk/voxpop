@@ -118,7 +118,7 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
             created_by=request.session["unique_name"],
             voxpop_id=voxpop_id,
         )
-    return {"msg": "Question creaed with uuid: %s % question.uuid"}
+    return {"msg": "Question created with uuid: %s" % question.uuid}
 
 
 @router.post(
