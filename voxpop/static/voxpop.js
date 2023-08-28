@@ -45,7 +45,7 @@
 	}
 
 	function createNewQuestionForm(hostname, voxpopUuid) {
-		return `<form action="//${ hostname }/api/voxpops/${ voxpopUuid }/new_question" method="POST">
+		return `<form action="//${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
     <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
     <textarea name="text" rows="3" maxlength="150" autofocus required></textarea>
     - <input name="display_name" type="text" maxlength="50" placeholder="Dit navn">
@@ -77,13 +77,17 @@
 				voxpopElm.querySelector('form').addEventListener('submit', function (evt) {
 					evt.preventDefault();
 					let formData = new FormData(evt.target);
+					let object = {};
+					formData.forEach(function(value, key){
+						object[key] = value;
+					});
 					const xhr = new XMLHttpRequest();
 					xhr.withCredentials = true;
 					xhr.addEventListener('load', function () {
 						console.dir(xhr.response);
 					});
 					xhr.open(evt.target.method, evt.target.action);
-					xhr.send(formData);
+					xhr.send(JSON.stringify(object));
 				});
 			}
 		};
