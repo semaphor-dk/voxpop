@@ -82,22 +82,26 @@ class LoginSchema(Schema):
     token: str
 
 
-@router.post(
+"""@router.post(
         "{voxpop_id}/new_question",
         response=Message
-        )
-def new_question(request, voxpop_id: UUID, text: str, display_name: str = None):
+        )"""
 
+@router.post(
+        "{voxpop_id}/questions/new",
+        response=Message,
+        )
+def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
 
     voxpop = get_voxpop(voxpop_id)
     if voxpop.allow_anonymous:
         question = create_question(
-            text=text,
+            text=data.text,
             display_name=request.session.get(
                 "display_name",
-                display_name if display_name else ""
+                data.display_name if data.display_name else ""
                 ),
             created_by=request.session.get(
                 "unique_name",
