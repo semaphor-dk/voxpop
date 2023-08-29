@@ -230,11 +230,11 @@ async def stream_questions_view(
     voxpop_id: UUID,
 ) -> StreamingHttpResponse:
     return StreamingHttpResponse(
-        streaming_content=stream_questions(voxpop_id=voxpop_id),
         content_type="text/event-stream",
         headers={
             "X-Accel-Buffering": "no",
             "Access-Control-Allow-Credentials": "true",
             "Cache-Control": "No-Cache"
         },
+        streaming_content=stream_questions(voxpop_id=voxpop_id),
     )
