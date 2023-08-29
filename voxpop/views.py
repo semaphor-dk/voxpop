@@ -2,6 +2,8 @@ from collections.abc import AsyncGenerator
 from uuid import UUID
 
 import psycopg
+import jwt 
+
 from django.contrib import messages
 from django.db import connection
 from django.http import HttpRequest
@@ -10,6 +12,7 @@ from django.http import StreamingHttpResponse
 from django.shortcuts import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.conf import settings
 
 from .forms import QuestionForm
 from .forms import VoxpopForm
@@ -41,7 +44,30 @@ def admin_index(request):
             messages.warning(request, "Der findes ingen organisation til dette hostnavn!")
             context = {"organisation": organisation}
         return render(request, "voxpop/admin/index.html", context)
-    return render(request, "voxpop/admin/auth_error.html")
+    
+    # TODO: Handle non-admin user request to "/admin"?
+    #return render(request, "voxpop/admin/auth_error.html") 
+    
+    token = request.GET.get('token', False)
+    if token:
+        try:
+            payload = jwt.decode(
+                token,
+                settings.SHARED_SECRET_JWT,
+                algorithms=["HS256"]
+            )
+        except jwt.exceptions.InvalidSignatureError:
+            return {"msg": "ERROR: Invalid signature"}
+        except jwt.exceptions.DecodeError:
+            return {"msg": "ERROR: Malformed JWT"}
+        try:
+            request.session["display_name"] = payload["display_name"]
+            request.session["unique_name"] = payload["unique_name"]
+            request.session["admin"] = payload["admin"]
+        except KeyError:
+            return {"msg": "Mandatory attribute(s) missing."}
+        return redirect("/admin")
+    return redirect(settings.PLUGON_HOSTNAME)
 
 
 def admin_voxpop(request, voxpop_id: UUID = None):
