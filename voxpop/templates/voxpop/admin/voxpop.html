@@ -13,7 +13,7 @@
                 {% for key, values in questions.items %}
                 <details{% if key == "new" or key == "approved" %} open{% endif %}>
 					<summary>{% trans key|capfirst %}</summary>
-					<div id="{% trans  key|capfirst %}Questions">{% for question in values %}
+					<div id="{{ key }}Questions">{% for question in values %}
                         <div data-voxpop-question-uuid="{{ question.uuid }}">
                             <blockquote>{{ question.text }}</blockquote>
                             <div class="displayName">{{ question.display_name }}</div>
