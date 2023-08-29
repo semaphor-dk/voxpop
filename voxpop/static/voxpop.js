@@ -9,7 +9,7 @@
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 		renderVoxpop(voxpopElm, questionsUrl);
-		var sse = new EventSource(`${ hostPort }/stream/${ voxpopElm.dataset.voxpopUuid }/questions`, {withCredentials: true});
+		var sse = new EventSource(`${ hostPort }/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions/stream`, {withCredentials: true});
 		allSse.push(sse);
 		sse.onopen = function (evt) {
 			updateConnectionStatus(voxpopElm, evt.target.readyState);

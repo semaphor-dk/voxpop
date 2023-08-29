@@ -6,7 +6,7 @@
             <div id="description">
                 <p>{{ voxpop.description }} </p>
 				<p>{{ voxpop.starts_at }} - {{ voxpop.expires_at }} </p>
-				<p><a href="{% url 'voxpop:edit_voxpop' voxpop_id=voxpop.uuid %}" role="button">{% trans "edit"|capfirst %}</a></p>
+				<p><a href="edit" role="button">{% trans "edit"|capfirst %}</a></p>
             </div>
             <div id="adminQuestionLists" data-voxpop-uuid="{{ voxpop.uuid }}"{% if voxpop.is_moderated %} data-voxpop-is-moderated{% endif %}>
                 {% csrf_token %}
