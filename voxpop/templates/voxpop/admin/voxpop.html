@@ -6,14 +6,14 @@
             <div id="description">
                 <p>{{ voxpop.description }} </p>
 				<p>{{ voxpop.starts_at }} - {{ voxpop.expires_at }} </p>
-				<p><a href="{% url 'voxpop:edit_voxpop' voxpop_id=voxpop.uuid %}" role="button">{% trans "edit"|capfirst %}</a></p>
+				<p><a href="edit" role="button">{% trans "edit"|capfirst %}</a></p>
             </div>
             <div id="adminQuestionLists" data-voxpop-uuid="{{ voxpop.uuid }}"{% if voxpop.is_moderated %} data-voxpop-is-moderated{% endif %}>
                 {% csrf_token %}
                 {% for key, values in questions.items %}
                 <details{% if key == "new" or key == "approved" %} open{% endif %}>
 					<summary>{% trans key|capfirst %}</summary>
-					<div id="{% trans  key|capfirst %}Questions">{% for question in values %}
+					<div id="{{ key }}Questions">{% for question in values %}
                         <div data-voxpop-question-uuid="{{ question.uuid }}">
                             <blockquote>{{ question.text }}</blockquote>
                             <div class="displayName">{{ question.display_name }}</div>

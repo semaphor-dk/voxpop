@@ -10,7 +10,7 @@
 //		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
 //		renderVoxpop(voxpopElm, questionsUrl);
 		let isModerated = voxpopElm.dataset.hasOwnProperty('voxpopIsModerated');
-		var sse = new EventSource(`/stream/${ voxpopElm.dataset.voxpopUuid }/questions`, {withCredentials: true});
+		var sse = new EventSource('questions/stream', {withCredentials: true});
 		allSse.push(sse);
 		sse.onopen = function (evt) {
 			updateConnectionStatus(voxpopElm, evt.target.readyState);
