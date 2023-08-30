@@ -4,5 +4,8 @@
 {% block content %}
 <div id="errormessage">
 	<h2>{% trans "401 Unauthorized" %}</h2>
+	{% if error %}
+	<h4> {{ error|title }} </h4>
+	{% endif %}
 </div>
 {% endblock %}

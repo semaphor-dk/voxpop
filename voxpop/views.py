@@ -33,8 +33,8 @@ def is_admin(request):
 
 
 def admin_index(request):
+    organisation = current_organisation(request)
     if is_admin(request):
-        organisation = current_organisation(request)
         if organisation:
             context = {
                 "voxpops": get_voxpops(organisation),
@@ -43,32 +43,35 @@ def admin_index(request):
         else:
             messages.warning(request, "Der findes ingen organisation til dette hostnavn!")
             context = {"organisation": organisation}
-        return render(request, "voxpop/admin/index.html", context)
-    
-    # TODO: Handle non-admin user request to "/admin"?
-    #return render(request, "voxpop/admin/auth_error.html") 
-    
+        return render(request, "voxpop/admin/index.html", context) 
     token = request.GET.get('token', False)
     if token:
         try:
-            payload = jwt.decode(
-                token,
-                settings.SHARED_SECRET_JWT,
-                algorithms=["HS256"]
-            )
+            payload = jwt.decode(token,
+                                 settings.SHARED_SECRET_JWT,
+                                 algorithms=["HS256"])
+        
         except jwt.exceptions.InvalidSignatureError:
-            return {"msg": "ERROR: Invalid signature"}
+            msg=_("invalid signature")
+            return render(request, 
+                          "voxpop/admin/auth_error.html", 
+                          {"error": msg})
+        
         except jwt.exceptions.DecodeError:
-            return {"msg": "ERROR: Malformed JWT"}
+            msg=_("jwt decode error")
+            return render(request, 
+                          "voxpop/admin/auth_error.html", 
+                          {"error": msg})
         try:
             request.session["display_name"] = payload["display_name"]
             request.session["unique_name"] = payload["unique_name"]
             request.session["admin"] = payload["admin"]
         except KeyError:
-            return {"msg": "Mandatory attribute(s) missing."}
+            return {"msg": "Mandatory attribute(s) missing."} 
         return redirect("/admin")
-    return redirect(settings.PLUGON_HOSTNAME)
 
+    idp_url = organisation.idp + "?url=https://" + request.get_host()
+    return redirect(idp_url)
 
 def admin_voxpop(request, voxpop_id: UUID = None):
     if is_admin(request):
