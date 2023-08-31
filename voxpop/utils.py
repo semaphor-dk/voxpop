@@ -4,6 +4,12 @@ import psycopg
 from django.db import connection
 
 
+def get_notify_admin_channel_name(*, voxpop_id: UUID) -> str:
+    if isinstance(voxpop_id, str):
+        voxpop_id = UUID(voxpop_id)
+    return f"admin_questions_{voxpop_id.hex}"
+
+
 def get_notify_channel_name(*, voxpop_id: UUID) -> str:
     if isinstance(voxpop_id, str):
         voxpop_id = UUID(voxpop_id)

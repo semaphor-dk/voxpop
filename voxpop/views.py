@@ -2,7 +2,7 @@ from collections.abc import AsyncGenerator
 from uuid import UUID
 
 import psycopg
-import jwt 
+import jwt
 
 from django.contrib import messages
 from django.db import connection
@@ -23,6 +23,7 @@ from .selectors import get_voxpops
 from .selectors import get_voxpop
 from .services import create_question
 from .services import create_voxpop
+from .utils import get_notify_admin_channel_name
 from .utils import get_notify_channel_name
 
 from django.utils.translation import gettext_lazy as _
@@ -43,31 +44,35 @@ def admin_index(request):
         else:
             messages.warning(request, "Der findes ingen organisation til dette hostnavn!")
             context = {"organisation": organisation}
-        return render(request, "voxpop/admin/index.html", context) 
+        return render(request, "voxpop/admin/index.html", context)
+
+    # TODO: Handle non-admin user request to "/admin"?
+    #return render(request, "voxpop/admin/auth_error.html")
+
     token = request.GET.get('token', False)
     if token:
         try:
             payload = jwt.decode(token,
                                  settings.SHARED_SECRET_JWT,
                                  algorithms=["HS256"])
-        
+
         except jwt.exceptions.InvalidSignatureError:
             msg=_("invalid signature")
-            return render(request, 
-                          "voxpop/admin/auth_error.html", 
+            return render(request,
+                          "voxpop/admin/auth_error.html",
                           {"error": msg})
-        
+
         except jwt.exceptions.DecodeError:
             msg=_("jwt decode error")
-            return render(request, 
-                          "voxpop/admin/auth_error.html", 
+            return render(request,
+                          "voxpop/admin/auth_error.html",
                           {"error": msg})
         try:
             request.session["display_name"] = payload["display_name"]
             request.session["unique_name"] = payload["unique_name"]
             request.session["admin"] = payload["admin"]
         except KeyError:
-            return {"msg": "Mandatory attribute(s) missing."} 
+            return {"msg": "Mandatory attribute(s) missing."}
         return redirect("/admin")
 
     idp_url = organisation.idp + "?url=https://" + request.get_host()
@@ -240,4 +245,38 @@ async def stream_questions_view(
             "Cache-Control": "No-Cache"
         },
         streaming_content=stream_questions(voxpop_id=voxpop_id),
+    )
+
+
+async def admin_questions_stream(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
+    yield "data: Ping\n\n"
+    aconnection = await psycopg.AsyncConnection.connect(
+        **connection.get_connection_params(),
+        autocommit=True,
+    )
+    channel_name = get_notify_admin_channel_name(voxpop_id=voxpop_id)
+    try:
+        async with aconnection.cursor() as acursor:
+            await acursor.execute(f"LISTEN {channel_name}")
+            gen = aconnection.notifies()
+            async for notify in gen:
+                yield f"{notify.payload}\n\n"
+    except Exception as e:
+        print(e.message)
+    finally:
+        aconnection.close()
+
+
+async def admin_questions_stream_view(
+    request: HttpRequest,
+    voxpop_id: UUID,
+) -> StreamingHttpResponse:
+    return StreamingHttpResponse(
+        content_type="text/event-stream",
+        headers={
+            "X-Accel-Buffering": "no",
+            "Access-Control-Allow-Credentials": "true",
+            "Cache-Control": "No-Cache"
+        },
+        streaming_content=admin_questions_stream(voxpop_id=voxpop_id),
     )
