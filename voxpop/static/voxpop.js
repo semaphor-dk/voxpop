@@ -84,7 +84,7 @@
 		return `<form action="${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
 	<h3>${ translations['QuestionFormHeadline'] }</h3>
     <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
-    <textarea name="text" rows="3" maxlength="150" autofocus required></textarea>
+    <textarea name="text" rows="3" maxlength="150" required></textarea>
     - <input name="display_name" type="text" maxlength="50" placeholder="${ translations['NamePlaceholder'] }">
     <button type="submit" class="primary">${ translations['SubmitQuestionButton'] }</button>
 </form>`;
