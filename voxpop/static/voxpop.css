@@ -9,22 +9,23 @@
 
 div[data-voxpop-uuid] {
   position: relative;
-/*  display: grid; */
-  grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
-  gap: 1.5em;
 }
 
 div[data-voxpop-uuid]::before {
-  grid-column-start: 1;
-  grid-column-end: -1;
-  justify-self: end;
   position: absolute;
   right: 5px;
-  top: -5px;
+  top: -25px;
 }
 
 div[data-voxpop-uuid] form {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5em 1em;
+}
+
+div[data-voxpop-uuid] form h3 {
   grid-column-start: 1;
+  grid-column-end: -1;
 }
 
 div[data-voxpop-uuid] blockquote {
@@ -32,27 +33,32 @@ div[data-voxpop-uuid] blockquote {
 }
 
 div[data-voxpop-uuid] textarea {
-  margin-bottom: 1em;
 }
 
 div[data-voxpop-question-uuid] {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0 1em;
+  margin-bottom: 0.5em;
 }
 
 div[data-voxpop-question-uuid] blockquote {
-  grid-column-start: 1;
-  grid-column-end: -1;
 }
 
 div[data-voxpop-question-uuid] .displayName {
-  grid-column-start: 1;
-  grid-column-end: -1;
-  justify-self: end;
-  margin-bottom: 1em;
+  display: none;
 }
 div[data-voxpop-question-uuid] .displayName:not(:empty)::before {
   content: "- ";
+}
+
+div[data-voxpop-question-uuid] button {
+  padding: 4px 8px;
+}
+
+div[data-voxpop-question-uuid] button::before {
+  content: "↑";
 }
 
 /** Module Rules **/
@@ -60,8 +66,6 @@ div[data-voxpop-question-uuid] .displayName:not(:empty)::before {
 /** State Rules **/
 div[data-voxpop-uuid]::before {
   content: '';
-  display: inline-block;
-  float: right;
   background-color: lightgray;
   border: 1px solid grey;
   border-radius: 50%;

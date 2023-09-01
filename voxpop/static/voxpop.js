@@ -82,8 +82,8 @@
 		return `<div data-voxpop-question-uuid="${ question.uuid }">
 	<blockquote>${ question.text }</blockquote>
 	<div class="displayName">${ question.display_name }</div>
-	<div class="votes"><span>${ question.vote_count || 0 }</span> ${ translations[voteCountLabel] }</div>
-	<button type="button" class="vote">${ translations['VoteButton'] }</button>
+	<div class="votes"><span title="${ translations[voteCountLabel] }">${ question.vote_count || 0 }</span></div>
+	<button type="button" class="vote" title="${ translations['VoteButton'] }"></button>
 </div>\n`;
 	}
 
@@ -91,9 +91,9 @@
 		return `<form action="${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
 	<h3>${ translations['QuestionFormHeadline'] }</h3>
     <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
-    <textarea name="text" rows="3" maxlength="150" required></textarea>
-    - <input name="display_name" type="text" maxlength="50" placeholder="${ translations['NamePlaceholder'] }">
-    <button type="submit" class="primary">${ translations['SubmitQuestionButton'] }</button>
+    <input name="display_name" type="text" maxlength="50" placeholder="${ translations['NamePlaceholder'] }">
+    <textarea name="text" rows="1" maxlength="150" required placeholder="Spørgsmål"></textarea>
+    <button type="submit" class="primary cta">${ translations['SubmitQuestionButton'] }</button>
 </form>`;
 	}
 
