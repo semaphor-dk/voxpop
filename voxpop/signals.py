@@ -17,6 +17,19 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
     if instance.created_at != None:
         original_state = Question.objects.get(pk=instance.uuid).state
         if instance.state != original_state:
+            if instance.state == Question.State.APPROVED:
+                channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
+                payload = {
+                    "uuid": str(instance.uuid),
+                    "text": str(instance.text),
+                    "display_name": str(instance.display_name),
+                    "created_at": "tid ..."
+                }
+                notify(
+                    channel_name=channel_name,
+                    payload=f"event: new_question\ndata: {json.dumps(payload)}",
+                )
+
             admin_channel_name = get_notify_admin_channel_name(voxpop_id=instance.voxpop_id)
             payload = {
                 "question_id": str(instance.uuid),
@@ -31,17 +44,18 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=Question)
 def notify_question_created(sender, instance, created, **kwargs):
     if created:
-        channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
         payload = {
             "uuid": str(instance.uuid),
             "text": str(instance.text),
             "display_name": str(instance.display_name),
             "created_at": "tid ..."
         }
-        notify(
-            channel_name=channel_name,
-            payload=f"event: new_question\ndata: {json.dumps(payload)}",
-        )
+        if instance.state == Question.State.APPROVED:
+            channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
+            notify(
+                channel_name=channel_name,
+                payload=f"event: new_question\ndata: {json.dumps(payload)}",
+            )
         admin_channel_name = get_notify_admin_channel_name(voxpop_id=instance.voxpop_id)
         notify(
             channel_name=admin_channel_name,
