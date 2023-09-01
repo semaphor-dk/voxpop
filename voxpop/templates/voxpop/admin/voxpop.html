@@ -35,7 +35,7 @@
 			<details id="embedCode">
 				<summary>{%trans "embed code"|capfirst %}</summary>
 				<button type="button" class="copyToClipboard">{% trans "copy"|capfirst %}</button>
-				<pre><code class="html">&lt;div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host="{{ request.META.HTTP_HOST }}"&gt;&lt;/div&gt;
+				<pre><code class="html">&lt;div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host="{{ request.META.HTTP_HOST }}"&gt;Afventer Voxpop…&lt;/div&gt;
 &lt;script src="//{{ request.META.HTTP_HOST }}/static/voxpop.js"&gt;&lt;/script&gt;</code></pre>
 			</details>
 			<p><a href="{% url 'voxpop:admin' %}">{% trans "return"|capfirst %}</a></p>

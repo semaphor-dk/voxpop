@@ -1,0 +1,78 @@
+@charset "utf-8";
+/* This stylesheet is divided into sections as defined by SMACSS. http://smacss.com/ */
+
+/** Load WebFonts **/
+
+/** Base Rules **/
+
+/** Layout Rules **/
+
+div[data-voxpop-uuid] {
+  position: relative;
+/*  display: grid; */
+  grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+  gap: 1.5em;
+}
+
+div[data-voxpop-uuid]::before {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  justify-self: end;
+  position: absolute;
+  right: 5px;
+  top: -5px;
+}
+
+div[data-voxpop-uuid] form {
+  grid-column-start: 1;
+}
+
+div[data-voxpop-uuid] blockquote {
+  margin: 0;
+}
+
+div[data-voxpop-uuid] textarea {
+  margin-bottom: 1em;
+}
+
+div[data-voxpop-question-uuid] {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+div[data-voxpop-question-uuid] blockquote {
+  grid-column-start: 1;
+  grid-column-end: -1;
+}
+
+div[data-voxpop-question-uuid] .displayName {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  justify-self: end;
+  margin-bottom: 1em;
+}
+div[data-voxpop-question-uuid] .displayName:not(:empty)::before {
+  content: "- ";
+}
+
+/** Module Rules **/
+
+/** State Rules **/
+div[data-voxpop-uuid]::before {
+  content: '';
+  display: inline-block;
+  float: right;
+  background-color: lightgray;
+  border: 1px solid grey;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+}
+div[data-voxpop-uuid].live::before {
+  background-color: #0f0;
+}
+div[data-voxpop-uuid].disconnected::before {
+  background-color: #f00;
+}
+
+/** Theme Rules **/

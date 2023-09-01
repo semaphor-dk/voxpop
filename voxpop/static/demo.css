@@ -221,7 +221,6 @@ textarea {
   box-sizing: border-box;
   padding: 3px;
   width: 100%;
-  margin-bottom: 1em;
 }
 
 /* Use button tags instead */
@@ -290,44 +289,6 @@ main {
   color: red;
 }
 
-div[data-voxpop-uuid] {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
-  gap: 1.5em;
-}
-
-div[data-voxpop-uuid]::before {
-  grid-column-start: 1;
-  grid-column-end: -1;
-  justify-self: end;
-}
-
-div[data-voxpop-uuid] form {
-  grid-column-start: 1;
-}
-
-div[data-voxpop-question-uuid] {
-  box-shadow: inset 3px 3px 4px rgba(0,0,0,.175);
-  border-radius: 4px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  padding: 0.7em 0.7em 0.7em 1em;
-}
-
-div[data-voxpop-question-uuid] blockquote {
-  grid-column-start: 1;
-  grid-column-end: -1;
-}
-
-div[data-voxpop-question-uuid] .displayName {
-  grid-column-start: 1;
-  grid-column-end: -1;
-  justify-self: end;
-  margin-bottom: 1em;
-}
-div[data-voxpop-question-uuid] .displayName:not(:empty)::before {
-  content: "- ";
-}
 
 /** Module Rules **/
 
@@ -406,22 +367,7 @@ button.open {
 }
 
 /** State Rules **/
-div[data-voxpop-uuid]::before {
-  content: '';
-  display: inline-block;
-  float: right;
-  background-color: lightgray;
-  border: 1px solid grey;
-  border-radius: 50%;
-  width: 10px;
-  height: 10px;
-}
-div[data-voxpop-uuid].live::before {
-  background-color: #0f0;
-}
-div[data-voxpop-uuid].disconnected::before {
-  background-color: #f00;
-}
+
 
 /** Theme Rules **/
 body {
@@ -461,14 +407,6 @@ button.danger,
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
-}
-
-div[data-voxpop-uuid] [data-voxpop-question-uuid] {
-  background-color: #FFF;
-}
-
-div[data-voxpop-uuid] [data-voxpop-question-uuid] blockquote {
-  margin: 0;
 }
 
 /** Print Rules **/

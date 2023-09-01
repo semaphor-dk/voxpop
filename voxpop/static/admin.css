@@ -329,8 +329,6 @@ div[data-voxpop-uuid]::before {
 }
 
 div[data-voxpop-question-uuid] {
-  box-shadow: inset 3px 3px 4px rgba(0,0,0,.175);
-  border-radius: 4px;
   display: grid;
   grid-template-columns: 1fr auto;
   padding: 0.7em 0.7em 0.7em 1em;
@@ -566,7 +564,7 @@ button.danger,
 }
 
 div[data-voxpop-uuid] [data-voxpop-question-uuid] {
-  background-color: #FFF;
+  background-color: transparent;
 }
 
 div[data-voxpop-uuid] [data-voxpop-question-uuid] blockquote {

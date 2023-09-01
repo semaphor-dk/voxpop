@@ -5,6 +5,7 @@
 	let allSse = [];
 	let translations = {};
 	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
+	insertStylesheet(voxpopElements[0]);
 	voxpopElements.forEach(function (voxpopElm) {
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
 		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
@@ -30,6 +31,11 @@
 		});
 		updateConnectionStatus(voxpopElm, sse.readyState);
 	});
+
+	function insertStylesheet(voxpopElm) {
+		const head = document.querySelector("head");
+		head.insertAdjacentHTML("beforeend", `<link rel="stylesheet" href="${ (voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '' }/static/voxpop.css">`);
+	}
 
 	function updateConnectionStatus(voxpopElm, state) {
 		voxpopElm.className = ["connecting", "live", "disconnected"][state];
