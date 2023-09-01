@@ -20,7 +20,8 @@
 		};
 		sse.addEventListener("new_question", function (evt) {
 			let data = JSON.parse(evt.data);
-			voxpopElm.insertAdjacentHTML("afterbegin", createHTMLforQuestion(data, translations));
+			let form = voxpopElm.querySelector("form");
+			form.insertAdjacentHTML("beforebegin", createHTMLforQuestion(data, translations));
 		});
 		sse.addEventListener("new_vote", function (evt) {
 			let data = JSON.parse(evt.data);
