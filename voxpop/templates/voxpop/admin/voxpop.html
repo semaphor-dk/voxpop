@@ -11,7 +11,7 @@
 			<div id="adminQuestionLists" data-voxpop-uuid="{{ voxpop.uuid }}"{% if voxpop.is_moderated %} data-voxpop-is-moderated{% endif %}>
 				{% csrf_token %}
 				{% for key, values in questions.items %}
-				<details{% if key == "new" or key == "approved" %} open{% endif %}>
+				<details{% if key == "new" or key == "approved" or key == "answered" and not voxpop.is_moderated %} open{% endif %}>
 					<summary>{% trans key|capfirst %}</summary>
 					<div id="{{ key }}Questions">{% for question in values %}
 						<div data-voxpop-question-uuid="{{ question.uuid }}">

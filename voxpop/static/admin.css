@@ -484,22 +484,20 @@ div[data-voxpop-uuid].disconnected::before {
 #newQuestions button.disapprove,
 #discardedQuestions button.disapprove,
 #answeredQuestions button.disapprove,
-
+#adminQuestionLists:not([data-voxpop-is-moderated]) button.disapprove,
 #approvedQuestions button.approve,
-
 #discardedQuestions button.discard,
-
 #answeredQuestions button.markAnswered,
-
 #newQuestions button.markUnanswered,
 #approvedQuestions button.markUnanswered,
 #discardedQuestions button.markUnanswered,
-
 #newQuestions button.restore,
 #approvedQuestions button.restore,
-#answeredQuestions button.restore {
+#answeredQuestions button.restore,
+#adminQuestionLists:not([data-voxpop-is-moderated]) details:first-of-type {
   display: none;
 }
+
 
 /** Theme Rules **/
 body {
