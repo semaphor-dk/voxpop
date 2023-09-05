@@ -91,12 +91,12 @@ def admin_voxpop(request, voxpop_id: UUID = None):
                     "approved": get_questions(
                         voxpop=voxpop,
                         state=Question.State.APPROVED),
-                    "discarded": get_questions(
-                        voxpop=voxpop,
-                        state=Question.State.DISCARDED),
                     "answered": get_questions(
                         voxpop=voxpop,
                         state=Question.State.ANSWERED),
+                    "discarded": get_questions(
+                        voxpop=voxpop,
+                        state=Question.State.DISCARDED),
                 },
             }
             return render(request, "voxpop/admin/voxpop.html", context)
