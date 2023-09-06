@@ -2,7 +2,7 @@
 /* jshint -W100 */
 (function() {
 	'use strict';
-	var allSse = [];
+	let allSse = [];
 	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
 	var adminQuestionLists = {
 		'new': document.getElementById('newQuestions'),
@@ -26,9 +26,13 @@
 		});
 		sse.addEventListener("new_vote", function (evt) {
 			let data = JSON.parse(evt.data);
-			let voteDisplayElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"] .votes span`);
+			let questionElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"]`);
+			let voteDisplayElm = questionElm.querySelector('.votes span');
 			if (voteDisplayElm) {
 				voteDisplayElm.innerText = data.vote_count;
+				let parent = questionElm.parentElement;
+				let sorted = sortQuestionsByVotes(parent.children);
+				parent.replaceChildren(...sorted);
 			}
 		});
 		sse.addEventListener("question_state_update", function (evt) {
@@ -46,6 +50,18 @@
 		});
 		updateConnectionStatus(voxpopElm, sse.readyState);
 	});
+
+	function sortQuestionsByVotes(questionsColl) {
+		let questions = Array.from(questionsColl);
+		questions.forEach(function (questionElm) {
+			if(questionElm.hasAttribute("data-voxpop-question-uuid")) {
+				questionElm.votes = parseInt(questionElm.querySelector('.votes span').innerText, 10);
+			} else {
+				questionElm.votes = -10; // For the form element.
+			}
+		});
+		return questions.sort((a, b) => b.votes - a.votes);
+	}
 
 	function updateConnectionStatus(voxpopElm, state) {
 		voxpopElm.className = ["connecting", "live", "disconnected"][state];
@@ -79,15 +95,16 @@
 		return clone.firstElementChild;
 	}
 
-	window.addEventListener('beforeunload', function() {
-		allSse.forEach(function (sse) {
-			sse.close();
-		});
-	});
 
 	document.querySelectorAll('button.copyToClipboard').forEach(function (copyButtonElm) {
 		copyButtonElm.addEventListener('click', function (evt) {
 			navigator.clipboard.writeText(evt.target.nextElementSibling.innerText);
+		});
+	});
+
+	window.addEventListener('beforeunload', function() {
+		allSse.forEach(function (sse) {
+			sse.close();
 		});
 	});
 }());
