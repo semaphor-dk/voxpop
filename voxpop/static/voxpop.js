@@ -25,13 +25,30 @@
 		});
 		sse.addEventListener("new_vote", function (evt) {
 			let data = JSON.parse(evt.data);
-			let voteDisplayElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"] .votes span`);
+			let questionElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"]`);
+			let voteDisplayElm = questionElm.querySelector('.votes span');
 			if (voteDisplayElm) {
 				voteDisplayElm.innerText = data.vote_count;
+				let parent = questionElm.parentElement;
+				let sorted = sortQuestionsByVotes(parent.children);
+				parent.replaceChildren(...sorted);
 			}
 		});
 		updateConnectionStatus(voxpopElm, sse.readyState);
 	});
+
+	function sortQuestionsByVotes(questionsColl) {
+		let questions = Array.from(questionsColl);
+		questions.forEach(function (questionElm) {
+			if(questionElm.hasAttribute("data-voxpop-question-uuid")) {
+				questionElm.votes = parseInt(questionElm.querySelector('.votes span').innerText, 10);
+			} else {
+				questionElm.votes = -10; // For the form element.
+			}
+		});
+		return questions.sort((a, b) => b.votes - a.votes);
+	}
+
 
 	function insertStylesheet(voxpopElm) {
 		const head = document.querySelector("head");
@@ -113,6 +130,8 @@
 			});
 			fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid, translations);
 			voxpopElm.innerHTML = fragment;
+			let sorted = sortQuestionsByVotes(voxpopElm.children);
+			voxpopElm.replaceChildren(...sorted);
 			voxpopElm.addEventListener('click', function (evt) {
 				if (evt.target.classList.contains('vote')) {
 					let questionUuid = evt.target.closest('div[data-voxpop-question-uuid]').dataset.voxpopQuestionUuid;
