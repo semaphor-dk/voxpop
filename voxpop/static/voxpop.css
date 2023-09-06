@@ -43,6 +43,11 @@ div[data-voxpop-question-uuid] {
   margin-bottom: 0.5em;
 }
 
+div[data-voxpop-question-uuid]:hover {
+  background-color: #fff;
+  box-shadow: 0 0 5px 5px #fff;
+}
+
 div[data-voxpop-question-uuid] blockquote {
 }
 

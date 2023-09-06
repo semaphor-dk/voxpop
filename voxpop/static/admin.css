@@ -339,6 +339,11 @@ div[data-voxpop-question-uuid] + div[data-voxpop-question-uuid] {
   border-top: 1px dashed lightgray;
 }
 
+div[data-voxpop-question-uuid]:hover {
+  background-color: #fff;
+  box-shadow: 0 0 5px 5px #fff;
+}
+
 div[data-voxpop-question-uuid] blockquote {
   grid-column-start: 1;
   grid-column-end: -1;
