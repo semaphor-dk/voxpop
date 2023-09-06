@@ -330,8 +330,13 @@ div[data-voxpop-uuid]::before {
 
 div[data-voxpop-question-uuid] {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
+  grid-column-gap: 1em;
   padding: 0.7em 0.7em 0.7em 1em;
+}
+
+div[data-voxpop-question-uuid] + div[data-voxpop-question-uuid] {
+  border-top: 1px dashed lightgray;
 }
 
 div[data-voxpop-question-uuid] blockquote {
@@ -339,20 +344,18 @@ div[data-voxpop-question-uuid] blockquote {
   grid-column-end: -1;
 }
 
-div[data-voxpop-question-uuid] .displayName {
-  grid-column-start: 1;
-  grid-column-end: -1;
-  justify-self: end;
-  margin-bottom: 1em;
-}
 div[data-voxpop-question-uuid] .displayName:not(:empty)::before {
   content: "- ";
 }
+div[data-voxpop-question-uuid] .votes {
+  justify-self: end;
+}
+
 
 div[data-voxpop-question-uuid] .questionActions {
   grid-column-start: 1;
   grid-column-end: -1;
-  margin-top: 1em;
+  margin-top: 0.5em;
 }
 
 #adminQuestionLists {
@@ -360,10 +363,6 @@ div[data-voxpop-question-uuid] .questionActions {
   gap: 2em;
   align-items: start;
   margin-bottom: 2em;
-}
-
-#adminQuestionLists div[data-voxpop-question-uuid] {
-  margin-bottom: 1em;
 }
 
 form {
@@ -498,6 +497,9 @@ div[data-voxpop-uuid].disconnected::before {
   display: none;
 }
 
+#newQuestions .votes {
+  visibility: hidden;
+}
 
 /** Theme Rules **/
 body {
