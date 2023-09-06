@@ -94,3 +94,11 @@ class Vote(CreatedUpdatedMixin):
 
     def __str__(self):
         return f'{self.created_by} -> "{self.question.text}"'
+
+class Message(models.Model):
+    voxpop = models.ForeignKey(Voxpop, on_delete=models.CASCADE, related_name='messages')
+    event = models.CharField(max_length=255)
+    data = models.TextField()
+
+    def __str__(self):
+        return f"id: {self.id}\nevent: {self.event}\ndata: {self.data}"

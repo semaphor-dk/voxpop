@@ -3,6 +3,7 @@ from uuid import UUID
 from voxpop.models import Question
 from voxpop.models import Vote
 from voxpop.models import Voxpop
+from voxpop.models import Message
 
 from voxpop.selectors import get_voxpop
 
@@ -59,3 +60,16 @@ def create_voxpop(
     )
 
     return voxpop
+
+def create_message(
+    voxpop_id: UUID,
+    event: str,
+    data: str
+    ) -> Message:
+    message = Message.objects.create(
+        voxpop_id=voxpop_id,
+        event=event,
+        data=data
+    )
+
+    return message
