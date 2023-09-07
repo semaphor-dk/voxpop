@@ -340,8 +340,7 @@ div[data-voxpop-question-uuid] + div[data-voxpop-question-uuid] {
 }
 
 div[data-voxpop-question-uuid]:hover {
-  background-color: #fff;
-  box-shadow: 0 0 5px 5px #fff;
+  background-color: rgba(255,255,255,0.7);
 }
 
 div[data-voxpop-question-uuid] blockquote {
@@ -566,10 +565,6 @@ button.danger,
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
-}
-
-div[data-voxpop-uuid] [data-voxpop-question-uuid] {
-  background-color: transparent;
 }
 
 div[data-voxpop-uuid] [data-voxpop-question-uuid] blockquote {
