@@ -61,7 +61,9 @@ iframe {
 }
 
 h1 {
-  font-size: 140%;
+    font-size: 3rem;
+    font-weight: normal;
+    margin: 0.7rem 0;
 }
 
 h2 {
@@ -283,7 +285,6 @@ abbr {
 
 /** Layout Rules **/
 body > header {
-  margin-block: 1rem;
   text-align: center;
 }
 
