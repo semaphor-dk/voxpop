@@ -101,4 +101,4 @@ class Message(models.Model):
     data = models.TextField()
 
     def __str__(self):
-        return f"id: {self.id}\nevent: {self.event}\ndata: {self.data}"
+        return f"id: {self.id}\nevent: {self.event}\ndata: {self.data}\n\n"

@@ -106,9 +106,6 @@ def admin_voxpop(request, voxpop_id: UUID = None):
 def admin_question_set_state(request, voxpop_id, question_id):
     if is_admin(request):
         new_state = request.GET.get('state', None)
-        if new_state:
-            print(question_id)
-            print(new_state)
         question = Question.objects.get(uuid=question_id)
         question.state = new_state
         question.save()
@@ -215,7 +212,7 @@ def vote(request, question_id: UUID):
 
 
 async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
-    yield "data: Ping\n\n"
+    yield "event: ping\ndata: Pong\n\n"
     aconnection = await psycopg.AsyncConnection.connect(
         **connection.get_connection_params(),
         autocommit=True,
@@ -226,17 +223,19 @@ async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
             await acursor.execute(f"LISTEN {channel_name}")
             gen = aconnection.notifies()
             async for notify in gen:
-                yield f"{notify.payload}\n\n"
+                yield notify.payload
     except Exception as e:
         print(e.message)
     finally:
-        aconnection.close()
+        await aconnection.close()
 
 
 async def stream_questions_view(
     request: HttpRequest,
     voxpop_id: UUID,
 ) -> StreamingHttpResponse:
+    lastEventId = request.headers.get("Last-Event-Id", None)
+
     return StreamingHttpResponse(
         content_type="text/event-stream",
         headers={
@@ -249,7 +248,7 @@ async def stream_questions_view(
 
 
 async def admin_questions_stream(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
-    yield "data: Ping\n\n"
+    yield "event: ping\ndata: Pong\n\n"
     aconnection = await psycopg.AsyncConnection.connect(
         **connection.get_connection_params(),
         autocommit=True,
@@ -260,17 +259,19 @@ async def admin_questions_stream(*, voxpop_id: UUID) -> AsyncGenerator[str, None
             await acursor.execute(f"LISTEN {channel_name}")
             gen = aconnection.notifies()
             async for notify in gen:
-                yield f"{notify.payload}\n\n"
+                yield notify.payload
     except Exception as e:
         print(e.message)
     finally:
-        aconnection.close()
+        await aconnection.close()
 
 
 async def admin_questions_stream_view(
     request: HttpRequest,
     voxpop_id: UUID,
 ) -> StreamingHttpResponse:
+    lastEventId = request.headers.get("Last-Event-Id", None)
+
     return StreamingHttpResponse(
         content_type="text/event-stream",
         headers={
