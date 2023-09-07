@@ -5,4 +5,4 @@ django-ninja==0.21.0
 whitenoise==6.4.0
 environs[django]==9.5.0
 uvicorn==0.22.0
-jwt
+pyjwt==2.6.0
