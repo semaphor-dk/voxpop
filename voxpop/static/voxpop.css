@@ -32,9 +32,6 @@ div[data-voxpop-uuid] blockquote {
   margin: 0;
 }
 
-div[data-voxpop-uuid] textarea {
-}
-
 div[data-voxpop-question-uuid] {
   display: grid;
   grid-template-columns: 1fr auto auto;
@@ -46,9 +43,6 @@ div[data-voxpop-question-uuid] {
 div[data-voxpop-question-uuid]:hover {
   background-color: rgba(255,255,255,0.7);
   box-shadow: 0 0 5px 5px #fff;
-}
-
-div[data-voxpop-question-uuid] blockquote {
 }
 
 div[data-voxpop-question-uuid] .displayName {

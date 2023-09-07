@@ -109,7 +109,7 @@
 	<h3>${ translations['QuestionFormHeadline'] }</h3>
     <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
     <input name="display_name" type="text" maxlength="50" placeholder="${ translations['NamePlaceholder'] }">
-    <textarea name="text" rows="1" maxlength="150" required placeholder="Spørgsmål"></textarea>
+    <input name="text" type="text" maxlength="150" required placeholder="${ translations['QuestionPlaceholder'] }">
     <button type="submit" class="primary cta">${ translations['SubmitQuestionButton'] }</button>
 </form>`;
 	}
@@ -150,7 +150,7 @@
 				const xhr = new XMLHttpRequest();
 				xhr.withCredentials = true;
 				xhr.addEventListener('load', function () {
-					evt.target.querySelector('textarea[name="text"]').value = '';
+					evt.target.querySelector('input[name="text"]').value = '';
 				});
 				xhr.open(evt.target.method, evt.target.action);
 				xhr.send(JSON.stringify(object));
