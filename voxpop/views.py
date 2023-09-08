@@ -201,16 +201,6 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
     return render(request, "voxpop/question.html", {"form": form, "allow_anonymous": voxpop.allow_anonymous})
 
 
-def vote(request, question_id: UUID):
-    question = Question.objects.get(pk=question_id)
-    question.upvote()
-    question.save()
-    context = {
-        "question": question.text,
-    }
-    return render(request, "voxpop/vote.html", context)
-
-
 async def stream_questions(*, voxpop_id: UUID) -> AsyncGenerator[str, None]:
     yield "event: ping\ndata: Pong\n\n"
     aconnection = await psycopg.AsyncConnection.connect(
