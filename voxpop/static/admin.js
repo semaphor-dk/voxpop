@@ -11,8 +11,7 @@
 		'answered': document.getElementById('answeredQuestions')
 	};
 	let parent = adminQuestionLists['approved'];
-	let sorted = sortQuestionsByVotes(parent.children);
-	parent.replaceChildren(...sorted);
+	sortQuestionsByVotes(parent);
 	let isModerated = voxpopElm.dataset.hasOwnProperty('voxpopIsModerated');
 	var sse = new EventSource('questions/stream', {withCredentials: true});
 	allSse.push(sse);
@@ -33,8 +32,7 @@
 		if (voteDisplayElm) {
 			voteDisplayElm.innerText = data.vote_count;
 			let parent = questionElm.parentElement;
-			let sorted = sortQuestionsByVotes(parent.children);
-			parent.replaceChildren(...sorted);
+			sortQuestionsByVotes(parent);
 		}
 	});
 	sse.addEventListener("question_state_update", function (evt) {
@@ -52,8 +50,8 @@
 	});
 	updateConnectionStatus(voxpopElm, sse.readyState);
 
-	function sortQuestionsByVotes(questionsColl) {
-		let questions = Array.from(questionsColl);
+	function sortQuestionsByVotes(parentElm) {
+		let questions = Array.from(parentElm.children);
 		questions.forEach(function (questionElm) {
 			if(questionElm.hasAttribute("data-voxpop-question-uuid")) {
 				questionElm.votes = parseInt(questionElm.querySelector('.votes span').innerText, 10);
@@ -61,7 +59,8 @@
 				questionElm.votes = -10; // For the form element.
 			}
 		});
-		return questions.sort((a, b) => b.votes - a.votes);
+		let sorted = questions.sort((a, b) => b.votes - a.votes);
+		parentElm.replaceChildren(...sorted);
 	}
 
 	function updateConnectionStatus(voxpopElm, state) {
@@ -72,12 +71,19 @@
 	questionLists.addEventListener('click', function (evt) {
 		if (evt.target.tagName !== 'BUTTON') return;
 		let csrfmiddlewaretoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-		let state = evt.target.dataset.state;
-		let questionId = evt.target.closest('[data-voxpop-question-uuid]').dataset.voxpopQuestionUuid;
+		let button = evt.target;
+		let state = button.dataset.state;
+		let question = button.closest('[data-voxpop-question-uuid]');
+		let questionId = question.dataset.voxpopQuestionUuid;
 		let xhr = new XMLHttpRequest();
 		xhr.withCredentials = true;
 		xhr.open("PATCH", `${questionId}?state=${state}`, true);
 		xhr.setRequestHeader('X-CSRFToken', csrfmiddlewaretoken);
+		xhr.onload = function () {
+			if (state == "approved") {
+				sortQuestionsByVotes(question.parentElement);
+			}
+		};
 		xhr.onerror = function (evt) {
 			console.log('XHR error:');
 			console.dir(evt.target);
@@ -91,7 +97,6 @@
 		clone.querySelector("div[data-voxpop-question-uuid]").setAttribute("data-voxpop-question-uuid", question.uuid);
 		clone.querySelector("blockquote").innerText = question.text;
 		clone.querySelector(".displayName").innerText = question.display_name;
-		// clone.querySelector(".votes span").innerText = '0';
 		clone.querySelector(".createdAt").innerText = question.created_at;
 		return clone.firstElementChild;
 	}
