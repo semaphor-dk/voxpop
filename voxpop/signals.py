@@ -8,7 +8,6 @@ from .models import Question
 from .models import Vote
 from .services import create_message
 from .utils import get_notify_channel_name
-from .utils import get_notify_admin_channel_name
 from .utils import notify
 
 
@@ -32,7 +31,7 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
                     data=json.dumps(payload)
                 )
                 notify(channel_name=channel_name, payload=message)
-            admin_channel_name = get_notify_admin_channel_name(voxpop_id=instance.voxpop_id)
+            admin_channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.voxpop_id)
             payload = {
                 "question_id": str(instance.uuid),
                 "state": instance.state
@@ -62,7 +61,7 @@ def notify_question_created(sender, instance, created, **kwargs):
         if instance.state == Question.State.APPROVED:
             channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
             notify(channel_name=channel_name, payload=message)
-        admin_channel_name = get_notify_admin_channel_name(voxpop_id=instance.voxpop_id)
+        admin_channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.voxpop_id)
         notify(channel_name=admin_channel_name, payload=message)
 
 
@@ -80,5 +79,5 @@ def notify_vote_created(sender, instance, created, **kwargs):
         )
         channel_name = get_notify_channel_name(voxpop_id=instance.question.voxpop_id)
         notify(channel_name=channel_name, payload=message)
-        admin_channel_name = get_notify_admin_channel_name(voxpop_id=instance.question.voxpop_id)
+        admin_channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.question.voxpop_id)
         notify(channel_name=admin_channel_name, payload=message)
