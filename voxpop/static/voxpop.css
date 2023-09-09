@@ -32,6 +32,7 @@ div[data-voxpop-uuid] form h3 {
 
 div[data-voxpop-uuid] blockquote {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 div[data-voxpop-question-uuid] {
