@@ -17,10 +17,12 @@ div[data-voxpop-uuid]::before {
   top: -25px;
 }
 
-div[data-voxpop-uuid] form {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 0.5em 1em;
+@media (min-width: 640px) {
+  div[data-voxpop-uuid] form {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5em 1em;
+  }
 }
 
 div[data-voxpop-uuid] form h3 {
