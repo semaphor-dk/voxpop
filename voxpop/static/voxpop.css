@@ -81,4 +81,12 @@ div[data-voxpop-uuid].disconnected::before {
   background-color: #f00;
 }
 
+div[data-voxpop-question-uuid].answered {
+  opacity: 0.5;
+}
+div[data-voxpop-question-uuid].answered button {
+  visibility: hidden;
+}
+
+
 /** Theme Rules **/

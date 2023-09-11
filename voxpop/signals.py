@@ -17,8 +17,8 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
     if instance.created_at != None:
         original_state = Question.objects.get(pk=instance.uuid).state
         if instance.state != original_state:
+            channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
             if instance.state == Question.State.APPROVED:
-                channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
                 payload = {
                     "uuid": str(instance.uuid),
                     "text": str(instance.text),
@@ -30,7 +30,16 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
                     event="new_question",
                     data=json.dumps(payload)
                 )
-                notify(channel_name=channel_name, payload=message)
+            else:
+                message=create_message(
+                    voxpop_id=instance.voxpop_id,
+                    event="question_state_update",
+                    data=json.dumps({
+                        "question_id": str(instance.uuid),
+                        "state": instance.state
+                    })
+                )
+            notify(channel_name=channel_name, payload=message)
             admin_channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.voxpop_id)
             payload = {
                 "question_id": str(instance.uuid),

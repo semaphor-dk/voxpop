@@ -23,6 +23,17 @@
 			let form = voxpopElm.querySelector("form");
 			form.insertAdjacentHTML("beforebegin", createHTMLforQuestion(data, translations));
 		});
+		sse.addEventListener("question_state_update", function (evt) {
+			let data = JSON.parse(evt.data);
+			let questionElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"]`);
+			if (questionElm) {
+				if (data.state == "answered") {
+					questionElm.classList.add("answered");
+				} else {
+					questionElm.remove();
+				}
+			}
+		});
 		sse.addEventListener("new_vote", function (evt) {
 			let data = JSON.parse(evt.data);
 			let questionElm = document.querySelector(`div[data-voxpop-question-uuid="${ data.question_id }"]`);
