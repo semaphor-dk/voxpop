@@ -45,7 +45,7 @@ div[data-voxpop-question-uuid] {
 
 div[data-voxpop-question-uuid]:hover {
   background-color: rgba(255,255,255,0.7);
-  box-shadow: 0 0 5px 5px #fff;
+  box-shadow: 0 0 5px 5px rgba(255,255,255,0.7);
 }
 
 div[data-voxpop-question-uuid] .displayName {
