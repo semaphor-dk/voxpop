@@ -28,7 +28,8 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
                 message=create_message(
                     voxpop_id=instance.voxpop_id,
                     event="new_question",
-                    data=json.dumps(payload)
+                    data=json.dumps(payload),
+                    channel_name=channel_name
                 )
             else:
                 message=create_message(
@@ -37,10 +38,11 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
                     data=json.dumps({
                         "question_id": str(instance.uuid),
                         "state": instance.state
-                    })
+                    }),
+                    channel_name=channel_name
                 )
             notify(channel_name=channel_name, payload=message)
-            admin_channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.voxpop_id)
+            channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.voxpop_id)
             payload = {
                 "question_id": str(instance.uuid),
                 "state": instance.state
@@ -48,14 +50,16 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
             message = create_message(
                 voxpop_id=instance.voxpop_id,
                 event="question_state_update",
-                data=json.dumps(payload)
+                data=json.dumps(payload),
+                channel_name=channel_name
             )
-            notify(channel_name=admin_channel_name, payload=message)
+            notify(channel_name=channel_name, payload=message)
 
 
 @receiver(post_save, sender=Question)
 def notify_question_created(sender, instance, created, **kwargs):
     if created:
+        channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
         payload = {
             "uuid": str(instance.uuid),
             "text": str(instance.text),
@@ -65,18 +69,20 @@ def notify_question_created(sender, instance, created, **kwargs):
         message = create_message(
             voxpop_id=instance.voxpop_id,
             event="new_question",
-            data=json.dumps(payload)
+            data=json.dumps(payload),
+            channel_name=channel_name
         )
         if instance.state == Question.State.APPROVED:
-            channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
             notify(channel_name=channel_name, payload=message)
-        admin_channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.voxpop_id)
-        notify(channel_name=admin_channel_name, payload=message)
+        channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.voxpop_id)
+        message.channel_name=channel_name
+        notify(channel_name=channel_name, payload=message)
 
 
 @receiver(post_save, sender=Vote)
 def notify_vote_created(sender, instance, created, **kwargs):
     if created:
+        channel_name = get_notify_channel_name(voxpop_id=instance.question.voxpop_id)
         payload = {
             "question_id": str(instance.question_id),
             "vote_count": instance.question.votes.count()
@@ -84,9 +90,10 @@ def notify_vote_created(sender, instance, created, **kwargs):
         message = create_message(
             voxpop_id=instance.question.voxpop_id,
             event="new_vote",
-            data=json.dumps(payload)
+            data=json.dumps(payload),
+            channel_name=channel_name
         )
-        channel_name = get_notify_channel_name(voxpop_id=instance.question.voxpop_id)
         notify(channel_name=channel_name, payload=message)
-        admin_channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.question.voxpop_id)
-        notify(channel_name=admin_channel_name, payload=message)
+        channel_name = get_notify_channel_name(channel_prefix="admin_", voxpop_id=instance.question.voxpop_id)
+        message.channel_name=channel_name
+        notify(channel_name=channel_name, payload=message)

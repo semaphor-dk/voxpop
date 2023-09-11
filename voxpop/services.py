@@ -64,12 +64,14 @@ def create_voxpop(
 def create_message(
     voxpop_id: UUID,
     event: str,
-    data: str
+    data: str,
+    channel_name: str
     ) -> Message:
     message = Message.objects.create(
         voxpop_id=voxpop_id,
         event=event,
-        data=data
+        data=data,
+        channel_name=channel_name
     )
 
     return message

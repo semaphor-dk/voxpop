@@ -200,7 +200,7 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
     return render(request, "voxpop/question.html", {"form": form, "allow_anonymous": voxpop.allow_anonymous})
 
 
-async def __stream_questions(*, channel_prefix: str,voxpop_id: UUID) -> AsyncGenerator[str, None]:
+async def __stream_questions(*, channel_prefix: str,voxpop_id: UUID, last_event_id: int) -> AsyncGenerator[str, None]:
     yield "event: ping\ndata: Pong\n\n"
     aconnection = await psycopg.AsyncConnection.connect(
         **connection.get_connection_params(),
@@ -224,8 +224,7 @@ async def questions_stream_view(
     channel_prefix: str,
     voxpop_id: UUID,
 ) -> StreamingHttpResponse:
-    lastEventId = request.headers.get("Last-Event-Id", None)
-
+    last_event_id = int(request.headers.get("Last-Event-Id", 0))
     return StreamingHttpResponse(
         content_type="text/event-stream",
         headers={
@@ -233,5 +232,5 @@ async def questions_stream_view(
             "Access-Control-Allow-Credentials": "true",
             "Cache-Control": "No-Cache"
         },
-        streaming_content=__stream_questions(channel_prefix=channel_prefix, voxpop_id=voxpop_id),
+        streaming_content=__stream_questions(channel_prefix=channel_prefix, voxpop_id=voxpop_id, last_event_id=last_event_id),
     )

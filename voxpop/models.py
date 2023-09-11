@@ -97,6 +97,7 @@ class Vote(CreatedUpdatedMixin):
 
 class Message(models.Model):
     voxpop = models.ForeignKey(Voxpop, on_delete=models.CASCADE, related_name='messages')
+    channel_name = models.CharField(max_length=255, default="")
     event = models.CharField(max_length=255)
     data = models.TextField()
 
