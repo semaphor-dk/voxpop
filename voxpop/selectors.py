@@ -10,6 +10,7 @@ from django.db.models import When
 from django.http import HttpRequest
 from django.utils import timezone
 
+from voxpop.models import Message
 from voxpop.models import Organisation
 from voxpop.models import Question
 from voxpop.models import Vote
@@ -88,3 +89,6 @@ def get_votes(
         return votes.get(uuid=vote_id)
 
     return votes
+
+async def get_messages(channel_name: str, last_event_id: int) -> QuerySet[Message]:
+    return await Message.objects.all().filter(channel_name=channel_name, id__gt=last_event_id).order_by('id')

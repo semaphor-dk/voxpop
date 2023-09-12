@@ -18,6 +18,7 @@ from .forms import QuestionForm
 from .forms import VoxpopForm
 from .models import Question
 from .selectors import current_organisation
+from .selectors import get_messages
 from .selectors import get_questions
 from .selectors import get_voxpops
 from .selectors import get_voxpop
@@ -201,12 +202,19 @@ def new_question(request: HttpRequest, voxpop_id: UUID) -> HttpResponse:
 
 
 async def __stream_questions(*, channel_prefix: str,voxpop_id: UUID, last_event_id: int) -> AsyncGenerator[str, None]:
-    yield "event: ping\ndata: Pong\n\n"
     aconnection = await psycopg.AsyncConnection.connect(
         **connection.get_connection_params(),
         autocommit=True,
     )
     channel_name = get_notify_channel_name(channel_prefix=channel_prefix, voxpop_id=voxpop_id)
+    if last_event_id > 0: # Reconnect request
+        missed_messages = await get_messages(channel_name, last_event_id)
+        if missed_messages.count() == 0: # Send a dummy response to activete the stream.
+            yield "event: ping\ndata: Pong\n\n"
+        else:
+            yield "".join(missed_messages)
+    else: # Send a dummy response to activete the stream.
+        yield "event: ping\ndata: Pong\n\n"
     try:
         async with aconnection.cursor() as acursor:
             await acursor.execute(f"LISTEN {channel_name}")
