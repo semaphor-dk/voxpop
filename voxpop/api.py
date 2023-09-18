@@ -113,7 +113,7 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
         if not request.session.get("display_name", False):
             return {"msg": "Please sign in first."}
         question = create_question(
-            text=text,
+            text=data.text,
             display_name=request.session["display_name"],
             created_by=request.session["unique_name"],
             voxpop_id=voxpop_id,
