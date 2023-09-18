@@ -207,14 +207,15 @@ async def __stream_questions(*, channel_prefix: str,voxpop_id: UUID, last_event_
         autocommit=True,
     )
     channel_name = get_notify_channel_name(channel_prefix=channel_prefix, voxpop_id=voxpop_id)
-    if last_event_id > 0: # Reconnect request
+    if last_event_id > 0:  # Reconnect request
         missed_messages = await get_messages(channel_name, last_event_id)
-        if missed_messages.count() == 0: # Send a dummy response to activete the stream.
+        if len(missed_messages) == 0:  # Send a dummy response to activate the stream.
             yield "event: ping\ndata: Pong\n\n"
         else:
-            yield "".join(missed_messages)
-    else: # Send a dummy response to activete the stream.
+            yield "".join([str(m) for m in missed_messages])
+    else:  # Send a dummy response to activate the stream.
         yield "event: ping\ndata: Pong\n\n"
+
     try:
         async with aconnection.cursor() as acursor:
             await acursor.execute(f"LISTEN {channel_name}")

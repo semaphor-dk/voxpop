@@ -90,5 +90,9 @@ def get_votes(
 
     return votes
 
-async def get_messages(channel_name: str, last_event_id: int) -> QuerySet[Message]:
-    return await Message.objects.all().filter(channel_name=channel_name, id__gt=last_event_id).order_by('id')
+
+async def get_messages(channel_name: str, last_event_id: int) -> list[Message]:
+    messages = []
+    async for message in Message.objects.all().filter(channel_name=channel_name, id__gt=last_event_id).order_by('id'):
+        messages.append(message)
+    return messages

@@ -6,3 +6,4 @@ whitenoise==6.4.0
 environs[django]==9.5.0
 uvicorn==0.22.0
 pyjwt==2.6.0
+daphne==4.0.0

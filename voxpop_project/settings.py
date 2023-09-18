@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "daphne",
     "django.contrib.staticfiles",
     "corsheaders",
     "voxpop",
@@ -68,6 +69,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = "voxpop_project.asgi.application"
 WSGI_APPLICATION = "voxpop_project.wsgi.application"
 
 DATABASES = {
