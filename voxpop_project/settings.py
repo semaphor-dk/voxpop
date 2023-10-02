@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = Env()
 env.read_env()
 
-SHARED_SECRET_JWT=env.str("SHARED_SECRET_JWT")
+SHARED_SECRET_JWT = env.str("SHARED_SECRET_JWT")
 SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
@@ -48,7 +48,7 @@ MIDDLEWARE = [
 
 
 LOCALE_PATHS = [
-    "locale/"
+    "locale/",
 ]
 
 ROOT_URLCONF = "voxpop_project.urls"

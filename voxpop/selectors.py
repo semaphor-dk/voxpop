@@ -43,28 +43,31 @@ def get_voxpops(organisation) -> QuerySet[Voxpop]:
 
 def get_voxpop(voxpop_id) -> Voxpop:
     now = timezone.now()
-    voxpop = Voxpop.objects.filter(uuid=voxpop_id).annotate(
-        question_count=Count("questions", distinct=True),
-        is_active=Case(
-            When(
-                starts_at__lte=now,
-                expires_at__gte=now,
-                then=True,
+    voxpop = (
+        Voxpop.objects.filter(uuid=voxpop_id)
+        .annotate(
+            question_count=Count("questions", distinct=True),
+            is_active=Case(
+                When(
+                    starts_at__lte=now,
+                    expires_at__gte=now,
+                    then=True,
+                ),
+                default=False,
+                output_field=BooleanField(),
             ),
-            default=False,
-            output_field=BooleanField(),
-        ),
-    ).first()
+        )
+        .first()
+    )
     return voxpop
 
 
 def get_questions(
     voxpop: Voxpop,
     state: Question.State | None = None,
-    ) -> QuerySet[Question] | None:
-
+) -> QuerySet[Question] | None:
     questions = voxpop.questions.all().annotate(
-        vote_count=Count("votes", distinct=True)
+        vote_count=Count("votes", distinct=True),
     )
     # First do all filtering
     if state:
@@ -93,6 +96,8 @@ def get_votes(
 
 async def get_messages(channel_name: str, last_event_id: int) -> list[Message]:
     messages = []
-    async for message in Message.objects.all().filter(channel_name=channel_name, id__gt=last_event_id).order_by('id'):
+    async for message in Message.objects.all().filter(
+        channel_name=channel_name, id__gt=last_event_id
+    ).order_by("id"):
         messages.append(message)
     return messages
