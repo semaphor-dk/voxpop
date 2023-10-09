@@ -12,7 +12,7 @@
 	};
 	let parent = adminQuestionLists['approved'];
 	sortQuestionsByVotes(parent);
-	let isModerated = voxpopElm.dataset.hasOwnProperty('voxpopIsModerated');
+	let isModerated = typeof voxpopElm.dataset.voxpopIsModerated != "undefined";
 	var sse = new EventSource('questions/stream', {withCredentials: true});
 	allSse.push(sse);
 	sse.onopen = function (evt) {
