@@ -5,19 +5,33 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voxpop', '0005_alter_voxpop_title'),
+        ("voxpop", "0005_alter_voxpop_title"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('event', models.CharField(max_length=255)),
-                ('data', models.TextField()),
-                ('voxpop', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='voxpop.voxpop')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("event", models.CharField(max_length=255)),
+                ("data", models.TextField()),
+                (
+                    "voxpop",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="messages",
+                        to="voxpop.voxpop",
+                    ),
+                ),
             ],
         ),
     ]

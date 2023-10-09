@@ -41,6 +41,7 @@ class Organisation(CreatedUpdatedMixin):
         null=True,
         blank=True,
     )
+
     def __str__(self):
         return self.name
 
@@ -48,16 +49,16 @@ class Organisation(CreatedUpdatedMixin):
 class Voxpop(CreatedUpdatedMixin):
     title = models.CharField(_("title"), max_length=50)
     description = models.TextField(_("description"), blank=True)
-    created_by = models.CharField(_("created by"), max_length=50,)
+    created_by = models.CharField(_("created by"), max_length=50)
     starts_at = models.DateTimeField(_("start time"))
     expires_at = models.DateTimeField(_("end time"))
     is_moderated = models.BooleanField(_("is moderated"), default=True)
     allow_anonymous = models.BooleanField(_("allow anonymous"), default=False)
     organisation = models.ForeignKey(
-            Organisation,
-            on_delete=models.CASCADE,
-            related_name='voxpops',
-            )
+        Organisation,
+        on_delete=models.CASCADE,
+        related_name="voxpops",
+    )
 
     def __str__(self):
         return f"{self.title}"
@@ -78,7 +79,9 @@ class Question(CreatedUpdatedMixin):
     )
     created_by = models.CharField(max_length=200)
     display_name = models.CharField(blank=True, max_length=50)
-    voxpop = models.ForeignKey(Voxpop, on_delete=models.CASCADE, related_name='questions')
+    voxpop = models.ForeignKey(
+        Voxpop, on_delete=models.CASCADE, related_name="questions"
+    )
 
     def approve(self):
         self.state = self.State.APPROVED
@@ -90,13 +93,18 @@ class Question(CreatedUpdatedMixin):
 
 class Vote(CreatedUpdatedMixin):
     created_by = models.CharField(max_length=200)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="votes")
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="votes"
+    )
 
     def __str__(self):
         return f'{self.created_by} -> "{self.question.text}"'
 
+
 class Message(models.Model):
-    voxpop = models.ForeignKey(Voxpop, on_delete=models.CASCADE, related_name='messages')
+    voxpop = models.ForeignKey(
+        Voxpop, on_delete=models.CASCADE, related_name="messages"
+    )
     channel_name = models.CharField(max_length=255, default="")
     event = models.CharField(max_length=255)
     data = models.TextField()

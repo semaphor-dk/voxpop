@@ -1,21 +1,19 @@
 from uuid import UUID
 
+import jwt
+from django.conf import settings
 from ninja import ModelSchema
 from ninja import Router
 from ninja import Schema
 
-from django.conf import settings
-
 from .models import Question
 from .models import Voxpop
-from .selectors import get_questions
-from .selectors import get_voxpops
-from .selectors import get_voxpop
 from .selectors import current_organisation
+from .selectors import get_questions
+from .selectors import get_voxpop
+from .selectors import get_voxpops
 from .services import create_question
 from .services import create_vote
-
-import jwt
 
 router = Router()
 
@@ -87,10 +85,11 @@ class LoginSchema(Schema):
         response=Message
         )"""
 
+
 @router.post(
-        "{voxpop_id}/questions/new",
-        response=Message,
-        )
+    "{voxpop_id}/questions/new",
+    response=Message,
+)
 def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
@@ -101,12 +100,12 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
             text=data.text,
             display_name=request.session.get(
                 "display_name",
-                data.display_name if data.display_name else ""
-                ),
+                data.display_name if data.display_name else "",
+            ),
             created_by=request.session.get(
                 "unique_name",
-                request.session.session_key
-                ),
+                request.session.session_key,
+            ),
             voxpop_id=voxpop_id,
         )
     else:
@@ -122,29 +121,30 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
 
 
 @router.post(
-        "{voxpop_id}/questions/{question_id}/vote",
-        response=Message
-        )
+    "{voxpop_id}/questions/{question_id}/vote",
+    response=Message,
+)
 def vote(request, voxpop_id: UUID, question_id: UUID):
     if not request.session.session_key:
         return {"msg": "No session found."}
     vote, created = create_vote(
         created_by=request.session.session_key,
-        question_id=question_id
-        )
+        question_id=question_id,
+    )
     return (
         {"msg": "Vote created with uuid: %s" % vote.uuid}
         if created
         else {"msg": "Vote already exists"}
-        )
+    )
 
 
 @router.get(
-        "/",
-        response= {
-            200: list[VoxpopOut],
-            403: Message
-        })
+    "/",
+    response={
+        200: list[VoxpopOut],
+        403: Message,
+    },
+)
 def voxpops(request):
     organisation = current_organisation(request)
     if organisation is None:
@@ -153,49 +153,68 @@ def voxpops(request):
 
 
 @router.get(
-        "/{voxpop_id}/questions",
-        response=QuestionsOut
-        )
+    "/{voxpop_id}/questions",
+    response=QuestionsOut,
+)
 def questions(request, voxpop_id: UUID):
     if not request.session.session_key:
         request.session.create()
     voxpop = get_voxpop(voxpop_id)
-    approved = list(get_questions(
-        state=Question.State.APPROVED,
-        voxpop=voxpop))
-    answered = list(get_questions(
-        state=Question.State.ANSWERED,
-        voxpop=voxpop))
+    approved = list(
+        get_questions(
+            state=Question.State.APPROVED,
+            voxpop=voxpop,
+        ),
+    )
+    answered = list(
+        get_questions(
+            state=Question.State.ANSWERED,
+            voxpop=voxpop,
+        ),
+    )
 
     return {"approved": approved, "answered": answered}
 
 
 @router.get(
-        "/{voxpop_id}/all_questions",
-        response={
-            200: QuestionsOutAdmin,
-            401: Message,
-        })
+    "/{voxpop_id}/all_questions",
+    response={
+        200: QuestionsOutAdmin,
+        401: Message,
+    },
+)
 def all_questions(request, voxpop_id: UUID):
     if request.session.get("admin", False):
         voxpop = get_voxpop(voxpop_id)
-        new = list(get_questions(
-            state=Question.State.NEW,
-            voxpop=voxpop))
-        approved = list(get_questions(
-            state=Question.State.APPROVED,
-            voxpop=voxpop))
-        answered = list(get_questions(
-            state=Question.State.ANSWERED,
-            voxpop=voxpop))
-        discarded = list(get_questions(
-            state=Question.State.DISCARDED,
-            voxpop=voxpop))
+        new = list(
+            get_questions(
+                state=Question.State.NEW,
+                voxpop=voxpop,
+            ),
+        )
+        approved = list(
+            get_questions(
+                state=Question.State.APPROVED,
+                voxpop=voxpop,
+            ),
+        )
+        answered = list(
+            get_questions(
+                state=Question.State.ANSWERED,
+                voxpop=voxpop,
+            ),
+        )
+        discarded = list(
+            get_questions(
+                state=Question.State.DISCARDED,
+                voxpop=voxpop,
+            ),
+        )
         return {
             "new": new,
             "approved": approved,
             "answered": answered,
-            "discarded": discarded
+            "discarded": discarded,
         }
     return 401, {"msg": "Unauthorized"}
 
@@ -205,20 +224,19 @@ def all_questions(request, voxpop_id: UUID):
 ###################
 @router.post("/login", response=Message)
 def login(request, data: LoginSchema):
-
-    """ This endpoint will accept a JWT and
+    """This endpoint will accept a JWT and
     overwrite the display_name, unique_name and
     optionally the admin session values. It is used
     to 'upgrade' an anonymous session to an identified
     session, which is required to participate in voxpops
-    that do not allow anonymous participation. """
+    that do not allow anonymous participation."""
 
     if data.token:
         try:
             payload = jwt.decode(
                 data.token,
                 settings.SHARED_SECRET_JWT,
-                algorithms=["HS256"]
+                algorithms=["HS256"],
             )
         except jwt.exceptions.InvalidSignatureError:
             return {"msg": "ERROR: Invalid signature"}
@@ -236,11 +254,10 @@ def login(request, data: LoginSchema):
 
 @router.get("/whoami")
 def tell_me_who_I_am(request):
-
     if not request.session.session_key:
         request.session.create()
 
-    info = { k:v for k,v in request.session.items()}
+    info = {k: v for k, v in request.session.items()}
     info["sessionid"] = request.session.session_key
     return info
 
@@ -255,7 +272,7 @@ def logout(request):
 def tell_me_who_I_am(request):
     if not request.session.session_key:
         request.session.create()
-    info = { k:v for k,v in request.session.items()}
+    info = {k: v for k, v in request.session.items()}
     info["sessionid"] = request.session.session_key
     return info
 
@@ -264,5 +281,3 @@ def tell_me_who_I_am(request):
 def logout(request):
     request.session.clear()
     return {"msg": "Logged out"}
-
-

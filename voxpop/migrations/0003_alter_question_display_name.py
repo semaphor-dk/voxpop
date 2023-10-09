@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voxpop', '0002_alter_question_display_name_alter_question_voxpop_and_more'),
+        ("voxpop", "0002_alter_question_display_name_alter_question_voxpop_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='display_name',
+            model_name="question",
+            name="display_name",
             field=models.CharField(blank=True, max_length=50),
         ),
     ]
