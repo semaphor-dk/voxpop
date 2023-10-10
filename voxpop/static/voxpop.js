@@ -167,7 +167,7 @@
 				xhr.send(JSON.stringify(object));
 			});
 		}).catch(function (error) {
-			console.error(error.message);
+			console.error(error.message || 'JSON source failed to load.');
 		});
 	}
 
