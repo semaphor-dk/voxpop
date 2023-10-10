@@ -21,7 +21,7 @@ div[data-voxpop-uuid]::before {
   div[data-voxpop-uuid] form {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: 0.5em 1em;
+    gap: 0.3em;
   }
 }
 
