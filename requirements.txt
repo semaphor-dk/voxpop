@@ -1,6 +1,6 @@
 django==4.2.0
 django-cors-headers==4.2.0
-psycopg[binary]==3.1.9
+psycopg[binary]==3.1.12
 django-ninja==0.21.0
 whitenoise==6.4.0
 environs[django]==9.5.0
