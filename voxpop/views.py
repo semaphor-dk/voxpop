@@ -208,12 +208,14 @@ async def __stream_questions(*, channel_prefix: str,voxpop_id: UUID, last_event_
     )
     channel_name = get_notify_channel_name(channel_prefix=channel_prefix, voxpop_id=voxpop_id)
     if last_event_id > 0:  # Reconnect request
+        print("Reconnecting from id " + str(last_event_id))
         missed_messages = await get_messages(channel_name, last_event_id)
         if len(missed_messages) == 0:  # Send a dummy response to activate the stream.
             yield "event: ping\ndata: Pong\n\n"
         else:
             yield "".join([str(m) for m in missed_messages])
     else:  # Send a dummy response to activate the stream.
+        print("New SSE connection.")
         yield "event: ping\ndata: Pong\n\n"
 
     try:
@@ -225,6 +227,7 @@ async def __stream_questions(*, channel_prefix: str,voxpop_id: UUID, last_event_
     except Exception as e:
         print(e.message)
     finally:
+        print("Closing database connection!")
         await aconnection.close()
 
 
