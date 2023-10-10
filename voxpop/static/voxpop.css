@@ -13,7 +13,7 @@ div[data-voxpop-uuid] {
 
 div[data-voxpop-uuid]::before {
   position: absolute;
-  right: 5px;
+  right: 9px;
   top: -25px;
 }
 
