@@ -153,6 +153,20 @@ def voxpops(request):
 
 
 @router.get(
+        "/{voxpop_id}",
+        response= {
+            200: VoxpopOut,
+            403: Message
+        })
+def voxpops(request, voxpop_id: UUID):
+    voxpop = get_voxpop(voxpop_id)
+    print(voxpop)
+    if voxpop is not None:
+        return 200, voxpop
+    else:
+        return 403, {"msg": "Voxpop not found"}
+
+@router.get(
         "/{voxpop_id}/questions",
         response=QuestionsOut
         )
