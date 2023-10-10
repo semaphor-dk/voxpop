@@ -166,6 +166,8 @@
 				xhr.open(evt.target.method, evt.target.action);
 				xhr.send(JSON.stringify(object));
 			});
+		}).catch(function (error) {
+			console.error(error.message);
 		});
 	}
 
