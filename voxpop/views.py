@@ -152,7 +152,7 @@ def edit_voxpop(request, voxpop_id: UUID = None):
         if request.method == "POST":
             form = VoxpopForm(request.POST, instance=voxpop)
             form.save(commit=True)
-            return redirect("/admin")
+            return redirect(f"/admin/voxpops/{voxpop_id}")
 
 def index(request):
     org = current_organisation(request)
