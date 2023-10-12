@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voxpop', '0006_message'),
+        ("voxpop", "0006_message"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='message',
-            name='channel_name',
-            field=models.CharField(default='', max_length=255),
+            model_name="message",
+            name="channel_name",
+            field=models.CharField(default="", max_length=255),
         ),
     ]

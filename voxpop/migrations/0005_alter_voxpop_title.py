@@ -4,15 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voxpop', '0004_alter_voxpop_allow_anonymous_alter_voxpop_created_by_and_more'),
+        (
+            "voxpop",
+            "0004_alter_voxpop_allow_anonymous_alter_voxpop_created_by_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='voxpop',
-            name='title',
-            field=models.CharField(max_length=50, verbose_name='title'),
+            model_name="voxpop",
+            name="title",
+            field=models.CharField(max_length=50, verbose_name="title"),
         ),
     ]
