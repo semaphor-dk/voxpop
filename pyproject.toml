@@ -22,7 +22,7 @@ classifiers = [
 ]
 dependencies = [
   "Django>=4.2",
-  "django-ninja==0.21.0",
+  "django-ninja==0.22.2",
 ]
 dynamic = ["version"]
 
