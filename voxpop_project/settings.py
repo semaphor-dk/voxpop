@@ -17,7 +17,8 @@ SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = CORS_ORIGIN_WHITELIST = env.list("CSRF_TRUSTED_ORIGINS")
-PLUGON_HOSTNAME = env.str("PLUGON_HOSTNAME")
+PLUGON_HOSTNAME = env.str("PLUGON_HOSTNAME", default="")
+REDIS_URL = env.str("REDIS_URL", default="redis://localhost:6379/0")
 
 # Application definition
 

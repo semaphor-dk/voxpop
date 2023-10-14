@@ -77,6 +77,7 @@ def notify_question_created(sender, instance, created, **kwargs):
             data=json.dumps(payload),
             channel_name=channel_name,
         )
+
         if instance.state == Question.State.APPROVED:
             notify(channel_name=channel_name, payload=message)
         channel_name = get_notify_channel_name(

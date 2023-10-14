@@ -2,10 +2,8 @@ from collections.abc import AsyncGenerator
 from uuid import UUID
 
 import jwt
-import psycopg
 from django.conf import settings
 from django.contrib import messages
-from django.db import connection
 from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import StreamingHttpResponse
@@ -24,6 +22,7 @@ from .selectors import get_voxpop
 from .selectors import get_voxpops
 from .services import create_question
 from .services import create_voxpop
+from .utils import get_async_redis_connection
 from .utils import get_notify_channel_name
 
 
@@ -225,10 +224,6 @@ async def __stream_questions(
     voxpop_id: UUID,
     last_event_id: int,
 ) -> AsyncGenerator[str, None]:
-    aconnection = await psycopg.AsyncConnection.connect(
-        **connection.get_connection_params(),
-        autocommit=True,
-    )
     channel_name = get_notify_channel_name(
         channel_prefix=channel_prefix,
         voxpop_id=voxpop_id,
@@ -242,16 +237,16 @@ async def __stream_questions(
     else:  # Send a dummy response to activate the stream.
         yield "event: ping\ndata: Pong\n\n"
 
-    try:
-        async with aconnection.cursor() as acursor:
-            await acursor.execute(f"LISTEN {channel_name}")
-            gen = aconnection.notifies()
-            async for notify in gen:
-                yield notify.payload
-    except Exception as e:
-        print(e.message)
-    finally:
-        await aconnection.close()
+    redis_client = get_async_redis_connection()
+
+    async with redis_client.pubsub() as pubsub:
+        await pubsub.subscribe(channel_name)
+        print("Subscribed to channel:", channel_name)
+
+        while True:
+            message = await pubsub.get_message(ignore_subscribe_messages=True)
+            if message is not None:
+                yield str(message["data"].decode())
 
 
 async def questions_stream_view(
