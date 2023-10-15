@@ -1,4 +1,4 @@
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncIterator
 from uuid import UUID
 
 import jwt
@@ -223,7 +223,7 @@ async def __stream_questions(
     channel_prefix: str,
     voxpop_id: UUID,
     last_event_id: int,
-) -> AsyncGenerator[str, None]:
+) -> AsyncIterator[str]:
     channel_name = get_notify_channel_name(
         channel_prefix=channel_prefix,
         voxpop_id=voxpop_id,

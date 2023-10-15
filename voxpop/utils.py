@@ -19,5 +19,18 @@ def notify(*, channel_name: str, payload: Message) -> None:
     r.publish(channel=channel_name, message=str(payload))
 
 
-def get_async_redis_connection() -> redis.Redis:
-    return async_redis.from_url(url=settings.REDIS_URL)
+class RedisPool:
+    _pool = None
+
+    @classmethod
+    def get_pool(cls):
+        """Return a connection pool for Redis."""
+        if not cls._pool:
+            cls._pool = async_redis.ConnectionPool.from_url(url=settings.REDIS_URL)
+        return cls._pool
+
+
+def get_async_redis_connection() -> async_redis.Redis:
+    """Return an async Redis connection."""
+    pool = RedisPool.get_pool()
+    return async_redis.Redis(connection_pool=pool)
