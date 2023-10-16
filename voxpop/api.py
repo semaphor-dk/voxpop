@@ -273,11 +273,9 @@ def logout(request):
     },
 )
 def voxpop_detail(request, voxpop_id: UUID):
-
-
-    """ Need to be placed after /login /whoami and /logout
+    """Need to be placed after /login /whoami and /logout
     as they occupy the same location but need to matched in a
-    certain order. """
+    certain order."""
 
     voxpop = get_voxpop(voxpop_id)
     print(voxpop)
