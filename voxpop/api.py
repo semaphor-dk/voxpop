@@ -6,6 +6,9 @@ from ninja import ModelSchema
 from ninja import Router
 from ninja import Schema
 
+from ninja_extra import NinjaExtraAPI, throttle
+from ninja_extra.throttling import UserRateThrottle
+
 from .models import Question
 from .models import Voxpop
 from .selectors import current_organisation
@@ -80,20 +83,24 @@ class LoginSchema(Schema):
     token: str
 
 
-"""@router.post(
-        "{voxpop_id}/new_question",
-        response=Message
-        )"""
+class QuestionRate(UserRateThrottle):
+    rate="3/min"
+    scope="minutes"
+
+
+class VoteRate(UserRateThrottle):
+    rate="10/min"
+    scope="minutes"
 
 
 @router.post(
     "{voxpop_id}/questions/new",
     response=Message,
 )
+@throttle(QuestionRate)
 def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
-
     voxpop = get_voxpop(voxpop_id)
     if voxpop.allow_anonymous:
         question = create_question(
@@ -119,7 +126,7 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
         )
     return {"msg": "Question created with uuid: %s" % question.uuid}
 
-
+@throttle(VoteRate)
 @router.post(
     "{voxpop_id}/questions/{question_id}/vote",
     response=Message,

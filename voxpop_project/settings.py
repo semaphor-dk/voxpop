@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "daphne",
     "django.contrib.staticfiles",
     "corsheaders",
+    "ninja_extra",
     "voxpop",
 ]
 
