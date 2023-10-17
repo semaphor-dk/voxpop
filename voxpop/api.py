@@ -153,22 +153,6 @@ def voxpops(request):
 
 
 @router.get(
-    "/{voxpop_id}",
-    response={
-        200: VoxpopOut,
-        403: Message,
-    },
-)
-def voxpop_detail(request, voxpop_id: UUID):
-    voxpop = get_voxpop(voxpop_id)
-    print(voxpop)
-    if voxpop is not None:
-        return 200, voxpop
-    else:
-        return 403, {"msg": "Voxpop not found"}
-
-
-@router.get(
     "/{voxpop_id}/questions",
     response=QuestionsOut,
 )
@@ -235,9 +219,6 @@ def all_questions(request, voxpop_id: UUID):
     return 401, {"msg": "Unauthorized"}
 
 
-###################
-## AUTHENTICAION ##
-###################
 @router.post("/login", response=Message)
 def login(request, data: LoginSchema):
     """This endpoint will accept a JWT and
@@ -282,3 +263,23 @@ def tell_me_who_I_am(request):
 def logout(request):
     request.session.clear()
     return {"msg": "Logged out"}
+
+
+@router.get(
+    "/{voxpop_id}",
+    response={
+        200: VoxpopOut,
+        403: Message,
+    },
+)
+def voxpop_detail(request, voxpop_id: UUID):
+    """Need to be placed after /login /whoami and /logout
+    as they occupy the same location but need to matched in a
+    certain order."""
+
+    voxpop = get_voxpop(voxpop_id)
+    print(voxpop)
+    if voxpop is not None:
+        return 200, voxpop
+    else:
+        return 403, {"msg": "Voxpop not found"}
