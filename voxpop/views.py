@@ -237,15 +237,18 @@ async def __stream_questions(
     else:  # Send a dummy response to activate the stream.
         yield "event: ping\ndata: Pong\n\n"
 
+    # Get an async redis connection.
     redis_client = get_async_redis_connection()
-
+    # Use the redis pubsub interface.
     async with redis_client.pubsub() as pubsub:
+        # Subscribe to the channel.
         await pubsub.subscribe(channel_name)
-        print("Subscribed to channel:", channel_name)
-
+        # Listen for messages.
         async for message in pubsub.listen():
+            # We only care about messages of the type "message" (not "subscribe" etc.)
             if message["type"] == "message":
-                yield str(message["data"].decode())
+                # Yield the message data to the client.
+                yield message["data"].decode()
 
 
 async def questions_stream_view(
