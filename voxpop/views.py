@@ -243,9 +243,8 @@ async def __stream_questions(
         await pubsub.subscribe(channel_name)
         print("Subscribed to channel:", channel_name)
 
-        while True:
-            message = await pubsub.get_message(ignore_subscribe_messages=True)
-            if message is not None:
+        async for message in pubsub.listen():
+            if message["type"] == "message":
                 yield str(message["data"].decode())
 
 
