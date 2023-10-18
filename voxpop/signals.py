@@ -9,7 +9,7 @@ from .models import Vote
 from .services import create_message
 from .utils import get_notify_channel_name
 from .utils import notify
-
+from datetime import datetime
 
 @receiver(pre_save, sender=Question)
 def notify_question_state_changed(sender, instance, *args, **kwargs):
@@ -69,7 +69,7 @@ def notify_question_created(sender, instance, created, **kwargs):
             "uuid": str(instance.uuid),
             "text": str(instance.text),
             "display_name": str(instance.display_name),
-            "created_at": "tid ...",
+            "created_at": instance.created_at.strftime("%I:%M %p"),
         }
         message = create_message(
             voxpop_id=instance.voxpop_id,
