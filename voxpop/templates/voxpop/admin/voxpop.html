@@ -18,7 +18,7 @@
 							<blockquote>{{ question.text }}</blockquote>
 							<div class="displayName">{{ question.display_name }}</div>
 							<div class="votes"><span>{{ question.vote_count }}</span> {% trans "vote(s)" %}</div>
-							<div class="createdAt">{{ question.created_at.time }}</div>
+							<div class="createdAt">{{ question.created_at|date:"H:i" }}</div>
 							<div class="questionActions">
 								<button type="button" class="disapprove" data-state="new">{% trans "disapprove"|capfirst %}</button>
 								<button type="button" class="approve" data-state="approved">{% trans "approve"|capfirst %}</button>
