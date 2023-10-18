@@ -21,14 +21,6 @@ from .services import create_vote
 router = Router()
 
 
-def safe_string(s: str) -> bool:
-    # Zs - Spaces.
-    # Lu / Ll - Letters.
-    # Pd - Dash.
-
-    return all([unicodedata.category(ch) in ["Ll", "Zs", "Lu", "Po"] for ch in s])
-
-
 class QuestionIn(ModelSchema):
     class Config:
         model = Question
@@ -109,38 +101,31 @@ class VoteRate(UserRateThrottle):
 def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
+
     voxpop = get_voxpop(voxpop_id)
 
-    print(data)
-    print("Text safe:", safe_string(data.text))
-    print("Name safe:", safe_string(data.display_name))
-
-    # Sanitize user-input.
-    if safe_string(data.display_name) is False or safe_string(data.text) is False:
-        return {"msg": "Message contains inappropriate symbols"}
-
     if voxpop.allow_anonymous:
-        question = create_question(
-            text=data.text,
-            display_name=request.session.get(
-                "display_name",
-                data.display_name if data.display_name else "",
-            ),
-            created_by=request.session.get(
-                "unique_name",
-                request.session.session_key,
-            ),
-            voxpop_id=voxpop_id,
+        display_name = request.session.get(
+            "display_name",
+            data.display_name if data.display_name else "",
+        )
+        created_by = request.session.get(
+            "unique_name",
+            request.session.session_key,
         )
     else:
         if not request.session.get("display_name", False):
             return {"msg": "Please sign in first."}
-        question = create_question(
-            text=data.text,
-            display_name=request.session["display_name"],
-            created_by=request.session["unique_name"],
-            voxpop_id=voxpop_id,
-        )
+        display_name = request.session["display_name"]
+        created_by = request.session["unique_name"]
+
+    question = create_question(
+        voxpop_id=voxpop_id,
+        text=data.text,
+        created_by=created_by,
+        display_name=display_name,
+    )
+
     return {"msg": "Question created with uuid: %s" % question.uuid}
 
 
