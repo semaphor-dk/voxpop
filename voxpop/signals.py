@@ -23,7 +23,7 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
                     "uuid": str(instance.uuid),
                     "text": str(instance.text),
                     "display_name": str(instance.display_name),
-                    "created_at": "tid ...",
+                    "created_at": instance.created_at,
                 }
                 message = create_message(
                     voxpop_id=instance.voxpop_id,
