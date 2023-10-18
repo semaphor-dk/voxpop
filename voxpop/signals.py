@@ -9,7 +9,7 @@ from .models import Vote
 from .services import create_message
 from .utils import get_notify_channel_name
 from .utils import notify
-from datetime import datetime
+
 
 @receiver(pre_save, sender=Question)
 def notify_question_state_changed(sender, instance, *args, **kwargs):
@@ -65,15 +65,16 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
 def notify_question_created(sender, instance, created, **kwargs):
     if created:
         channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
-       
+
         """ Convert AM / PM -> a.m. / p.m.
         and remove leading zeroes to conform
         to jinja2's {{ .time }} formatting. """
 
-        formatted_time = instance \
-                .created_at.strftime("%I:%M %p") \
-                .replace("AM", "a.m.") \
-                .replace("PM", "p.m.")
+        formatted_time = (
+            instance.created_at.strftime("%I:%M %p")
+            .replace("AM", "a.m.")
+            .replace("PM", "p.m.")
+        )
 
         if formatted_time[0] == "0":
             formatted_time = formatted_time[1:]
@@ -82,7 +83,7 @@ def notify_question_created(sender, instance, created, **kwargs):
             "uuid": str(instance.uuid),
             "text": str(instance.text),
             "display_name": str(instance.display_name),
-            "created_at": formatted_time, 
+            "created_at": formatted_time,
         }
         message = create_message(
             voxpop_id=instance.voxpop_id,

@@ -1,14 +1,12 @@
+import unicodedata
 from uuid import UUID
 
 import jwt
-import unicodedata
-
 from django.conf import settings
 from ninja import ModelSchema
 from ninja import Router
 from ninja import Schema
-
-from ninja_extra import NinjaExtraAPI, throttle
+from ninja_extra import throttle
 from ninja_extra.throttling import UserRateThrottle
 
 from .models import Question
@@ -22,13 +20,14 @@ from .services import create_vote
 
 router = Router()
 
-def safe_string(s: str) -> bool:
 
+def safe_string(s: str) -> bool:
     # Zs - Spaces.
     # Lu / Ll - Letters.
     # Pd - Dash.
 
-    return all([unicodedata.category(ch) in ['Ll', 'Zs', 'Lu', 'Po'] for ch in s])
+    return all([unicodedata.category(ch) in ["Ll", "Zs", "Lu", "Po"] for ch in s])
+
 
 class QuestionIn(ModelSchema):
     class Config:
@@ -93,13 +92,13 @@ class LoginSchema(Schema):
 
 
 class QuestionRate(UserRateThrottle):
-    rate="3/min"
-    scope="minutes"
+    rate = "3/min"
+    scope = "minutes"
 
 
 class VoteRate(UserRateThrottle):
-    rate="10/min"
-    scope="minutes"
+    rate = "10/min"
+    scope = "minutes"
 
 
 @router.post(
@@ -111,13 +110,13 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
     voxpop = get_voxpop(voxpop_id)
-   
+
     print(data)
     print("Text safe:", safe_string(data.text))
     print("Name safe:", safe_string(data.display_name))
-    
+
     # Sanitize user-input.
-    if safe_string(data.display_name) == False or safe_string(data.text) == False:
+    if safe_string(data.display_name) is False or safe_string(data.text) is False:
         return {"msg": "Message contains inappropriate symbols"}
 
     if voxpop.allow_anonymous:
@@ -143,6 +142,7 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
             voxpop_id=voxpop_id,
         )
     return {"msg": "Question created with uuid: %s" % question.uuid}
+
 
 @throttle(VoteRate)
 @router.post(
