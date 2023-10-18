@@ -1,6 +1,8 @@
 from uuid import UUID
 
 import jwt
+import unicodedata
+
 from django.conf import settings
 from ninja import ModelSchema
 from ninja import Router
@@ -20,6 +22,13 @@ from .services import create_vote
 
 router = Router()
 
+def safe_string(s: str) -> bool:
+
+    # Zs - Spaces.
+    # Lu / Ll - Letters.
+    # Pd - Dash.
+
+    return all([unicodedata.category(ch) in ['Ll', 'Zs', 'Lu', 'Po'] for ch in s])
 
 class QuestionIn(ModelSchema):
     class Config:
@@ -102,6 +111,15 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
     voxpop = get_voxpop(voxpop_id)
+   
+    print(data)
+    print("Text safe:", safe_string(data.text))
+    print("Name safe:", safe_string(data.display_name))
+    
+    # Sanitize user-input.
+    if safe_string(data.display_name) == False or safe_string(data.text) == False:
+        return {"msg": "Message contains inappropriate symbols"}
+
     if voxpop.allow_anonymous:
         question = create_question(
             text=data.text,
