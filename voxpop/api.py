@@ -1,4 +1,3 @@
-import unicodedata
 from uuid import UUID
 
 import jwt
