@@ -110,11 +110,7 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
     voxpop = get_voxpop(voxpop_id)
-
-    print(data)
-    print("Text safe:", safe_string(data.text))
-    print("Name safe:", safe_string(data.display_name))
-
+    
     # Sanitize user-input.
     if safe_string(data.display_name) is False or safe_string(data.text) is False:
         return {"msg": "Message contains inappropriate symbols"}
