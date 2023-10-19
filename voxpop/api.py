@@ -22,10 +22,6 @@ router = Router()
 
 
 def safe_string(s: str) -> bool:
-    # Zs - Spaces.
-    # Lu / Ll - Letters.
-    # Pd - Dash.
-
     return all([unicodedata.category(ch) in ["Ll", "Zs", "Lu", "Po"] for ch in s])
 
 
