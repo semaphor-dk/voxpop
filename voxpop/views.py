@@ -4,6 +4,7 @@ from uuid import UUID
 import jwt
 from django.conf import settings
 from django.contrib import messages
+from django.db import close_old_connections
 from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import StreamingHttpResponse
@@ -236,6 +237,11 @@ async def __stream_questions(
             yield "".join([str(m) for m in missed_messages])
     else:  # Send a dummy response to activate the stream.
         yield "event: ping\ndata: Pong\n\n"
+
+    # Since we are using a streaming response, we need to close the old connection
+    # ourselves. Otherwise, the connection will remain open until the request_finished
+    # signal is sent, which might take a while.
+    close_old_connections()
 
     # Get an async redis connection.
     redis_client = get_async_redis_connection()
