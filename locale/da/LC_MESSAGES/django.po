@@ -1692,7 +1692,7 @@ msgstr "slet"
 
 #: voxpop/templates/voxpop/admin/voxpop.html:34
 msgid "To embed this Voxpop, copy the following and insert into your html:"
-msgstr "For at indlejre denne Voxpop, kopier følgende kode og indsæt i din html:"
+msgstr "For at indlejre denne Voxpop, kopiér følgende kode og indsæt i din html:"
 
 #: voxpop/templates/voxpop/admin/voxpop.html:36
 msgid "embed code"
@@ -1700,7 +1700,7 @@ msgstr "indlejr kode"
 
 #: voxpop/templates/voxpop/admin/voxpop.html:37
 msgid "copy"
-msgstr "kopier"
+msgstr "kopiér"
 
 #: voxpop/views.py:63
 msgid "invalid signature"
