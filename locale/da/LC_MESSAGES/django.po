@@ -1594,26 +1594,18 @@ msgid "allow anonymous"
 msgstr "tillad anonyme"
 
 #: voxpop/models.py:69
-#, fuzzy
-#| msgid "new"
 msgid "New"
 msgstr "ny"
 
 #: voxpop/models.py:70
-#, fuzzy
-#| msgid "approved"
 msgid "Approved"
 msgstr "godkendt"
 
 #: voxpop/models.py:71
-#, fuzzy
-#| msgid "answered"
 msgid "Answered"
 msgstr "besvaret"
 
 #: voxpop/models.py:72
-#, fuzzy
-#| msgid "discarded"
 msgid "Discarded"
 msgstr "slettet"
 
