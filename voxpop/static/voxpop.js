@@ -120,7 +120,7 @@
 	<h3>${ translations['QuestionFormHeadline'] }</h3>
     <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
     <input name="display_name" type="text" maxlength="50" placeholder="${ translations['NamePlaceholder'] }">
-    <input name="text" type="text" maxlength="500" required placeholder="${ translations['QuestionPlaceholder'] }">
+    <input name="text" type="text" maxlength="1000" required placeholder="${ translations['QuestionPlaceholder'] }">
     <button type="submit" class="primary cta">${ translations['SubmitQuestionButton'] }</button>
 </form>`;
 	}
