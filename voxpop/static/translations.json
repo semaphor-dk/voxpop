@@ -6,7 +6,8 @@
 		"SubmitQuestionButton": "Send",
 		"VoteCounterLabel": "stemmer",
 		"VoteCounterLabelOne": "stemme",
-		"VoteButton": "Stem"
+		"VoteButton": "Stem",
+		"QuestionReceived": "Dit spørgsmål er modtaget."
 	},
 	"en": {
 		"NamePlaceholder": "Your name",
@@ -15,6 +16,7 @@
 		"SubmitQuestionButton": "Send",
 		"VoteCounterLabel": "votes",
 		"VoteCounterLabelOne": "vote",
-		"VoteButton": "Vote"
+		"VoteButton": "Vote",
+		"QuestionReceived": "Your question has been received."
 	}
 }
