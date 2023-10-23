@@ -146,7 +146,7 @@
 			voxpopElm.addEventListener('click', function (evt) {
 				if (evt.target.classList.contains('vote')) {
 					let questionUuid = evt.target.closest('div[data-voxpop-question-uuid]').dataset.voxpopQuestionUuid;
-					let voxpopData = evt.target.closest('*[data-voxpop-uuid').dataset;
+					let voxpopData = evt.target.closest('*[data-voxpop-uuid]').dataset;
 					let hostPort = (voxpopData.voxpopHost) ? `//${ voxpopData.voxpopHost }` : '';
 					vote(`${ hostPort }/api/voxpops/${ voxpopData.voxpopUuid }/questions/${ questionUuid }/vote`);
 				}
