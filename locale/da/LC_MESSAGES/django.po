@@ -1594,19 +1594,19 @@ msgid "allow anonymous"
 msgstr "tillad anonyme"
 
 #: voxpop/models.py:69
-msgid "New"
+msgid "new"
 msgstr "ny"
 
 #: voxpop/models.py:70
-msgid "Approved"
+msgid "approved"
 msgstr "godkendt"
 
 #: voxpop/models.py:71
-msgid "Answered"
+msgid "answered"
 msgstr "besvaret"
 
 #: voxpop/models.py:72
-msgid "Discarded"
+msgid "discarded"
 msgstr "slettet"
 
 #: voxpop/templates/voxpop/admin/auth_error.html:3
