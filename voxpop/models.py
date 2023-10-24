@@ -53,7 +53,7 @@ class Voxpop(CreatedUpdatedMixin):
     starts_at = models.DateTimeField(_("start time"))
     expires_at = models.DateTimeField(_("end time"))
     is_moderated = models.BooleanField(_("is moderated"), default=True)
-    allow_anonymous = models.BooleanField(_("allow anonymous"), default=False)
+    allow_anonymous = models.BooleanField(_("allow anonymous"), default=True)
     organisation = models.ForeignKey(
         Organisation,
         on_delete=models.CASCADE,
