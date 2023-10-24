@@ -20,8 +20,8 @@
 		};
 		sse.addEventListener("new_question", function (evt) {
 			let data = JSON.parse(evt.data);
-			let form = voxpopElm.querySelector("form");
-			form.insertAdjacentHTML("beforebegin", createHTMLforQuestion(data, translations));
+			let list = voxpopElm.querySelector(".list");
+			list.insertAdjacentHTML("beforebegin", createHTMLforQuestion(data, translations));
 		});
 		sse.addEventListener("question_state_update", function (evt) {
 			let data = JSON.parse(evt.data);
@@ -40,26 +40,22 @@
 			let voteDisplayElm = questionElm.querySelector('.votes span');
 			if (voteDisplayElm) {
 				voteDisplayElm.innerText = data.vote_count;
-				let parent = questionElm.parentElement;
-				let sorted = sortQuestionsByVotes(parent.children);
-				parent.replaceChildren(...sorted);
+				let voxpopElm = questionElm.closest('*[data-voxpop-uuid*="-"]');
+				sortQuestionsByVotes(voxpopElm);
 			}
 		});
 		updateConnectionStatus(voxpopElm, sse.readyState);
 	});
 
-	function sortQuestionsByVotes(questionsColl) {
-		let questions = Array.from(questionsColl);
+	function sortQuestionsByVotes(voxpopElm) {
+		let listElm = voxpopElm.querySelector('.list');
+		let questions = Array.from(listElm.children);
 		questions.forEach(function (questionElm) {
-			if(questionElm.hasAttribute("data-voxpop-question-uuid")) {
-				questionElm.votes = parseInt(questionElm.querySelector('.votes span').innerText, 10);
-			} else {
-				questionElm.votes = -10; // For the form element.
-			}
+			questionElm.votes = parseInt(questionElm.querySelector('.votes span').innerText, 10);
 		});
-		return questions.sort((a, b) => b.votes - a.votes);
+		let sorted = questions.sort((a, b) => b.votes - a.votes);
+		listElm.replaceChildren(...sorted);
 	}
-
 
 	function insertStylesheet(voxpopElm) {
 		const head = document.querySelector("head");
@@ -71,8 +67,8 @@
 	}
 
 	function getLanguage(voxpopElm) {
-			let langElm = voxpopElm.closest('[lang]');
-			return (langElm) ? langElm.getAttribute('lang') : 'en';
+		let langElm = voxpopElm.closest('[lang]');
+		return (langElm) ? langElm.getAttribute('lang') : 'en';
 	}
 
 	function getJSON(url) {
@@ -142,8 +138,7 @@
 			fragment += "</div>";
 			fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid, translations);
 			voxpopElm.innerHTML = fragment;
-			let sorted = sortQuestionsByVotes(voxpopElm.children);
-			voxpopElm.replaceChildren(...sorted);
+			sortQuestionsByVotes(voxpopElm);
 			voxpopElm.addEventListener('click', function (evt) {
 				if (evt.target.classList.contains('vote')) {
 					let questionUuid = evt.target.closest('div[data-voxpop-question-uuid]').dataset.voxpopQuestionUuid;
