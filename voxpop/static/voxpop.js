@@ -108,7 +108,7 @@
 	function createHTMLforQuestion(question, translations) {
 		let voteCountLabel = (question.vote_count || 0)  === 1 ? 'VoteCounterLabelOne' : 'VoteCounterLabel';
 		return `<div data-voxpop-question-uuid="${ question.uuid }">
-	<blockquote>${ question.text }</blockquote>
+	<blockquote><span class="displayName">${ question.display_name }</span>${ question.text }</blockquote>
 	<div class="displayName">${ question.display_name }</div>
 	<div class="votes"><span title="${ translations[voteCountLabel] }">${ question.vote_count || 0 }</span></div>
 	<button type="button" class="vote" title="${ translations['VoteButton'] }"></button>
@@ -135,10 +135,11 @@
 			let questions = values[0];
 			translations = values[1][lang];
 			if (typeof translations === 'undefined') translations = values[1]['en'];
-			let fragment = "\n";
+			let fragment = "\n<div class=\"list\">";
 			questions.approved.forEach(function (question) {
 				fragment += createHTMLforQuestion(question, translations);
 			});
+			fragment += "</div>";
 			fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid, translations);
 			voxpopElm.innerHTML = fragment;
 			let sorted = sortQuestionsByVotes(voxpopElm.children);
@@ -153,9 +154,12 @@
 			});
 			voxpopElm.querySelector('form').addEventListener('submit', function (evt) {
 				evt.preventDefault();
-				let formData = new FormData(evt.target);
+				let submitButton = voxpopElm.querySelector('button[type="submit"]');
+				submitButton.disabled = true;
+				let voxpopQuestionForm = evt.target;
+				let formData = new FormData(voxpopQuestionForm);
 				let object = {};
-				formData.forEach(function(value, key){
+				formData.forEach(function(value, key) {
 					object[key] = value;
 				});
 				const xhr = new XMLHttpRequest();
@@ -165,6 +169,11 @@
 				});
 				xhr.open(evt.target.method, evt.target.action);
 				xhr.send(JSON.stringify(object));
+				voxpopQuestionForm.insertAdjacentHTML('beforeend', `<p class="info">${ translations['QuestionReceived'] }</p>`);
+				setTimeout(function () {
+					submitButton.disabled = false;
+					voxpopQuestionForm.querySelector('.info').remove();
+				}, 5000);
 			});
 		}).catch(function (error) {
 			console.error(error.message || 'JSON source failed to load.');
