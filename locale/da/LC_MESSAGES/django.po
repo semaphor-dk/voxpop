@@ -1595,19 +1595,19 @@ msgstr "tillad anonyme"
 
 #: voxpop/models.py:69
 msgid "new"
-msgstr "ny"
+msgstr "nye"
 
 #: voxpop/models.py:70
 msgid "approved"
-msgstr "godkendt"
+msgstr "godkendte"
 
 #: voxpop/models.py:71
 msgid "answered"
-msgstr "besvaret"
+msgstr "besvarede"
 
 #: voxpop/models.py:72
 msgid "discarded"
-msgstr "slettet"
+msgstr "slettede"
 
 #: voxpop/templates/voxpop/admin/auth_error.html:3
 msgid "error"
