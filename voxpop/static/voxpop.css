@@ -20,7 +20,7 @@ div[data-voxpop-uuid]::before {
 }
 
 div[data-voxpop-uuid] .list {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 @media (min-width: 640px) {
