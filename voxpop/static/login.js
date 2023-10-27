@@ -47,9 +47,13 @@ function login(token) {
 }
 
 (function () {
-	if (!getVoxpopConfig()) {
+	if (getVoxpopConfig()) {
+		console.log("Anonymous allowed");
+	} else {
 		console.log("Anonymous not allowed");
-		if (!get_user_status()) {
+		if (get_user_status()) {
+			console.log("You are logged in already!");
+		} else {
 			console.log("Not logged in");
 			if (window.location.hash) {
 				var hash = window.location.hash;
@@ -57,20 +61,17 @@ function login(token) {
 				login(window.location.hash);
 				history.pushState("", document.title, window.location.pathname + window.location.search);
 				console.log("sleeping...");
-				ms => new Promise(r => setTimeout(r, ms));
+				const sleep = ms => new Promise(r => setTimeout(r, ms));
+				sleep(3);
 				if (get_user_status()) {
 					console.log("You are now logged in with #jwt-token");
-					return;
+				} else {
+					throw new Error('Invalid token');
 				}
-				throw new Error('Invalid token');
+			} else {
+				alert("You are not logged in.");
+				window.location.replace(`https://logon.semaphor.dk?url=${document.location}/login`);
 			}
-			alert("You are not logged in.");
-			// Needs to be a variable.
-			window.location.replace(`https://logon.semaphor.dk?url=${document.location}/login&js=1`);
-			return;
 		}
-		console.log("You are logged in already!");
-		return;
 	}
-	console.log("Anonymous allowed");
 }());
