@@ -7,7 +7,7 @@
 {% else %}
 <h1>{{ voxpop.title }}</h1>
 <p>{{ voxpop.description }}</p>
-<div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host="">Afventer Voxpop…</div>
+<div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host=""{% if not voxpop.allow_anonymous %} data-voxpop-login="{{idp}}"{% endif %}>Afventer Voxpop…</div>
 <script src="/static/voxpop.js"></script>
 <!--<script src="/static/login.js"></script>-->
 {% endif %}
