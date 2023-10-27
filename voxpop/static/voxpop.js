@@ -187,7 +187,7 @@
 						}
 					} else {
 						alert("You are not logged in.");
-						window.location.replace(voxpopElm.dataset.voxpopLogin + encodeURIComponent(document.location + '/login'));
+						window.location.replace(voxpopElm.dataset.voxpopLogin + encodeURIComponent(document.location));
 					}
 				}
 			}
