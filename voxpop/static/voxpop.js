@@ -149,6 +149,14 @@
 		return false;
 	}
 
+	function sleep(ms) {
+		console.log("Sleeping...");
+		new Promise(function(r) {
+			setTimeout(r, ms);
+		});
+		console.log("Waking up...");
+	}
+
 	function renderVoxpop(voxpopElm) {
 		let lang = getLanguage(voxpopElm);
 		let voxpopHost = ((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '');
@@ -177,15 +185,13 @@
 						console.log("Logging in with: " + hash);
 						login(voxpopHost, window.location.hash);
 						history.pushState("", document.title, window.location.pathname + window.location.search);
-						console.log("sleeping...");
-						const sleep = ms => new Promise(r => setTimeout(r, ms));
-						sleep(3000);
+/*						await sleep(3000);
 						if (isLoggedIn(voxpopHost)) {
 							console.log("You are now logged in with #jwt-token");
 						} else {
 							throw new Error('Invalid token');
 						}
-					} else {
+*/					} else {
 						alert("You are not logged in.");
 						window.location.replace(voxpopElm.dataset.voxpopLogin + encodeURIComponent(document.location));
 					}
