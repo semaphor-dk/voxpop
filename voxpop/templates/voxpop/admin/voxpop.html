@@ -35,8 +35,9 @@
 			<details id="embedCode">
 				<summary>{%trans "embed code"|capfirst %}</summary>
 				<button type="button" class="copyToClipboard">{% trans "copy"|capfirst %}</button>
-				<pre><code class="html">&lt;div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host="{{ request.META.HTTP_HOST }}"&gt;Afventer Voxpop…&lt;/div&gt;
+				<pre><code class="html">&lt;div data-voxpop-uuid="{{ voxpop.uuid }}" data-voxpop-host="{{ request.META.HTTP_HOST }}"{% if not voxpop.allow_anonymous %} data-voxpop-login="{{idp}}"{% endif %}&gt;Afventer Voxpop…&lt;/div&gt;
 &lt;script src="//{{ request.META.HTTP_HOST }}/static/voxpop.js"&gt;&lt;/script&gt;</code></pre>
+				<p>{{ voxpop.allow_anonymous }}</p>
 			</details>
 			<p><a href="{% url 'voxpop:admin' %}">{% trans "return"|capfirst %}</a></p>
 			<template id="questionTemplate">

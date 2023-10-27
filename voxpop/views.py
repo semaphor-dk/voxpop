@@ -110,6 +110,7 @@ def admin_voxpop(request, voxpop_id: UUID = None):
                         state=Question.State.DISCARDED,
                     ),
                 },
+                "idp": voxpop.organisation.idp
             }
             return render(request, "voxpop/admin/voxpop.html", context)
     return render(request, "voxpop/admin/auth_error.html")

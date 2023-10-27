@@ -7,9 +7,8 @@
 	let voxpopElements = document.querySelectorAll('*[data-voxpop-uuid*="-"]');
 	insertStylesheet(voxpopElements[0]);
 	voxpopElements.forEach(function (voxpopElm) {
+		renderVoxpop(voxpopElm);
 		let hostPort = (voxpopElm.dataset.voxpopHost) ? `//${ voxpopElm.dataset.voxpopHost }` : '';
-		let questionsUrl = `${ hostPort }/api/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions`;
-		renderVoxpop(voxpopElm, questionsUrl);
 		var sse = new EventSource(`${ hostPort }/voxpops/${ voxpopElm.dataset.voxpopUuid }/questions/stream`, {withCredentials: true});
 		allSse.push(sse);
 		sse.onopen = function (evt) {
@@ -101,6 +100,7 @@
 		});
 	}
 
+
 	function createHTMLforQuestion(question, translations) {
 		let voteCountLabel = (question.vote_count || 0)  === 1 ? 'VoteCounterLabelOne' : 'VoteCounterLabel';
 		return `<div data-voxpop-question-uuid="${ question.uuid }">
@@ -121,16 +121,76 @@
 </form>`;
 	}
 
-	function renderVoxpop(voxpopElm, questionsUrl) {
+	function login(voxpopHost, token) {
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.withCredentials = true;
+		var url = voxpopHost + '/api/voxpops/login';
+		xmlhttp.open('POST', url, true);
+		xmlhttp.send(JSON.stringify({ "token": token.split("#")[1] }));
+		if(xmlhttp.readyState == 4) {
+			var resp = JSON.parse(xmlhttp.responseText);
+			console.log(resp);
+		}
+	}
+
+	function isLoggedIn(voxpopHost) {
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open( "GET", voxpopHost + "/api/voxpops/whoami", false );
+		xmlhttp.withCredentials = true;
+		xmlhttp.send();
+		if(xmlhttp.readyState == 4) {
+			var resp = JSON.parse(xmlhttp.responseText);
+		}
+		for (var i in resp) {
+			if (i == "display_name") {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function renderVoxpop(voxpopElm) {
 		let lang = getLanguage(voxpopElm);
+		let voxpopHost = ((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '');
 		let promises = [
-			getJSON(questionsUrl),
-			getJSON(((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '') + '/static/translations.json')
+			getJSON(voxpopHost + '/api/voxpops/' + voxpopElm.dataset.voxpopUuid + '/questions'),
+			getJSON(voxpopHost + '/static/translations.json'),
+			getJSON(voxpopHost + '/api/voxpops/' + voxpopElm.dataset.voxpopUuid),
+			getJSON(voxpopHost + '/api/voxpops/whoami')
 		];
 		Promise.all(promises).then(function (values) {
 			let questions = values[0];
 			translations = values[1][lang];
+			let config = values[2][0];
+			let me = values[3];
 			if (typeof translations === 'undefined') translations = values[1]['en'];
+			if(config.allow_anonymous) {
+				console.log("Anonymous allowed");
+			} else {
+				console.log("Anonymous not allowed");
+				if(me.display_name) {
+					console.log("You are logged in already!");
+				} else {
+					console.log("Not logged in");
+					if (window.location.hash) {
+						var hash = window.location.hash;
+						console.log("Logging in with: " + hash);
+						login(voxpopHost, window.location.hash);
+						history.pushState("", document.title, window.location.pathname + window.location.search);
+						console.log("sleeping...");
+						const sleep = ms => new Promise(r => setTimeout(r, ms));
+						await sleep(3000);
+						if (isLoggedIn(voxpopHost)) {
+							console.log("You are now logged in with #jwt-token");
+						} else {
+							throw new Error('Invalid token');
+						}
+					} else {
+						alert("You are not logged in.");
+						window.location.replace(voxpopElm.dataset.voxpopLogin + encodeURIComponent(document.location + '/login'));
+					}
+				}
+			}
 			let fragment = "\n<div class=\"list\">";
 			questions.approved.forEach(function (question) {
 				fragment += createHTMLforQuestion(question, translations);
