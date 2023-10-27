@@ -161,7 +161,7 @@
 		Promise.all(promises).then(function (values) {
 			let questions = values[0];
 			translations = values[1][lang];
-			let config = values[2][0];
+			let config = values[2];
 			let me = values[3];
 			if (typeof translations === 'undefined') translations = values[1]['en'];
 			if(config.allow_anonymous) {
@@ -179,7 +179,7 @@
 						history.pushState("", document.title, window.location.pathname + window.location.search);
 						console.log("sleeping...");
 						const sleep = ms => new Promise(r => setTimeout(r, ms));
-						await sleep(3000);
+						sleep(3000);
 						if (isLoggedIn(voxpopHost)) {
 							console.log("You are now logged in with #jwt-token");
 						} else {

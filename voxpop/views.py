@@ -178,7 +178,10 @@ def index(request):
     if org:
         voxpop = get_voxpops(org).filter(is_active=True).order_by("starts_at").last()
         if voxpop:
-            context["voxpop"] = voxpop
+            context = {
+                "voxpop": voxpop,
+                "idp": voxpop.organisation.idp
+            }
     return render(request, "voxpop/index.html", context)
 
 
