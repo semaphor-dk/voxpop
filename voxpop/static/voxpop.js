@@ -111,14 +111,15 @@
 </div>\n`;
 	}
 
-	function createNewQuestionForm(hostname, voxpopUuid, translations) {
+	function createNewQuestionForm(hostname, voxpopUuid, translations, config, me) {
+		let loginRequired = !config.allow_anonymous;
 		return `<form action="${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
-	<h3>${ translations['QuestionFormHeadline'] }</h3>
-    <input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
-    <input name="display_name" type="text" maxlength="50" placeholder="${ translations['NamePlaceholder'] }">
-    <input name="text" type="text" maxlength="1000" required placeholder="${ translations['QuestionPlaceholder'] }">
-    <button type="submit" class="primary cta">${ translations['SubmitQuestionButton'] }</button>
-</form>`;
+			<h3>${ translations['QuestionFormHeadline'] }</h3>
+    		<input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
+    		<input name="display_name" type="text" maxlength="50" placeholder="${ loginRequired ? me.display_name : translations['NamePlaceholder'] }"${ loginRequired ? " readonly" : "" }>
+    		<input name="text" type="text" maxlength="1000" required placeholder="${ translations['QuestionPlaceholder'] }">
+    		<button type="submit" class="primary cta">${ translations['SubmitQuestionButton'] }</button>
+			</form>`;
 	}
 
 	function login(voxpopHost, token) {
@@ -192,7 +193,7 @@
 							throw new Error('Invalid token');
 						}
 */					} else {
-						alert("You are not logged in.");
+						console.log("You are not logged in.");
 						window.location.replace(voxpopElm.dataset.voxpopLogin + encodeURIComponent(document.location));
 					}
 				}
@@ -202,7 +203,7 @@
 				fragment += createHTMLforQuestion(question, translations);
 			});
 			fragment += "</div>";
-			fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid, translations);
+			fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid, translations, config, me);
 			voxpopElm.innerHTML = fragment;
 			sortQuestionsByVotes(voxpopElm);
 			voxpopElm.addEventListener('click', function (evt) {
