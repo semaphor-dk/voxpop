@@ -64,6 +64,7 @@ div[data-voxpop-question-uuid] div.displayName:not(:empty)::before {
 
 div[data-voxpop-question-uuid] blockquote .displayName {
   display: inline;
+  font-weight: bold;
 }
 div[data-voxpop-question-uuid] blockquote .displayName:not(:empty)::after {
   content: ": ";
