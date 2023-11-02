@@ -116,7 +116,7 @@
 		return `<form action="${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
 			<h3>${ translations['QuestionFormHeadline'] }</h3>
     		<input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
-    		<input name="display_name" type="text" maxlength="50" placeholder="${ loginRequired ? me.display_name : translations['NamePlaceholder'] }"${ loginRequired ? " readonly" : "" }>
+    		<input name="display_name" type="text" maxlength="50" placeholder="${translations['NamePlaceholder']}">
     		<input name="text" type="text" maxlength="1000" required placeholder="${ translations['QuestionPlaceholder'] }">
     		<button type="submit" class="primary cta">${ translations['SubmitQuestionButton'] }</button>
 			</form>`;
@@ -157,6 +157,18 @@
 		});
 		console.log("Waking up...");
 	}
+	
+	function updateDisplayName(voxpopHost, me) {
+        getJSON(voxpopHost + '/api/voxpops/whoami').then(function (new_me) {
+            if (new_me != me) {
+                const nameField = document.querySelector('input[name="display_name"]');
+                nameField.disabled = true;
+                nameField.placeholder = new_me.display_name;
+            } else {
+                setTimeout(updateDisplayName(voxpopHost, me), 1000);
+            }
+        })
+    }
 
 	function renderVoxpop(voxpopElm) {
 		let lang = getLanguage(voxpopElm);
@@ -179,6 +191,7 @@
 				console.log("Anonymous not allowed");
 				if(me.display_name) {
 					console.log("You are logged in already!");
+                    updateDisplayName(voxpopHost, me);
 				} else {
 					console.log("Not logged in");
 					if (window.location.hash) {
@@ -186,13 +199,8 @@
 						console.log("Logging in with: " + hash);
 						login(voxpopHost, window.location.hash);
 						history.pushState("", document.title, window.location.pathname + window.location.search);
-/*						await sleep(3000);
-						if (isLoggedIn(voxpopHost)) {
-							console.log("You are now logged in with #jwt-token");
-						} else {
-							throw new Error('Invalid token');
-						}
-*/					} else {
+                        updateDisplayName(voxpopHost, me);
+					} else {
 						console.log("You are not logged in.");
 						window.location.replace(voxpopElm.dataset.voxpopLogin + encodeURIComponent(document.location));
 					}
