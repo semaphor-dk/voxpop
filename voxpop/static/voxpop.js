@@ -111,8 +111,7 @@
 </div>\n`;
 	}
 
-	function createNewQuestionForm(hostname, voxpopUuid, translations, config, me) {
-		let loginRequired = !config.allow_anonymous;
+	function createNewQuestionForm(hostname, voxpopUuid, translations) {
 		return `<form action="${ hostname }/api/voxpops/${ voxpopUuid }/questions/new" method="POST">
 			<h3>${ translations['QuestionFormHeadline'] }</h3>
     		<input type="hidden" name="csrfmiddlewaretoken" value="CF7wx3OUxgmnjF4KWO0FJsQcrjJIk0luPQDtv0XBA6UFi42MwbT4yoav3cBmxcPW">
@@ -134,30 +133,6 @@
 		}
 	}
 
-	function isLoggedIn(voxpopHost) {
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open( "GET", voxpopHost + "/api/voxpops/whoami", false );
-		xmlhttp.withCredentials = true;
-		xmlhttp.send();
-		if(xmlhttp.readyState == 4) {
-			var resp = JSON.parse(xmlhttp.responseText);
-		}
-		for (var i in resp) {
-			if (i == "display_name") {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	function sleep(ms) {
-		console.log("Sleeping...");
-		new Promise(function(r) {
-			setTimeout(r, ms);
-		});
-		console.log("Waking up...");
-	}
-	
 	function updateDisplayName(voxpopHost, me) {
         getJSON(voxpopHost + '/api/voxpops/whoami').then(function (new_me) {
             if (new_me.display_name) {
@@ -195,8 +170,6 @@
 				} else {
 					console.log("Not logged in");
 					if (window.location.hash) {
-						var hash = window.location.hash;
-						console.log("Logging in with: " + hash);
 						login(voxpopHost, window.location.hash);
 						history.pushState("", document.title, window.location.pathname + window.location.search);
                         updateDisplayName(voxpopHost, me);
@@ -211,7 +184,7 @@
 				fragment += createHTMLforQuestion(question, translations);
 			});
 			fragment += "</div>";
-			fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid, translations, config, me);
+			fragment += createNewQuestionForm((voxpopElm.dataset.voxpopHost) ? '//' + voxpopElm.dataset.voxpopHost : '', voxpopElm.dataset.voxpopUuid, translations);
 			voxpopElm.innerHTML = fragment;
 			sortQuestionsByVotes(voxpopElm);
 			voxpopElm.addEventListener('click', function (evt) {
