@@ -3,6 +3,7 @@ from uuid import UUID
 
 import jwt
 from django.conf import settings
+from django.http import HttpResponse
 from ninja import ModelSchema
 from ninja import Router
 from ninja import Schema
@@ -106,7 +107,7 @@ def new_question(request, voxpop_id: UUID, data: QuestionIn):
     if not request.session.session_key:
         return {"msg": "No session found."}
     voxpop = get_voxpop(voxpop_id)
-    
+
     # Sanitize user-input.
     if safe_string(data.display_name) is False or safe_string(data.text) is False:
         return {"msg": "Message contains inappropriate symbols"}
@@ -267,12 +268,14 @@ def login(request, data: LoginSchema):
 
 
 @router.get("/whoami")
-def tell_me_who_I_am(request):
+def tell_me_who_I_am(request, response: HttpResponse):
     if not request.session.session_key:
         request.session.create()
 
     info = {k: v for k, v in request.session.items()}
     info["sessionid"] = request.session.session_key
+    response.headers["Cache-Control"] = "No-Cache"
+    response.headers["Expires"] = 0
     return info
 
 
