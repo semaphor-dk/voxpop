@@ -160,14 +160,14 @@
 	
 	function updateDisplayName(voxpopHost, me) {
         getJSON(voxpopHost + '/api/voxpops/whoami').then(function (new_me) {
-            if (new_me != me) {
+            if (new_me.display_name) {
                 const nameField = document.querySelector('input[name="display_name"]');
                 nameField.disabled = true;
                 nameField.placeholder = new_me.display_name;
             } else {
                 setTimeout(updateDisplayName(voxpopHost, me), 1000);
             }
-        })
+        });
     }
 
 	function renderVoxpop(voxpopElm) {
