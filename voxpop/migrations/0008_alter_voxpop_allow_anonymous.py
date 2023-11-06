@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voxpop', '0007_message_channel_name'),
+        ("voxpop", "0007_message_channel_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='voxpop',
-            name='allow_anonymous',
-            field=models.BooleanField(default=True, verbose_name='allow anonymous'),
+            model_name="voxpop",
+            name="allow_anonymous",
+            field=models.BooleanField(default=True, verbose_name="allow anonymous"),
         ),
     ]
