@@ -71,11 +71,15 @@ div[data-voxpop-question-uuid] blockquote .displayName:not(:empty)::after {
 }
 
 div[data-voxpop-question-uuid] button {
-  padding: 0 8px;
-}
-
-div[data-voxpop-question-uuid] button::before {
-  content: "↑";
+  border: 0;
+  margin: 0;
+  padding: 10px;
+  background-color: transparent;
+  background-image: url(/static/thumbs-up.svg);
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 /** Module Rules **/
