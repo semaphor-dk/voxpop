@@ -64,12 +64,12 @@ def notify_question_state_changed(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=Question)
 def notify_question_created(sender, instance, created, **kwargs):
     if created:
-        channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id) 
+        channel_name = get_notify_channel_name(voxpop_id=instance.voxpop_id)
         payload = {
             "uuid": str(instance.uuid),
             "text": str(instance.text),
             "display_name": str(instance.display_name),
-            "created_at": str(instance.created_at), 
+            "created_at": str(instance.created_at),
         }
         message = create_message(
             voxpop_id=instance.voxpop_id,
