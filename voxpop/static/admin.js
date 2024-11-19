@@ -97,7 +97,7 @@
 		clone.querySelector("div[data-voxpop-question-uuid]").setAttribute("data-voxpop-question-uuid", question.uuid);
 		clone.querySelector("blockquote").innerText = question.text;
 		clone.querySelector(".displayName").innerText = question.display_name;
-		
+
 		// Format time.
 		const datetime = new Date(question.created_at);
 		const formattedTime = datetime.toLocaleTimeString("da", {
