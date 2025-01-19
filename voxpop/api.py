@@ -298,7 +298,6 @@ def voxpop_detail(request, voxpop_id: UUID):
     certain order."""
 
     voxpop = get_voxpop(voxpop_id)
-    print(voxpop)
     if voxpop is not None:
         return 200, voxpop
     else:
