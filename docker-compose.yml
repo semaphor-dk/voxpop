@@ -1,9 +1,33 @@
-version: '3.7'
-
 services:
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: python manage.py runserver 0.0.0.0:8000
+    tty: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      DEBUG: true
+      ALLOWED_HOSTS: "localhost,"
+      ALLOWED_CORS_HOSTS: "http://localhost:8000"
+      CSRF_TRUSTED_ORIGINS: "http://localhost:8000"
+      TIME_ZONE: "Europe/Copenhagen"
+      LANGUAGE_CODE: "en"
+      DATABASE_URL: "postgres://postgres:postgres@postgres:5432/postgres"
+      REDIS_URL: "redis://redis:6379/0"
+      SECRET_KEY: "secret-key"
+      SHARED_SECRET_JWT: "lol"
+
   postgres:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: 'postgres'
     ports:
       - "5432:5432"
+
+  redis:
+    image: redis:7-alpine

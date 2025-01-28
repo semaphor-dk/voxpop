@@ -75,8 +75,12 @@ TEMPLATES = [
 ASGI_APPLICATION = "voxpop_project.asgi.application"
 WSGI_APPLICATION = "voxpop_project.wsgi.application"
 
+default_db = env.dj_db_url("DATABASE_URL")
+# Setup connection pooling: https://docs.djangoproject.com/en/5.1/ref/databases/#postgresql-pool
+default_db["OPTIONS"] = {"pool": True}
+
 DATABASES = {
-    "default": env.dj_db_url("DATABASE_URL"),
+    "default": default_db,
 }
 
 LANGUAGE_CODE = env.str("LANGUAGE_CODE")
