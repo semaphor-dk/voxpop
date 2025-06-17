@@ -36,6 +36,10 @@ form {
   margin: 0 0 1em 0;
 }
 
+code {
+  user-select: all;
+}
+
 template {
   display: none;
 }
