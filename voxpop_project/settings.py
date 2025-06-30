@@ -1,6 +1,7 @@
 """
 Django settings for voxpop project.
 """
+
 from pathlib import Path
 
 from environs import Env
