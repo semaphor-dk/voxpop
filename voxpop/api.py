@@ -272,7 +272,7 @@ def tell_me_who_I_am(request, response: HttpResponse):
     if not request.session.session_key:
         request.session.create()
 
-    info = {k: v for k, v in request.session.items()}
+    info = {**request.session}
     info["sessionid"] = request.session.session_key
     response.headers["Cache-Control"] = "No-Cache"
     response.headers["Expires"] = 0
